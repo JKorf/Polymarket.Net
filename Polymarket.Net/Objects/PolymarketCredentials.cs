@@ -15,10 +15,10 @@ namespace Polymarket.Net.Objects
         public string? L2Secret { get; set; }
         public string? L2Pass { get; set; }
 
-        public PolymarketCredentials(string publicAddress, string privateKey) : base(publicAddress, privateKey, null, ApiCredentialsType.Hmac)
+        public PolymarketCredentials(string publicAddress, string l1PrivateKey) : base(publicAddress, l1PrivateKey, null, ApiCredentialsType.Hmac)
         {
             PublicAddress = publicAddress;
-            L1PrivateKey = privateKey;
+            L1PrivateKey = l1PrivateKey;
         }
 
         public PolymarketCredentials(

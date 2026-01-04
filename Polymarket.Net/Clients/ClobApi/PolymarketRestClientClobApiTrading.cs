@@ -55,39 +55,44 @@ namespace Polymarket.Net.Clients.ClobApi
             var parameters = new ParameterCollection();
             var orderParameters = new ParameterCollection();
 
-#warning always * 1000?
-            quantity *= 1000;
-            price *= 1000;
-
             price = price.Normalize();
             decimal takerQuantity;
             decimal makerQuantity;
             if (side == OrderSide.Buy)
             {
-#warning switched?
-                makerQuantity = quantity;
-                takerQuantity = quantity * price;
+                makerQuantity = quantity * price;
+                takerQuantity = quantity;
             }
             else
             {
-                takerQuantity = quantity;
-                makerQuantity = quantity * price;
+                takerQuantity = quantity * price;
+                makerQuantity = quantity;
             }
 
+            takerQuantity *= 1000000;
+            makerQuantity *= 1000000;
+
+            takerQuantity = takerQuantity.Normalize();
+            makerQuantity = makerQuantity.Normalize();
+
+            // price: 0.1, size: 50
+            //takerQuantity = 50000000;
+            //makerQuantity = 50000;
+
             var authProvider = (PolymarketAuthenticationProvider)_baseClient.AuthenticationProvider!;
-            orderParameters.Add("tokenId", tokenId);
-            orderParameters.AddString("makerAmount", makerQuantity);
-            orderParameters.AddString("takerAmount", takerQuantity);
-            orderParameters.AddString("feeRateBps", feeRateBps);
-            orderParameters.AddEnumAsInt("side", side);
-            orderParameters.Add("nonce", (nonce ?? 0).ToString());
+            orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
             orderParameters.Add("maker", makerAddress ?? authProvider.PublicAddress);
             orderParameters.Add("signer", signingAddress ?? authProvider.PublicAddress);
             orderParameters.Add("taker", takerAddress ?? "0x0000000000000000000000000000000000000000");
-            orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(16)));
+            orderParameters.Add("tokenId", tokenId);
+            orderParameters.AddString("makerAmount", makerQuantity);
+            orderParameters.AddString("takerAmount", takerQuantity);
             orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToMilliseconds(expiration.Value)));
-            orderParameters.Add("signatureType", 0);
-            orderParameters.Add("signature", authProvider.GetOrderSignature(orderParameters));
+            orderParameters.Add("nonce", (nonce ?? 0).ToString());
+            orderParameters.AddString("feeRateBps", feeRateBps);
+            orderParameters.AddEnum("side", side);
+            orderParameters.Add("signatureType", 1);
+            orderParameters.Add("signature", authProvider.GetOrderSignature(orderParameters, 137, tokenResult.Data.NegativeRisk).ToLowerInvariant());
 
             parameters.Add("order", orderParameters);
             parameters.Add("owner", authProvider.ApiKey);

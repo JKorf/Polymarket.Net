@@ -2194,16 +2194,6 @@
         <member name="M:Polymarket.Net.PolymarketTrackerFactory.CreateTradeTracker(CryptoExchange.Net.SharedApis.SharedSymbol,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
             <inheritdoc />
         </member>
-        <member name="T:Polymarket.Net.Signing.Secp256k1PointCalculator">
-            <summary>
-            This class regroup helper functions associated with the secp256k1 Curve 
-            </summary>
-        </member>
-        <member name="T:Polymarket.Net.Signing.Secp256k1ZCalculator">
-            <summary>
-            This class regroup helper functions for computation in the Z/Zp associated with secp256k1
-            </summary>
-        </member>
         <member name="T:Polymarket.Net.SymbolOrderBooks.PolymarketClobSymbolOrderBook">
             <summary>
             Implementation for a synchronized order book. After calling Start the order book will sync itself and keep up to date with new data. It will automatically try to reconnect and resync in case of a lost/interrupted connection.

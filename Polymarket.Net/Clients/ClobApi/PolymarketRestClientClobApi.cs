@@ -53,6 +53,8 @@ namespace Polymarket.Net.Clients.ClobApi
 
             RequestBodyEmptyContent = "";
             ParameterPositions[HttpMethod.Delete] = HttpMethodParameterPosition.InBody;
+
+            OrderParameters = false;
         }
         #endregion
 

@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace Polymarket.Net.Utils
 {
+    
+
     /// <summary>
     /// Util methods for the Polymarket API
     /// </summary>
@@ -20,8 +22,6 @@ namespace Polymarket.Net.Utils
         private static Dictionary<string, Dictionary<string, PolymarketOrderBook>> _tokenInfos = new Dictionary<string, Dictionary<string, PolymarketOrderBook>>();
 
         private static readonly SemaphoreSlim _semaphoreSpot = new SemaphoreSlim(1, 1);
-
-        public static string ExchangeContract = "0xdFE02Eb6733538f8Ea35D585af8DE5958AD99E40";
 
         /// <summary>
         /// Update the internal spot symbol info
