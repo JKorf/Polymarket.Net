@@ -29,14 +29,23 @@ namespace Polymarket.Net.Objects.Options
         /// </summary>
         public RestApiOptions ClobOptions { get; private set; } = new RestApiOptions();
 
+        /// <summary>
+        /// Gamma API options
+        /// </summary>
+        public RestApiOptions GammaOptions { get; private set; } = new RestApiOptions();
+
         public string? BuilderApiKey { get; set; }
         public string? BuilderSecret { get; set; }
         public string? BuilderPass { get; set; }
 
         internal PolymarketRestOptions Set(PolymarketRestOptions targetOptions)
         {
-            targetOptions = base.Set<PolymarketRestOptions>(targetOptions);            
+            targetOptions = base.Set<PolymarketRestOptions>(targetOptions);
+            targetOptions.BuilderApiKey = BuilderApiKey;
+            targetOptions.BuilderSecret = BuilderSecret;
+            targetOptions.BuilderPass = BuilderPass;
             targetOptions.ClobOptions = ClobOptions.Set(targetOptions.ClobOptions);
+            targetOptions.GammaOptions = GammaOptions.Set(targetOptions.ClobOptions);
             return targetOptions;
         }
     }

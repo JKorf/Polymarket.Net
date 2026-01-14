@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polymarket.Net.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,12 +26,27 @@ namespace Polymarket.Net.Objects.Models
         /// <summary>
         /// Order id
         /// </summary>
-        [JsonPropertyName("orderId")]
+        [JsonPropertyName("orderID")]
         public string? OrderId { get; set; }
+        /// <summary>
+        /// Order taker quantity executed
+        /// </summary>
+        [JsonPropertyName("takingAmount")]
+        public decimal? TakingQuantity { get; set; }
+        /// <summary>
+        /// Order maker quantity executed
+        /// </summary>
+        [JsonPropertyName("makingAmount")]
+        public decimal? MakingQuantity { get; set; }
+        /// <summary>
+        /// Status
+        /// </summary>
+        [JsonPropertyName("status")]
+        public OrderStatus? Status { get; set; }
         /// <summary>
         /// Hashes of trades which were executed immediately
         /// </summary>
-        [JsonPropertyName("orderHashes")]
+        [JsonPropertyName("transactionsHashes")]
         public string[] TradeHashes { get; set; } = [];
     }
 }

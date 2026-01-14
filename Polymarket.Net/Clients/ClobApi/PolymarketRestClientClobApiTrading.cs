@@ -1,6 +1,7 @@
 using CryptoExchange.Net;
 using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using Polymarket.Net.Enums;
@@ -11,8 +12,10 @@ using Polymarket.Net.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,12 +37,11 @@ namespace Polymarket.Net.Clients.ClobApi
         public async Task<WebCallResult<PolymarketOrderResult>> PlaceOrderAsync(
             string tokenId,
             OrderSide side,
-            TimeInForce timeInForce,
+            OrderType orderType,
             decimal quantity,
-            decimal price,
-            decimal feeRateBps,
-            string? makerAddress = null,
-            string? signingAddress = null,
+            decimal? price = null,
+            TimeInForce? timeInForce = null,
+            long? feeRateBps = null,
             string? takerAddress = null,
             long? clientOrderId = null,
             DateTime? expiration = null,
@@ -52,56 +54,133 @@ namespace Polymarket.Net.Clients.ClobApi
 
             var tickSize = tokenResult.Data.TickQuantity;
 
+#warning todo market order
+
+            var makerTakerQuantities = await GetMakerTakerQuantitiesAsync(tokenId, side, orderType, quantity, price, timeInForce).ConfigureAwait(false);
+            if (!makerTakerQuantities)
+                return new WebCallResult<PolymarketOrderResult>(makerTakerQuantities.Error);
+
             var parameters = new ParameterCollection();
             var orderParameters = new ParameterCollection();
-
-            price = price.Normalize();
-            decimal takerQuantity;
-            decimal makerQuantity;
-            if (side == OrderSide.Buy)
-            {
-                makerQuantity = quantity * price;
-                takerQuantity = quantity;
-            }
-            else
-            {
-                takerQuantity = quantity * price;
-                makerQuantity = quantity;
-            }
-
-            takerQuantity *= 1000000;
-            makerQuantity *= 1000000;
-
-            takerQuantity = takerQuantity.Normalize();
-            makerQuantity = makerQuantity.Normalize();
-
-            // price: 0.1, size: 50
-            //takerQuantity = 50000000;
-            //makerQuantity = 50000;
-
             var authProvider = (PolymarketAuthenticationProvider)_baseClient.AuthenticationProvider!;
             orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
-            orderParameters.Add("maker", makerAddress ?? authProvider.PublicAddress);
-            orderParameters.Add("signer", signingAddress ?? authProvider.PublicAddress);
+            orderParameters.Add("maker", authProvider.PolymarketAddress);
+            orderParameters.Add("signer", authProvider.PublicAddress);
             orderParameters.Add("taker", takerAddress ?? "0x0000000000000000000000000000000000000000");
             orderParameters.Add("tokenId", tokenId);
-            orderParameters.AddString("makerAmount", makerQuantity);
-            orderParameters.AddString("takerAmount", takerQuantity);
+            orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
+            orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
             orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToMilliseconds(expiration.Value)));
-            orderParameters.Add("nonce", (nonce ?? 0).ToString());
-            orderParameters.AddString("feeRateBps", feeRateBps);
+            orderParameters.AddString("nonce", nonce ?? 0);
+            orderParameters.AddString("feeRateBps", feeRateBps ?? 0);
             orderParameters.AddEnum("side", side);
             orderParameters.Add("signatureType", 1);
             orderParameters.Add("signature", authProvider.GetOrderSignature(orderParameters, 137, tokenResult.Data.NegativeRisk).ToLowerInvariant());
 
             parameters.Add("order", orderParameters);
             parameters.Add("owner", authProvider.ApiKey);
-            parameters.AddEnum("orderType", timeInForce);
+            parameters.AddEnum("orderType", timeInForce ?? TimeInForce.GoodTillCanceled);
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/order", PolymarketExchange.RateLimiter.Polymarket, 1, true);
             var result = await _baseClient.SendAsync<PolymarketOrderResult>(request, parameters, ct).ConfigureAwait(false);
 
             // If errorMsg is set return error
             return result;
+        }
+
+        private async Task<CallResult<(decimal MakerQuantity, decimal TakerQuantity)>> GetMakerTakerQuantitiesAsync(string tokenId, OrderSide side, OrderType orderType, decimal quantity, decimal? price, TimeInForce? timeInForce)
+        {
+            decimal takerQuantity;
+            decimal makerQuantity;
+            if (orderType == OrderType.Limit)
+            {
+                if (price == null)
+                    throw new ArgumentNullException(nameof(price), "Price is required for limit orders");
+
+                price = Math.Round(price.Value, 3).Normalize();
+                if (side == OrderSide.Buy)
+                {
+                    takerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
+                    makerQuantity = takerQuantity * price.Value;
+                }
+                else
+                {
+                    makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
+                    takerQuantity = makerQuantity * price.Value;
+                }
+
+                takerQuantity *= 1000000;
+                makerQuantity *= 1000000;
+
+                takerQuantity = takerQuantity.Normalize();
+                makerQuantity = makerQuantity.Normalize();
+            }
+            else
+            {
+                var bookInfo = await _baseClient.ExchangeData.GetOrderBookAsync(tokenId).ConfigureAwait(false);
+                if (!bookInfo)
+                    return bookInfo.As<(decimal, decimal)>(default);
+
+                if (side == OrderSide.Buy)
+                {
+                    decimal? marketPrice = null;
+                    var sum = 0m;
+                    for (var i = bookInfo.Data.Asks.Length - 1; i >= 0; i--)
+                    {
+                        var ask = bookInfo.Data.Asks[i];
+                        sum += ask.Quantity * ask.Price;
+                        if (sum >= quantity)
+                        {
+                            marketPrice = ask.Price;
+                            break;
+                        }
+                    }
+
+                    if (timeInForce == TimeInForce.FillOrKill && marketPrice == null)
+                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
+
+                    price = marketPrice ?? bookInfo.Data.Asks[0].Price;
+                }
+                else
+                {
+                    decimal? marketPrice = null;
+                    var sum = 0m;
+                    for (var i = bookInfo.Data.Bids.Length - 1; i >= 0; i--)
+                    {
+                        var bid = bookInfo.Data.Bids[i];
+                        sum += bid.Quantity;
+                        if (sum >= quantity)
+                        {
+                            marketPrice = bid.Price;
+                            break;
+                        }
+                    }
+
+                    if (timeInForce == TimeInForce.FillOrKill && marketPrice == null)
+                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
+
+                    price = marketPrice ?? bookInfo.Data.Bids[0].Price;
+                }
+
+                price = Math.Round(price!.Value, 3).Normalize();
+                if (side == OrderSide.Buy)
+                {
+                    makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
+                    takerQuantity = makerQuantity / price.Value;
+                }
+                else
+                {
+                    makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
+                    takerQuantity = makerQuantity * price.Value;
+                }
+
+                takerQuantity *= 1000000;
+                makerQuantity *= 1000000;
+
+                takerQuantity = takerQuantity.Normalize();
+                makerQuantity = makerQuantity.Normalize();
+            }
+
+            return new CallResult<(decimal, decimal)>((makerQuantity, takerQuantity));
         }
 
         public async Task<WebCallResult<PolymarketOrder>> GetOrderAsync(string orderId, CancellationToken ct = default)

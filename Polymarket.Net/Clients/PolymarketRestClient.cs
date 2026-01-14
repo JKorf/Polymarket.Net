@@ -10,6 +10,8 @@ using CryptoExchange.Net.Objects.Options;
 using Polymarket.Net.Interfaces.Clients.ClobApi;
 using Polymarket.Net.Clients.ClobApi;
 using Polymarket.Net.Objects;
+using Polymarket.Net.Interfaces.Clients.GammaApi;
+using Polymarket.Net.Clients.GammaApi;
 
 namespace Polymarket.Net.Clients
 {
@@ -20,6 +22,9 @@ namespace Polymarket.Net.Clients
                 
          /// <inheritdoc />
         public IPolymarketRestClientClobApi ClobApi { get; }
+
+        /// <inheritdoc />
+        public IPolymarketRestClientGammaApi GammaApi { get; }
 
         #endregion
 
@@ -45,6 +50,7 @@ namespace Polymarket.Net.Clients
             Initialize(options.Value);
             
             ClobApi = AddApiClient(new PolymarketRestClientClobApi(_logger, httpClient, options.Value));
+            GammaApi = AddApiClient(new PolymarketRestClientGammaApi(_logger, httpClient, options.Value));
         }
 
         #endregion
@@ -52,6 +58,7 @@ namespace Polymarket.Net.Clients
         /// <inheritdoc />
         public void SetOptions(UpdateOptions options)
         {
+            GammaApi.SetOptions(options);
             ClobApi.SetOptions(options);
         }
 
@@ -68,6 +75,7 @@ namespace Polymarket.Net.Clients
         public void SetApiCredentials(PolymarketCredentials credentials)
         {            
             ClobApi.SetApiCredentials(credentials);
+            GammaApi.SetApiCredentials(credentials);
         }
     }
 }

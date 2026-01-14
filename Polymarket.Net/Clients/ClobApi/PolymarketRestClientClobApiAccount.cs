@@ -114,5 +114,28 @@ namespace Polymarket.Net.Clients.ClobApi
             var result = await _baseClient.SendAsync(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
+
+        public async Task<WebCallResult> GetBuilderTradesAsync(
+            string? tradeId = null,
+            string? takerAddress = null,
+            string? makerAddress = null,
+            string? conditionId = null,
+            DateTime? startTime = null,
+            DateTime? endTime = null,
+            string? cursor = null, 
+            CancellationToken ct = default)
+        {
+            var parameters = new ParameterCollection();
+            parameters.AddOptional("id", cursor);
+            parameters.AddOptional("taker", cursor);
+            parameters.AddOptional("maker", cursor);
+            parameters.AddOptional("market", cursor);
+            parameters.AddOptionalMillisecondsString("after", startTime);
+            parameters.AddOptionalMillisecondsString("before", endTime);
+            parameters.AddOptional("next_cursor", cursor);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "builder/trades", PolymarketExchange.RateLimiter.Polymarket, 1, true);
+            var result = await _baseClient.SendAsync(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
     }
 }

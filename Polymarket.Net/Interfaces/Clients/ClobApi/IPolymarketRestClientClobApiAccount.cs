@@ -1,6 +1,7 @@
 using CryptoExchange.Net.Objects;
 using Polymarket.Net.Enums;
 using Polymarket.Net.Objects.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,5 +54,26 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="tokenId">Token id</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult> UpdateBalanceAllowanceAsync(AssetType assetType, string? tokenId = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get trades for builder
+        /// </summary>
+        /// <param name="tradeId">Filter by trade id</param>
+        /// <param name="takerAddress">Filter by taker address</param>
+        /// <param name="makerAddress">Filter by maker address</param>
+        /// <param name="conditionId">Filter by condition id</param>
+        /// <param name="startTime">Filter by start time</param>
+        /// <param name="endTime">Filter by end time</param>
+        /// <param name="cursor">Next page cursor</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult> GetBuilderTradesAsync(
+            string? tradeId = null,
+            string? takerAddress = null,
+            string? makerAddress = null,
+            string? conditionId = null,
+            DateTime? startTime = null,
+            DateTime? endTime = null,
+            string? cursor = null, 
+            CancellationToken ct = default);
     }
 }

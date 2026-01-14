@@ -5,7 +5,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
+using Polymarket.Net.Interfaces.Clients.GammaApi;
 using Polymarket.Net.Objects.Options;
 using CryptoExchange.Net.Clients;
 using CryptoExchange.Net.Converters.SystemTextJson;
@@ -16,10 +16,10 @@ using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using Polymarket.Net.Clients.MessageHandlers;
 using Polymarket.Net.Objects;
 
-namespace Polymarket.Net.Clients.ClobApi
+namespace Polymarket.Net.Clients.GammaApi
 {
-    /// <inheritdoc cref="IPolymarketRestClientClobApi" />
-    internal partial class PolymarketRestClientClobApi : RestApiClient, IPolymarketRestClientClobApi
+    /// <inheritdoc cref="IPolymarketRestClientGammaApi" />
+    internal partial class PolymarketRestClientGammaApi : RestApiClient, IPolymarketRestClientGammaApi
     {
         #region fields 
         protected override ErrorMapping ErrorMapping => PolymarketErrors.Errors;
@@ -32,25 +32,26 @@ namespace Polymarket.Net.Clients.ClobApi
 
         #region Api clients
         /// <inheritdoc />
-        public IPolymarketRestClientClobApiAccount Account { get; }
+        public IPolymarketRestClientGammaApiAccount Account { get; }
         /// <inheritdoc />
-        public IPolymarketRestClientClobApiExchangeData ExchangeData { get; }
+        public IPolymarketRestClientGammaApiExchangeData ExchangeData { get; }
         /// <inheritdoc />
-        public IPolymarketRestClientClobApiTrading Trading { get; }
+        public IPolymarketRestClientGammaApiTrading Trading { get; }
         /// <inheritdoc />
         public string ExchangeName => "Polymarket";
         #endregion
 
         #region constructor/destructor
-        internal PolymarketRestClientClobApi(ILogger logger, HttpClient? httpClient, PolymarketRestOptions options)
-            : base(logger, httpClient, options.Environment.ClobRestClientAddress, options, options.ClobOptions)
+        internal PolymarketRestClientGammaApi(ILogger logger, HttpClient? httpClient, PolymarketRestOptions options)
+            : base(logger, httpClient, options.Environment.GammaRestClientAddress, options, options.GammaOptions)
         {
-            Account = new PolymarketRestClientClobApiAccount(this);
-            ExchangeData = new PolymarketRestClientClobApiExchangeData(logger, this);
-            Trading = new PolymarketRestClientClobApiTrading(logger, this);
+            Account = new PolymarketRestClientGammaApiAccount(this);
+            ExchangeData = new PolymarketRestClientGammaApiExchangeData(logger, this);
+            Trading = new PolymarketRestClientGammaApiTrading(logger, this);
 
             RequestBodyEmptyContent = "";
             ParameterPositions[HttpMethod.Delete] = HttpMethodParameterPosition.InBody;
+            ArraySerialization = ArrayParametersSerialization.MultipleValues;
 
             OrderParameters = false;
         }
@@ -91,8 +92,7 @@ namespace Polymarket.Net.Clients.ClobApi
         }
 
         /// <inheritdoc />
-        protected override Task<WebCallResult<DateTime>> GetServerTimestampAsync()
-            => ExchangeData.GetServerTimeAsync();
+        protected override Task<WebCallResult<DateTime>> GetServerTimestampAsync() => throw new NotImplementedException();
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null) 

@@ -56,12 +56,12 @@ namespace Polymarket.Net.UnitTests
 
             var parameters = new ParameterCollection
             {
-                { "salt", "1324882365436" },
+                { "salt", "1515433236867" },
                 { "maker", address },
                 { "signer", address },
                 { "taker", "0x0000000000000000000000000000000000000000" },
                 { "tokenId", "11862165566757345985240476164489718219056735011698825377388402888080786399275" },
-                { "makerAmount", "500000" },
+                { "makerAmount", "5000" },
                 { "takerAmount", "5000000" },
                 { "expiration", "0" },
                 { "nonce", "0" },
@@ -70,7 +70,7 @@ namespace Polymarket.Net.UnitTests
                 { "signatureType", 1 },
             };
 
-            var result = authProvider.GetOrderSignature(parameters, chainId, false).ToLower();
+            var result = authProvider.GetOrderSignature(parameters, chainId, true).ToLower();
             Assert.That(result, Is.EqualTo(""));
         }
 

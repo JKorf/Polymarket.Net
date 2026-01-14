@@ -20,7 +20,7 @@ namespace Polymarket.Net.UnitTests
                 opts.AutoTimestamp = false;
                 opts.ApiCredentials = new PolymarketCredentials("123", "456");
             });
-            var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Spot/ExchangeData", "XXX", IsAuthenticated);
+            var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Clob/ExchangeData", "XXX", IsAuthenticated);
             await tester.ValidateAsync(client => client.ClobApi.ExchangeData.GetMidpointPriceAsync("123"), "GetMidpointPrice");
             await tester.ValidateAsync(client => client.ClobApi.ExchangeData.GetPriceHistoryAsync("123"), "GetPriceHistory", nestedJsonProperty: "history");
             await tester.ValidateAsync(client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(["123"]), "GetBidAskSpreads");

@@ -46,6 +46,9 @@
         <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiExchangeData.GetServerTimeAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiExchangeData.GetGeographicRestrictionsAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiExchangeData.GetSamplingSimplifiedMarketsAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
@@ -137,10 +140,89 @@
         <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketSocketClientClobApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
+        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi">
+            <inheritdoc cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi" />
+        </member>
+        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.MessageHandler">
+            <inheritdoc />
+        </member>
+        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.Account">
+            <inheritdoc />
+        </member>
+        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.ExchangeData">
+            <inheritdoc />
+        </member>
+        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.Trading">
+            <inheritdoc />
+        </member>
+        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.ExchangeName">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.CreateAccessor">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetServerTimestampAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <inheritdoc />
+        </member>
+        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiAccount">
+            <inheritdoc />
+        </member>
+        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetSportTeamsAsync(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiTrading">
+            <inheritdoc />
+        </member>
+        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi">
+            <summary>
+            Client providing access to the Polymarket Gamma websocket Api
+            </summary>
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.#ctor(Microsoft.Extensions.Logging.ILogger,Polymarket.Net.Objects.Options.PolymarketSocketOptions)">
+            <summary>
+            ctor
+            </summary>
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateAccessor(System.Net.WebSockets.WebSocketMessageType)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateSerializer">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateMessageConverter(System.Net.WebSockets.WebSocketMessageType)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.SubscribeToXXXUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketModel}},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.GetListenerIdentifier(CryptoExchange.Net.Interfaces.IMessageAccessor)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+            <inheritdoc />
+        </member>
         <member name="T:Polymarket.Net.Clients.PolymarketRestClient">
             <inheritdoc cref="T:Polymarket.Net.Interfaces.Clients.IPolymarketRestClient" />
         </member>
         <member name="P:Polymarket.Net.Clients.PolymarketRestClient.ClobApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Polymarket.Net.Clients.PolymarketRestClient.GammaApi">
             <inheritdoc />
         </member>
         <member name="M:Polymarket.Net.Clients.PolymarketRestClient.#ctor(System.Action{Polymarket.Net.Objects.Options.PolymarketRestOptions})">
@@ -173,6 +255,9 @@
             <inheritdoc cref="T:Polymarket.Net.Interfaces.Clients.IPolymarketSocketClient" />
         </member>
         <member name="P:Polymarket.Net.Clients.PolymarketSocketClient.ClobApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Polymarket.Net.Clients.PolymarketSocketClient.GammaApi">
             <inheritdoc />
         </member>
         <member name="M:Polymarket.Net.Clients.PolymarketSocketClient.#ctor(System.Action{Polymarket.Net.Objects.Options.PolymarketSocketOptions})">
@@ -252,6 +337,11 @@
             </summary>
         </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.OrderStatus">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.NullableOrderStatus">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -337,6 +427,11 @@
             </summary>
         </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketFeeRateBps">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketGeoRestriction">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -487,6 +582,16 @@
             </summary>
         </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketPriceHistoryWrapperArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketSportsTeam">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketSportsTeamArray">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -695,6 +800,21 @@
             Canceled
             </summary>
         </member>
+        <member name="T:Polymarket.Net.Enums.OrderType">
+            <summary>
+            Order type
+            </summary>
+        </member>
+        <member name="F:Polymarket.Net.Enums.OrderType.Limit">
+            <summary>
+            Limit order
+            </summary>
+        </member>
+        <member name="F:Polymarket.Net.Enums.OrderType.Market">
+            <summary>
+            Market order
+            </summary>
+        </member>
         <member name="T:Polymarket.Net.Enums.TimeInForce">
             <summary>
             Time in force
@@ -827,6 +947,19 @@
             <param name="tokenId">Token id</param>
             <param name="ct">Cancellation token</param>
         </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketRestClientClobApiAccount.GetBuilderTradesAsync(System.String,System.String,System.String,System.String,System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get trades for builder
+            </summary>
+            <param name="tradeId">Filter by trade id</param>
+            <param name="takerAddress">Filter by taker address</param>
+            <param name="makerAddress">Filter by maker address</param>
+            <param name="conditionId">Filter by condition id</param>
+            <param name="startTime">Filter by start time</param>
+            <param name="endTime">Filter by end time</param>
+            <param name="cursor">Next page cursor</param>
+            <param name="ct">Cancellation token</param>
+        </member>
         <member name="T:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketRestClientClobApiExchangeData">
             <summary>
             Polymarket Clob exchange data endpoints. Exchange data includes market data (tickers, order books, etc) and system status.
@@ -838,6 +971,13 @@
             </summary>
             <param name="ct">Cancellation token</param>
             <returns></returns>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketRestClientClobApiExchangeData.GetGeographicRestrictionsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Get geographical restrictions for calling client
+            <para><a href="https://docs.polymarket.com/developers/CLOB/geoblock" /></para>
+            </summary>
+            <param name="ct">Cancellation token</param>
         </member>
         <member name="M:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketRestClientClobApiExchangeData.GetSamplingSimplifiedMarketsAsync(System.String,System.Threading.CancellationToken)">
             <summary>
@@ -1023,20 +1163,19 @@
             <param name="orderIds">Order ids</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketRestClientClobApiTrading.PlaceOrderAsync(System.String,Polymarket.Net.Enums.OrderSide,Polymarket.Net.Enums.TimeInForce,System.Decimal,System.Decimal,System.Decimal,System.String,System.String,System.String,System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Nullable{System.Int64},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketRestClientClobApiTrading.PlaceOrderAsync(System.String,Polymarket.Net.Enums.OrderSide,Polymarket.Net.Enums.OrderType,System.Decimal,System.Nullable{System.Decimal},System.Nullable{Polymarket.Net.Enums.TimeInForce},System.Nullable{System.Int64},System.String,System.Nullable{System.Int64},System.Nullable{System.DateTime},System.Nullable{System.Int64},System.Threading.CancellationToken)">
             <summary>
             Place a new order
             <para><a href="https://docs.polymarket.com/developers/CLOB/orders/create-order" /></para>
             </summary>
             <param name="tokenId">Token id</param>
             <param name="side">Side</param>
+            <param name="orderType">Type of order</param>
             <param name="timeInForce">Time in force</param>
-            <param name="quantity">Quantity</param>
-            <param name="price">Price</param>
+            <param name="quantity">Quantity of shares</param>
+            <param name="price">Price, value between 0 and 1. For example 0.001 means 0.1c in the UI, 0.5 means 50c in UI</param>
             <param name="nonce"></param>
             <param name="feeRateBps">Fee rate basis points as required by the operator</param>
-            <param name="makerAddress">Maker/funding address</param>
-            <param name="signingAddress">Signing address</param>
             <param name="takerAddress">Taker/operator address</param>
             <param name="clientOrderId">Client order id</param>
             <param name="expiration">Expiration time</param>
@@ -1102,6 +1241,65 @@
             <param name="ct">Cancellation token for closing this subscription</param>
             <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
         </member>
+        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi">
+            <summary>
+            Polymarket Gamma API endpoints
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.Account">
+            <summary>
+            Endpoints related to account settings, info or actions
+            </summary>
+            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiAccount" />
+        </member>
+        <member name="P:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.ExchangeData">
+            <summary>
+            Endpoints related to retrieving market and system data
+            </summary>
+            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData" />
+        </member>
+        <member name="P:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.Trading">
+            <summary>
+            Endpoints related to orders and trades
+            </summary>
+            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiTrading" />
+        </member>
+        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiAccount">
+            <summary>
+            Polymarket Gamma account endpoints. Account endpoints include balance info, withdraw/deposit info and requesting and account settings
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData">
+            <summary>
+            Polymarket Gamma exchange data endpoints. Exchange data includes market data (tickers, order books, etc) and system status.
+            </summary>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetSportTeamsAsync(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="ct">Cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiTrading">
+            <summary>
+            Polymarket Gamma trading endpoints, placing and managing orders.
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketSocketClientGammaApi">
+            <summary>
+            Polymarket Gamma streams
+            </summary>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketSocketClientGammaApi.SubscribeToXXXUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketModel}},System.Threading.CancellationToken)">
+            <summary>
+            
+            <para><a href="XXX" /></para>
+            </summary>
+            <param name="onMessage">The event handler for the received data</param>
+            <param name="ct">Cancellation token for closing this subscription</param>
+            <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
+        </member>
         <member name="T:Polymarket.Net.Interfaces.Clients.IPolymarketRestClient">
             <summary>
             Client for accessing the Polymarket Rest API. 
@@ -1112,6 +1310,12 @@
             Clob API endpoints
             </summary>
             <see cref="T:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketRestClientClobApi"/>
+        </member>
+        <member name="P:Polymarket.Net.Interfaces.Clients.IPolymarketRestClient.GammaApi">
+            <summary>
+            Gamma API endpoints
+            </summary>
+            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi"/>
         </member>
         <member name="M:Polymarket.Net.Interfaces.Clients.IPolymarketRestClient.SetOptions(CryptoExchange.Net.Objects.Options.UpdateOptions)">
             <summary>
@@ -1135,6 +1339,12 @@
             Clob API endpoints
             </summary>
             <see cref="T:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketSocketClientClobApi"/>
+        </member>
+        <member name="P:Polymarket.Net.Interfaces.Clients.IPolymarketSocketClient.GammaApi">
+            <summary>
+            Gamma API endpoints
+            </summary>
+            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketSocketClientGammaApi"/>
         </member>
         <member name="M:Polymarket.Net.Interfaces.Clients.IPolymarketSocketClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
@@ -1297,6 +1507,31 @@
         <member name="P:Polymarket.Net.Objects.Models.PolymarketFeeRateBps.BaseFee">
             <summary>
             Fee rate in BPS
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketGeoRestriction">
+            <summary>
+            Geographic restrictions
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketGeoRestriction.Blocked">
+            <summary>
+            Is blocked
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketGeoRestriction.Ip">
+            <summary>
+            IP address
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketGeoRestriction.Country">
+            <summary>
+            Country
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketGeoRestriction.Region">
+            <summary>
+            Region
             </summary>
         </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketMarket">
@@ -1744,6 +1979,21 @@
             Order id
             </summary>
         </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketOrderResult.TakingQuantity">
+            <summary>
+            Order taker quantity executed
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketOrderResult.MakingQuantity">
+            <summary>
+            Order maker quantity executed
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketOrderResult.Status">
+            <summary>
+            Status
+            </summary>
+        </member>
         <member name="P:Polymarket.Net.Objects.Models.PolymarketOrderResult.TradeHashes">
             <summary>
             Hashes of trades which were executed immediately
@@ -1812,6 +2062,56 @@
         <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceHistory.Price">
             <summary>
             Price
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketSportsTeam">
+            <summary>
+            Sports team info
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.Id">
+            <summary>
+            Id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.Name">
+            <summary>
+            Name
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.League">
+            <summary>
+            League
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.Record">
+            <summary>
+            Record
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.Logo">
+            <summary>
+            Logo
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.Abbreviation">
+            <summary>
+            Abbreviation
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.Alias">
+            <summary>
+            Alias
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.CreateTime">
+            <summary>
+            Create time
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSportsTeam.UpdateTime">
+            <summary>
+            Update time
             </summary>
         </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketSpread">
@@ -1994,6 +2294,11 @@
             Clob API options
             </summary>
         </member>
+        <member name="P:Polymarket.Net.Objects.Options.PolymarketRestOptions.GammaOptions">
+            <summary>
+            Gamma API options
+            </summary>
+        </member>
         <member name="T:Polymarket.Net.Objects.Options.PolymarketSocketOptions">
             <summary>
             Options for the PolymarketSocketClient
@@ -2014,6 +2319,11 @@
             Clob API options
             </summary>
         </member>
+        <member name="P:Polymarket.Net.Objects.Options.PolymarketSocketOptions.GammaOptions">
+            <summary>
+            Gamma API options
+            </summary>
+        </member>
         <member name="T:Polymarket.Net.Objects.PolymarketApiAddresses">
             <summary>
             Api addresses
@@ -2022,6 +2332,11 @@
         <member name="P:Polymarket.Net.Objects.PolymarketApiAddresses.ClobRestClientAddress">
             <summary>
             The address used by the PolymarketRestClient for the Clob API
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.PolymarketApiAddresses.GammaRestClientAddress">
+            <summary>
+            The address used by the PolymarketRestClient for the Gamma API
             </summary>
         </member>
         <member name="P:Polymarket.Net.Objects.PolymarketApiAddresses.SocketClientAddress">
@@ -2056,9 +2371,14 @@
             Polymarket environments
             </summary>
         </member>
-        <member name="P:Polymarket.Net.PolymarketEnvironment.RestClientAddress">
+        <member name="P:Polymarket.Net.PolymarketEnvironment.ClobRestClientAddress">
             <summary>
-            Rest API address
+            Rest Clob API address
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.PolymarketEnvironment.GammaRestClientAddress">
+            <summary>
+            Rest Gamma API address
             </summary>
         </member>
         <member name="P:Polymarket.Net.PolymarketEnvironment.SocketClientAddress">
@@ -2068,7 +2388,7 @@
         </member>
         <member name="M:Polymarket.Net.PolymarketEnvironment.#ctor">
             <summary>
-            ctor for DI, use <see cref="M:Polymarket.Net.PolymarketEnvironment.CreateCustom(System.String,System.String,System.String)"/> for creating a custom environment
+            ctor for DI, use <see cref="M:Polymarket.Net.PolymarketEnvironment.CreateCustom(System.String,System.String,System.String,System.String)"/> for creating a custom environment
             </summary>
         </member>
         <member name="M:Polymarket.Net.PolymarketEnvironment.GetEnvironmentByName(System.String)">
@@ -2087,13 +2407,10 @@
             Live environment
             </summary>
         </member>
-        <member name="M:Polymarket.Net.PolymarketEnvironment.CreateCustom(System.String,System.String,System.String)">
+        <member name="M:Polymarket.Net.PolymarketEnvironment.CreateCustom(System.String,System.String,System.String,System.String)">
             <summary>
             Create a custom environment
             </summary>
-            <param name="name"></param>
-            <param name="spotRestAddress"></param>
-            <param name="spotSocketStreamsAddress"></param>
             <returns></returns>
         </member>
         <member name="T:Polymarket.Net.PolymarketExchange">

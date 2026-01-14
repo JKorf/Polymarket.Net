@@ -2,6 +2,7 @@ using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects.Options;
 using Polymarket.Net.Interfaces.Clients.ClobApi;
+using Polymarket.Net.Interfaces.Clients.GammaApi;
 using Polymarket.Net.Objects;
 
 namespace Polymarket.Net.Interfaces.Clients
@@ -10,12 +11,17 @@ namespace Polymarket.Net.Interfaces.Clients
     /// Client for accessing the Polymarket Rest API. 
     /// </summary>
     public interface IPolymarketRestClient : IRestClient
-    {        
+    {
         /// <summary>
         /// Clob API endpoints
         /// </summary>
         /// <see cref="IPolymarketRestClientClobApi"/>
         public IPolymarketRestClientClobApi ClobApi { get; }
+        /// <summary>
+        /// Gamma API endpoints
+        /// </summary>
+        /// <see cref="IPolymarketRestClientGammaApi"/>
+        public IPolymarketRestClientGammaApi GammaApi { get; }
 
         /// <summary>
         /// Update specific options

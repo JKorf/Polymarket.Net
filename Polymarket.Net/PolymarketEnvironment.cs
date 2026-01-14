@@ -9,9 +9,13 @@ namespace Polymarket.Net
     public class PolymarketEnvironment : TradeEnvironment
     {
         /// <summary>
-        /// Rest API address
+        /// Rest Clob API address
         /// </summary>
-        public string RestClientAddress { get; }
+        public string ClobRestClientAddress { get; }
+        /// <summary>
+        /// Rest Gamma API address
+        /// </summary>
+        public string GammaRestClientAddress { get; }
 
         /// <summary>
         /// Socket API address
@@ -20,11 +24,13 @@ namespace Polymarket.Net
 
         internal PolymarketEnvironment(
             string name,
-            string restAddress,
+            string clobRestAddress,
+            string gammaRestAddress,
             string streamAddress) :
             base(name)
         {
-            RestClientAddress = restAddress;
+            ClobRestClientAddress = clobRestAddress;
+            GammaRestClientAddress = gammaRestAddress;
             SocketClientAddress = streamAddress;
         }
 
@@ -60,19 +66,18 @@ namespace Polymarket.Net
         public static PolymarketEnvironment Live { get; }
             = new PolymarketEnvironment(TradeEnvironmentNames.Live,
                                      PolymarketApiAddresses.Default.ClobRestClientAddress,
+                                     PolymarketApiAddresses.Default.GammaRestClientAddress,
                                      PolymarketApiAddresses.Default.SocketClientAddress);
 
         /// <summary>
         /// Create a custom environment
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="spotRestAddress"></param>
-        /// <param name="spotSocketStreamsAddress"></param>
         /// <returns></returns>
         public static PolymarketEnvironment CreateCustom(
                         string name,
-                        string spotRestAddress,
+                        string clobRestAddress,
+                        string gammaRestAddress,
                         string spotSocketStreamsAddress)
-            => new PolymarketEnvironment(name, spotRestAddress, spotSocketStreamsAddress);
+            => new PolymarketEnvironment(name, clobRestAddress, gammaRestAddress, spotSocketStreamsAddress);
     }
 }

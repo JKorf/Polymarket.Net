@@ -21,6 +21,13 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         Task<WebCallResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default);
 
         /// <summary>
+        /// Get geographical restrictions for calling client
+        /// <para><a href="https://docs.polymarket.com/developers/CLOB/geoblock" /></para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        Task<WebCallResult<PolymarketGeoRestriction>> GetGeographicRestrictionsAsync(CancellationToken ct = default);
+
+        /// <summary>
         /// Get sampling simplified markets
         /// </summary>
         /// <param name="cursor">Pagination cursor</param>

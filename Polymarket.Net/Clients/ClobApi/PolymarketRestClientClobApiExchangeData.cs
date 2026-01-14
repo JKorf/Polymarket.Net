@@ -37,6 +37,17 @@ namespace Polymarket.Net.Clients.ClobApi
 
         #endregion
 
+        #region Get Geographic Restrictions
+
+        /// <inheritdoc />
+        public async Task<WebCallResult<PolymarketGeoRestriction>> GetGeographicRestrictionsAsync(CancellationToken ct = default)
+        {
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "api/geoblock", PolymarketExchange.RateLimiter.Polymarket, 1, false);
+            return await _baseClient.SendToAddressAsync<PolymarketGeoRestriction>("https://polymarket.com", request, null, ct).ConfigureAwait(false);
+        }
+
+        #endregion
+
         #region Get Sampling Simplified Markets
 
         /// <inheritdoc />

@@ -53,13 +53,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">Token id</param>
         /// <param name="side">Side</param>
+        /// <param name="orderType">Type of order</param>
         /// <param name="timeInForce">Time in force</param>
-        /// <param name="quantity">Quantity</param>
-        /// <param name="price">Price</param>
+        /// <param name="quantity">Quantity of shares</param>
+        /// <param name="price">Price, value between 0 and 1. For example 0.001 means 0.1c in the UI, 0.5 means 50c in UI</param>
         /// <param name="nonce"></param>
         /// <param name="feeRateBps">Fee rate basis points as required by the operator</param>
-        /// <param name="makerAddress">Maker/funding address</param>
-        /// <param name="signingAddress">Signing address</param>
         /// <param name="takerAddress">Taker/operator address</param>
         /// <param name="clientOrderId">Client order id</param>
         /// <param name="expiration">Expiration time</param>
@@ -67,12 +66,11 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         Task<WebCallResult<PolymarketOrderResult>> PlaceOrderAsync(
             string tokenId,
             OrderSide side,
-            TimeInForce timeInForce,
+            OrderType orderType,
             decimal quantity,
-            decimal price,
-            decimal feeRateBps,
-            string? makerAddress = null,
-            string? signingAddress = null,
+            decimal? price = null,
+            TimeInForce? timeInForce = null,
+            long? feeRateBps = null,
             string? takerAddress = null,
             long? clientOrderId = null,
             DateTime? expiration = null,
