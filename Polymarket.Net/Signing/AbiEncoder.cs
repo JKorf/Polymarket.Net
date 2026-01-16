@@ -1,4 +1,5 @@
-﻿using Polymarket.Net.Utils;
+﻿using CryptoExchange.Net;
+using Polymarket.Net.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,13 +71,13 @@ namespace Polymarket.Net.Signing
         public static byte[] AbiValueEncodeAddress(string value)
         {
             var result = new byte[32];
-            var h = value.HexToByteArray();
+            var h = value.HexStringToBytes();
             h.CopyTo(result, result.Length - h.Length);
             return result;
         }
 
         public static byte[] AbiValueEncodeHexBytes(int length, string value)
-            => AbiValueEncodeBytes(value.Length, value.HexToByteArray());
+            => AbiValueEncodeBytes(value.Length, value.HexStringToBytes());
 
         public static byte[] AbiValueEncodeBytes(int length, byte[] value)
         {

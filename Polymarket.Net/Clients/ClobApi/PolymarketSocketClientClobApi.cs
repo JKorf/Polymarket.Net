@@ -45,7 +45,7 @@ namespace Polymarket.Net.Clients.ClobApi
         /// ctor
         /// </summary>
         internal PolymarketSocketClientClobApi(ILogger logger, PolymarketSocketOptions options) :
-            base(logger, options.Environment.SocketClientAddress!, options, options.ClobOptions)
+            base(logger, options.Environment.ClobSocketClientAddress!, options, options.ClobOptions)
         {
         }
         #endregion
@@ -62,20 +62,28 @@ namespace Polymarket.Net.Clients.ClobApi
             => new PolymarketAuthenticationProvider((PolymarketCredentials)credentials);
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToXXXUpdatesAsync(IEnumerable<string> assetIds, Action<DataEvent<PolymarketModel>> onMessage, CancellationToken ct = default)
+        public async Task<CallResult<UpdateSubscription>> SubscribeToTokenUpdatesAsync(
+            IEnumerable<string> assetIds,
+            Action<DataEvent<PolymarketPriceChangeUpdate>>? onPriceChangeUpdate = null, 
+            Action<DataEvent<PolymarketBookUpdate>>? onBookUpdate = null,
+            Action<DataEvent<PolymarketLastTradePriceUpdate>>? onLastTradePriceUpdate = null,
+            Action<DataEvent<PolymarketTickSizeUpdate>>? onTickSizeUpdate = null,
+            Action<DataEvent<PolymarketBestBidAskUpdate>>? onBestBidAskUpdate = null,
+            Action<DataEvent<PolymarketNewMarketUpdate>>? onNewMarketUpdate = null,
+            Action<DataEvent<PolymarketMarketResolvedUpdate>>? onMarketResolvedUpdate = null,
+            CancellationToken ct = default)
         {
-            var internalHandler = new Action<DateTime, string?, PolymarketModel>((receiveTime, originalData, data) =>
-            {
-                onMessage(
-                    new DataEvent<PolymarketModel>(PolymarketExchange.ExchangeName, data, receiveTime, originalData)
-                        .WithUpdateType(SocketUpdateType.Update)
-                        //.WithStreamId(data.Stream)
-                        //.WithSymbol(data.Symbol)
-                        //.WithDataTimestamp(data.EventTime)
-                    );
-            });
-
-            var subscription = new PolymarketSubscription<PolymarketModel>(_logger, assetIds.ToArray(), internalHandler, false);
+            var subscription = new PolymarketTokenSubscription(
+                _logger,
+                this,
+                assetIds.ToArray(),
+                onPriceChangeUpdate,
+                onBookUpdate,
+                onLastTradePriceUpdate,
+                onTickSizeUpdate,
+                onBestBidAskUpdate,
+                onNewMarketUpdate,
+                onMarketResolvedUpdate);
             return await SubscribeAsync(BaseAddress.AppendPath("ws/market"), subscription, ct).ConfigureAwait(false);
         }
 
@@ -87,6 +95,6 @@ namespace Polymarket.Net.Clients.ClobApi
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)
-            => PolymarketExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverDate);
+            => throw new NotImplementedException();
     }
 }

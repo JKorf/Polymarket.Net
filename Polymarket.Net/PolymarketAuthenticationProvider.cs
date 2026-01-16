@@ -11,8 +11,6 @@ using Polymarket.Net.Utils;
 using Secp256k1Net;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -119,7 +117,7 @@ namespace Polymarket.Net
             // Builder headers
             var secret = Convert.FromBase64String(options.BuilderSecret!.Replace('-', '+').Replace('_', '/'));
 
-            using var encryptor = new System.Security.Cryptography.HMACSHA256(secret);
+            using var encryptor = new HMACSHA256(secret);
             var resultBytes = encryptor.ComputeHash(Encoding.UTF8.GetBytes(signData));
             var builderSignature = BytesToBase64String(resultBytes);
             builderSignature = builderSignature.Replace('+', '-').Replace('/', '_');

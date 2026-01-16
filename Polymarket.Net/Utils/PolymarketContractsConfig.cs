@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Polymarket.Net.Utils
+﻿namespace Polymarket.Net.Utils
 {
-    public static class PolymarketContractsConfig
+    internal static class PolymarketContractsConfig
     {
         public static PolymarketContracts PolygonConfig { get; } = new()
         {
@@ -37,10 +31,10 @@ namespace Polymarket.Net.Utils
         };
     }
 
-    public class PolymarketContracts
+    internal class PolymarketContracts
     {
-        public string Exchange { get; set; }
-        public string Collateral { get; set; }
-        public string ConditionalTokens { get; set; }
+        public string Exchange { get; set; } = string.Empty;
+        public string Collateral { get; set; } = string.Empty;
+        public string ConditionalTokens { get; set; } = string.Empty;
     }
 }

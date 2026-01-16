@@ -38,7 +38,7 @@ namespace Polymarket.Net.SymbolOrderBooks
         /// <inheritdoc />
         public ISymbolOrderBook Create(SharedSymbol symbol, Action<PolymarketOrderBookOptions>? options = null)
         {
-            var symbolName = symbol.GetSymbol(PolymarketExchange.FormatSymbol);
+            //var symbolName = symbol.GetSymbol(PolymarketExchange.FormatSymbol);
             throw new Exception();
 #warning TODO
 

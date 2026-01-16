@@ -18,20 +18,20 @@ namespace Polymarket.Net
         public string GammaRestClientAddress { get; }
 
         /// <summary>
-        /// Socket API address
+        /// Socket Clob API address
         /// </summary>
-        public string SocketClientAddress { get; }
+        public string ClobSocketClientAddress { get; }
 
         internal PolymarketEnvironment(
             string name,
             string clobRestAddress,
             string gammaRestAddress,
-            string streamAddress) :
+            string clobStreamAddress) :
             base(name)
         {
             ClobRestClientAddress = clobRestAddress;
             GammaRestClientAddress = gammaRestAddress;
-            SocketClientAddress = streamAddress;
+            ClobSocketClientAddress = clobStreamAddress;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Polymarket.Net
             = new PolymarketEnvironment(TradeEnvironmentNames.Live,
                                      PolymarketApiAddresses.Default.ClobRestClientAddress,
                                      PolymarketApiAddresses.Default.GammaRestClientAddress,
-                                     PolymarketApiAddresses.Default.SocketClientAddress);
+                                     PolymarketApiAddresses.Default.ClobSocketClientAddress);
 
         /// <summary>
         /// Create a custom environment

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CryptoExchange.Net.Converters.SystemTextJson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -126,12 +127,14 @@ namespace Polymarket.Net.Objects.Models
         /// Outcomes
         /// </summary>
         [JsonPropertyName("outcomes")]
-        public string Outcomes { get; set; } = string.Empty;
+        [JsonConverter(typeof(ObjectStringConverter<string[]>))]
+        public string[]? Outcomes { get; set; }
         /// <summary>
         /// Outcome prices
         /// </summary>
         [JsonPropertyName("outcomePrices")]
-        public string OutcomePrices { get; set; } = string.Empty;
+        [JsonConverter(typeof(ObjectStringConverter<decimal[]>))]
+        public decimal[]? OutcomePrices { get; set; }
         /// <summary>
         /// Volume
         /// </summary>
@@ -356,7 +359,8 @@ namespace Polymarket.Net.Objects.Models
         /// Clob token ids
         /// </summary>
         [JsonPropertyName("clobTokenIds")]
-        public string ClobTokenIds { get; set; } = string.Empty;
+        [JsonConverter(typeof(ObjectStringConverter<string[]>))]
+        public string[]? ClobTokenIds { get; set; }
         /// <summary>
         /// Disqus thread
         /// </summary>
@@ -496,17 +500,17 @@ namespace Polymarket.Net.Objects.Models
         /// Events
         /// </summary>
         [JsonPropertyName("events")]
-        public string Events { get; set; } = string.Empty;
+        public PolymarketEvent[]? Events { get; set; }
         /// <summary>
         /// Categories
         /// </summary>
         [JsonPropertyName("categories")]
-        public PolymarketMarketCategory[] Categories { get; set; } = [];
+        public PolymarketMarketCategory[]? Categories { get; set; }
         /// <summary>
         /// Tags
         /// </summary>
         [JsonPropertyName("tags")]
-        public PolymarketTag[] Tags { get; set; } = [];
+        public PolymarketTag[]? Tags { get; set; }
         /// <summary>
         /// Creator
         /// </summary>
@@ -688,10 +692,10 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("deployingTimestamp")]
         public DateTime? DeployTime { get; set; }
         /// <summary>
-        /// Schedul deployment time
+        /// Scheduled deployment time
         /// </summary>
         [JsonPropertyName("scheduledDeploymentTimestamp")]
-        public DateTime? SchedulDeploymentTime { get; set; }
+        public DateTime? ScheduledDeploymentTime { get; set; }
         /// <summary>
         /// Rfq enabled
         /// </summary>

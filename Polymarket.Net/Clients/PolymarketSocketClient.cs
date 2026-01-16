@@ -24,8 +24,6 @@ namespace Polymarket.Net.Clients
         
          /// <inheritdoc />
         public IPolymarketSocketClientClobApi ClobApi { get; }
-         /// <inheritdoc />
-        public IPolymarketSocketClientGammaApi GammaApi { get; }
 
 
         #endregion
@@ -51,7 +49,6 @@ namespace Polymarket.Net.Clients
             Initialize(options.Value);
                         
             ClobApi = AddApiClient(new PolymarketSocketClientClobApi(_logger, options.Value));
-            GammaApi = AddApiClient(new PolymarketSocketClientGammaApi(_logger, options.Value));
         }
         #endregion
 
@@ -59,7 +56,6 @@ namespace Polymarket.Net.Clients
         public void SetOptions(UpdateOptions options)
         {
             ClobApi.SetOptions(options);
-            GammaApi.SetOptions(options);
         }
 
         /// <summary>
@@ -75,7 +71,6 @@ namespace Polymarket.Net.Clients
         public void SetApiCredentials(ApiCredentials credentials)
         {            
             ClobApi.SetApiCredentials(credentials);
-            GammaApi.SetApiCredentials(credentials);
         }
     }
 }

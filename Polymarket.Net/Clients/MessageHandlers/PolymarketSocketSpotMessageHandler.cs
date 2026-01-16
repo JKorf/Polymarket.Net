@@ -1,6 +1,7 @@
 using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using System.Text.Json;
 using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
+using Polymarket.Net.Objects.Models;
 
 namespace Polymarket.Net.Clients.MessageHandlers
 {
@@ -14,20 +15,19 @@ namespace Polymarket.Net.Clients.MessageHandlers
 
         protected override MessageTypeDefinition[] TypeEvaluators { get; } = [
 
-            //new MessageTypeDefinition {
-            //    Fields = [
-            //        new PropertyFieldReference("stream"),
-            //    ],
-            //    TypeIdentifierCallback = x => x.FieldValue("stream")!,
-            //},
+            new MessageTypeDefinition {
+                Fields = [
+                    new PropertyFieldReference("event_type"),
+                ],
+                TypeIdentifierCallback = x => x.FieldValue("event_type")!,
+            },
 
-            //new MessageTypeDefinition {
-            //    ForceIfFound = true,
-            //    Fields = [
-            //        new PropertyFieldReference("id"),
-            //    ],
-            //    TypeIdentifierCallback = x => x.FieldValue("id")!,
-            //}
+            new MessageTypeDefinition {
+                Fields = [
+                    new PropertyFieldReference("event_type") { Depth = 2 },
+                ],
+                TypeIdentifierCallback = x => x.FieldValue("event_type")! + "_snapshot",
+            },
         ];
     }
 }

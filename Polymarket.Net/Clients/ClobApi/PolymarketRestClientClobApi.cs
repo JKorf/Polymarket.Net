@@ -95,8 +95,8 @@ namespace Polymarket.Net.Clients.ClobApi
             => ExchangeData.GetServerTimeAsync();
 
         /// <inheritdoc />
-        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null) 
-            => PolymarketExchange.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverDate);
+        public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)
+            => throw new NotImplementedException();
 
     }
 }

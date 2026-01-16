@@ -15,11 +15,6 @@ namespace Polymarket.Net.Interfaces.Clients
         /// </summary>
         /// <see cref="IPolymarketSocketClientClobApi"/>
         public IPolymarketSocketClientClobApi ClobApi { get; }
-        /// <summary>
-        /// Gamma API endpoints
-        /// </summary>
-        /// <see cref="IPolymarketSocketClientGammaApi"/>
-        public IPolymarketSocketClientGammaApi GammaApi { get; }
 
         /// <summary>
         /// Set the API credentials for this client. All Api clients in this client will use the new credentials, regardless of earlier set options.

@@ -17,7 +17,7 @@ namespace Polymarket.Net.Objects
         /// <summary>
         /// The address used by the PolymarketSocketClient for the websocket API
         /// </summary>
-        public string SocketClientAddress { get; set; } = "";
+        public string ClobSocketClientAddress { get; set; } = "";
 
         /// <summary>
         /// The default addresses to connect to the Polymarket API
@@ -26,7 +26,7 @@ namespace Polymarket.Net.Objects
         {
             ClobRestClientAddress = "https://clob.polymarket.com",
             GammaRestClientAddress = "https://gamma-api.polymarket.com",
-            SocketClientAddress = "wss://ws-subscriptions-clob.polymarket.com"
+            ClobSocketClientAddress = "wss://ws-subscriptions-clob.polymarket.com"
         };
     }
 }

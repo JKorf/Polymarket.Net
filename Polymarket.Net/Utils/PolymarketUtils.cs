@@ -1,19 +1,13 @@
 ﻿using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Objects.Errors;
-using Polymarket.Net.Interfaces.Clients;
 using Polymarket.Net.Interfaces.Clients.ClobApi;
 using Polymarket.Net.Objects.Models;
-using Polymarket.Net.Objects.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Polymarket.Net.Utils
 {
-    
-
     /// <summary>
     /// Util methods for the Polymarket API
     /// </summary>

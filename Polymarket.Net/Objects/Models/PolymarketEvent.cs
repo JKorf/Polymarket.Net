@@ -424,41 +424,41 @@ namespace Polymarket.Net.Objects.Models
         /// Markets
         /// </summary>
         [JsonPropertyName("markets")]
-        public PolymarketGammaMarket[] Markets { get; set; } = [];
+        public PolymarketGammaMarket[]? Markets { get; set; }
         /// <summary>
         /// Series
         /// </summary>
         [JsonPropertyName("series")]
-        public PolymarketSeries[] Series { get; set; } = [];
+        public PolymarketSeries[]? Series { get; set; }
         /// <summary>
         /// Collections
         /// </summary>
         [JsonPropertyName("collections")]
-        public PolymarketSeriesCollection[] Collections { get; set; } = [];
+        public PolymarketSeriesCollection[]? Collections { get; set; }
         /// <summary>
         /// Categories
         /// </summary>
         [JsonPropertyName("categories")]
-        public PolymarketMarketCategory[] Categories { get; set; } = [];
+        public PolymarketMarketCategory[]? Categories { get; set; }
         /// <summary>
         /// Tags
         /// </summary>
         [JsonPropertyName("tags")]
-        public PolymarketTag[] Tags { get; set; } = [];
+        public PolymarketTag[]? Tags { get; set; }
         /// <summary>
         /// Event creators
         /// </summary>
         [JsonPropertyName("eventCreators")]
-        public PolymarketCreator[] EventCreators { get; set; } = [];
+        public PolymarketCreator[]? EventCreators { get; set; }
         /// <summary>
         /// Chats
         /// </summary>
         [JsonPropertyName("chats")]
-        public PolymarketChat[] Chats { get; set; } = [];
+        public PolymarketChat[]? Chats { get; set; }
         /// <summary>
         /// Templates
         /// </summary>
         [JsonPropertyName("templates")]
-        public PolymarketTemplate[] Templates { get; set; } = [];
+        public PolymarketTemplate[]? Templates { get; set; } 
     }
 }

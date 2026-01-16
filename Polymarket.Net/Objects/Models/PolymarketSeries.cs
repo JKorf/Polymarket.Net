@@ -141,7 +141,7 @@ namespace Polymarket.Net.Objects.Models
         /// Competitive
         /// </summary>
         [JsonPropertyName("competitive")]
-        public string Competitive { get; set; } = string.Empty;
+        public decimal? Competitive { get; set; }
         /// <summary>
         /// Volume24hr
         /// </summary>
@@ -161,7 +161,7 @@ namespace Polymarket.Net.Objects.Models
         /// Start date
         /// </summary>
         [JsonPropertyName("startDate")]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         /// <summary>
         /// Pyth token id
         /// </summary>
@@ -181,22 +181,22 @@ namespace Polymarket.Net.Objects.Models
         /// Events
         /// </summary>
         [JsonPropertyName("events")]
-        public string Events { get; set; } = string.Empty;
+        public PolymarketEvent[]? Events { get; set; }
         /// <summary>
         /// Collections
         /// </summary>
         [JsonPropertyName("collections")]
-        public PolymarketSeriesCollection[] Collections { get; set; } = [];
+        public PolymarketSeriesCollection[]? Collections { get; set; }
         /// <summary>
         /// Categories
         /// </summary>
         [JsonPropertyName("categories")]
-        public PolymarketMarketCategory[] Categories { get; set; } = [];
+        public PolymarketMarketCategory[]? Categories { get; set; }
         /// <summary>
         /// Tags
         /// </summary>
         [JsonPropertyName("tags")]
-        public PolymarketTag[] Tags { get; set; } = [];
+        public PolymarketTag[]? Tags { get; set; }
         /// <summary>
         /// Comment count
         /// </summary>
@@ -206,6 +206,6 @@ namespace Polymarket.Net.Objects.Models
         /// Chats
         /// </summary>
         [JsonPropertyName("chats")]
-        public PolymarketChat[] Chats { get; set; } = [];
+        public PolymarketChat[]? Chats { get; set; }
     }
 }

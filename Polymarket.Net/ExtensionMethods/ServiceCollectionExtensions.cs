@@ -102,8 +102,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ICryptoRestClient, CryptoRestClient>();
             services.AddSingleton<ICryptoSocketClient, CryptoSocketClient>();
             services.AddTransient<IPolymarketOrderBookFactory, PolymarketOrderBookFactory>();
-            services.AddTransient<ITrackerFactory, PolymarketTrackerFactory>();
-            services.AddTransient<IPolymarketTrackerFactory, PolymarketTrackerFactory>();
             services.AddSingleton<IPolymarketUserClientProvider, PolymarketUserClientProvider>(x =>
                 new PolymarketUserClientProvider(
                     x.GetRequiredService<HttpClient>(),

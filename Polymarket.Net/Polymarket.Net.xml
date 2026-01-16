@@ -131,7 +131,7 @@
         <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketSocketClientClobApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketSocketClientClobApi.SubscribeToXXXUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketModel}},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketSocketClientClobApi.SubscribeToTokenUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketPriceChangeUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketBookUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate}},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="M:Polymarket.Net.Clients.ClobApi.PolymarketSocketClientClobApi.GetListenerIdentifier(CryptoExchange.Net.Interfaces.IMessageAccessor)">
@@ -144,15 +144,6 @@
             <inheritdoc cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi" />
         </member>
         <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.MessageHandler">
-            <inheritdoc />
-        </member>
-        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.Account">
-            <inheritdoc />
-        </member>
-        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.ExchangeData">
-            <inheritdoc />
-        </member>
-        <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.Trading">
             <inheritdoc />
         </member>
         <member name="P:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.ExchangeName">
@@ -173,77 +164,67 @@
         <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
             <inheritdoc />
         </member>
-        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiAccount">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetSportTeamsAsync(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetSportsAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetSportTeamsAsync(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetSportMarketTypesAsync(System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetSportsAsync(System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetTagsAsync(System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetSportMarketTypesAsync(System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetTagsAsync(System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetRelatedTagsByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetRelatedTagsBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetRelatedTagsByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetTagsRelatedToTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetRelatedTagsBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetTagsRelatedToTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetTagsRelatedToTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetEventsAsync(System.Int64[],System.Nullable{System.Int64},System.Int64[],System.String[],System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetTagsRelatedToTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetEventByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiExchangeData.GetEventsAsync(System.Int64[],System.Nullable{System.Int64},System.Int64[],System.String[],System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetEventBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApiTrading">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetEventTagsAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="T:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi">
-            <summary>
-            Client providing access to the Polymarket Gamma websocket Api
-            </summary>
-        </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.#ctor(Microsoft.Extensions.Logging.ILogger,Polymarket.Net.Objects.Options.PolymarketSocketOptions)">
-            <summary>
-            ctor
-            </summary>
-        </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateAccessor(System.Net.WebSockets.WebSocketMessageType)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetMarketsAsync(System.Int64[],System.Nullable{System.Int64},System.String[],System.String[],System.String[],System.String[],System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.String,System.String[],System.Nullable{System.Decimal},System.String[],System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateSerializer">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetMarketByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateMessageConverter(System.Net.WebSockets.WebSocketMessageType)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetMarketBySlugAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.CreateAuthenticationProvider(CryptoExchange.Net.Authentication.ApiCredentials)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetMarketTagsAsync(System.String,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.SubscribeToXXXUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketModel}},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetSeriesAsync(System.String[],System.String[],System.String[],System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.GetListenerIdentifier(CryptoExchange.Net.Interfaces.IMessageAccessor)">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.GetSeriesByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketSocketClientGammaApi.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
+        <member name="M:Polymarket.Net.Clients.GammaApi.PolymarketRestClientGammaApi.SearchAsync(System.String,System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String[],System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.Int64[],System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:Polymarket.Net.Clients.PolymarketRestClient">
@@ -285,9 +266,6 @@
             <inheritdoc cref="T:Polymarket.Net.Interfaces.Clients.IPolymarketSocketClient" />
         </member>
         <member name="P:Polymarket.Net.Clients.PolymarketSocketClient.ClobApi">
-            <inheritdoc />
-        </member>
-        <member name="P:Polymarket.Net.Clients.PolymarketSocketClient.GammaApi">
             <inheritdoc />
         </member>
         <member name="M:Polymarket.Net.Clients.PolymarketSocketClient.#ctor(System.Action{Polymarket.Net.Objects.Options.PolymarketSocketOptions})">
@@ -352,6 +330,11 @@
             </summary>
         </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.NullableDecimal">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.DecimalArray">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -436,6 +419,16 @@
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
         </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketBookUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketBookUpdateArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketBuySellPrice">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
@@ -507,6 +500,11 @@
             </summary>
         </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketImageRef">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketLastTradePriceUpdate">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -651,6 +649,21 @@
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
         </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketPriceChange">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketPriceChangeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketPriceChangeUpdate">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketPriceHistory">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
@@ -677,6 +690,16 @@
             </summary>
         </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketRelatedTagArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketSearchPagination">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketSearchResult">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -752,6 +775,11 @@
             </summary>
         </member>
         <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketTickSize">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Converters.PolymarketSourceGenerationContext.PolymarketTickSizeUpdate">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -1402,7 +1430,7 @@
             Polymarket Clob streams
             </summary>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketSocketClientClobApi.SubscribeToXXXUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketModel}},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketSocketClientClobApi.SubscribeToTokenUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketPriceChangeUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketBookUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate}},System.Threading.CancellationToken)">
             <summary>
             
             <para><a href="XXX" /></para>
@@ -1416,35 +1444,12 @@
             Polymarket Gamma API endpoints
             </summary>
         </member>
-        <member name="P:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.Account">
+        <member name="P:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.ClientOptions">
             <summary>
-            Endpoints related to account settings, info or actions
-            </summary>
-            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiAccount" />
-        </member>
-        <member name="P:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.ExchangeData">
-            <summary>
-            Endpoints related to retrieving market and system data
-            </summary>
-            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData" />
-        </member>
-        <member name="P:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.Trading">
-            <summary>
-            Endpoints related to orders and trades
-            </summary>
-            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiTrading" />
-        </member>
-        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiAccount">
-            <summary>
-            Polymarket Gamma account endpoints. Account endpoints include balance info, withdraw/deposit info and requesting and account settings
+            Options
             </summary>
         </member>
-        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData">
-            <summary>
-            Polymarket Gamma exchange data endpoints. Exchange data includes market data (tickers, order books, etc) and system status.
-            </summary>
-        </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetSportTeamsAsync(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetSportTeamsAsync(System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Get list of all sports teams
             <para><a href="https://docs.polymarket.com/api-reference/pricing/get-market-price" /></para>
@@ -1458,21 +1463,21 @@
             <param name="ascending">Ascending order</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetSportsAsync(System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetSportsAsync(System.Threading.CancellationToken)">
             <summary>
             Get sports meta data
             <para><a href="https://docs.polymarket.com/api-reference/sports/get-sports-metadata-information" /></para>
             </summary>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetSportMarketTypesAsync(System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetSportMarketTypesAsync(System.Threading.CancellationToken)">
             <summary>
             Get valid sport market types
             <para><a href="https://docs.polymarket.com/api-reference/sports/get-valid-sports-market-types" /></para>
             </summary>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetTagsAsync(System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetTagsAsync(System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Get tags
             <para><a href="https://docs.polymarket.com/api-reference/tags/list-tags" /></para>
@@ -1485,7 +1490,7 @@
             <param name="ascending">Ascending order</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Get tag by id
             <para><a href="https://docs.polymarket.com/api-reference/tags/get-tag-by-id" /></para>
@@ -1494,7 +1499,7 @@
             <param name="includeTemplate">Include template</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Get tag by slug
             <para><a href="https://docs.polymarket.com/api-reference/tags/get-tag-by-id" /></para>
@@ -1503,7 +1508,7 @@
             <param name="includeTemplate">Include template</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetRelatedTagsByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetRelatedTagsByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <summary>
             Get related tags for a tag
             <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-id" /></para>
@@ -1513,7 +1518,7 @@
             <param name="status">Filter by status</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetRelatedTagsBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetRelatedTagsBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <summary>
             Get related tags for a tag
             <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-slug" /></para>
@@ -1523,7 +1528,7 @@
             <param name="status">Filter by status</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetTagsRelatedToTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetTagsRelatedToTagByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <summary>
             Get tags related to a tag by id
             <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-id" /></para>
@@ -1533,7 +1538,7 @@
             <param name="status">Filter by status</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetTagsRelatedToTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetTagsRelatedToTagBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{Polymarket.Net.Enums.TagStatus},System.Threading.CancellationToken)">
             <summary>
             Get tags related to a tag by slug
             <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-slug" /></para>
@@ -1543,7 +1548,7 @@
             <param name="status">Filter by status</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiExchangeData.GetEventsAsync(System.Int64[],System.Nullable{System.Int64},System.Int64[],System.String[],System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetEventsAsync(System.Int64[],System.Nullable{System.Int64},System.Int64[],System.String[],System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
             Get events
             <para><a href="https://docs.polymarket.com/api-reference/events/list-events" /></para>
@@ -1576,24 +1581,140 @@
             <param name="ascending">Ascending order</param>
             <param name="ct">Cancellation token</param>
         </member>
-        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApiTrading">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetEventByIdAsync(System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
-            Polymarket Gamma trading endpoints, placing and managing orders.
+            Get event by id
+            <para><a href="https://docs.polymarket.com/api-reference/events/get-event-by-id" /></para>
             </summary>
+            <param name="id">Id</param>
+            <param name="includeChat">Include chat</param>
+            <param name="includeTemplate">Include template</param>
+            <param name="ct">Cancellation token</param>
         </member>
-        <member name="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketSocketClientGammaApi">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetEventBySlugAsync(System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
             <summary>
-            Polymarket Gamma streams
+            Get event by slug
+            <para><a href="https://docs.polymarket.com/api-reference/events/get-event-by-slug" /></para>
             </summary>
+            <param name="slug">Slug</param>
+            <param name="includeChat">Include chat</param>
+            <param name="includeTemplate">Include template</param>
+            <param name="ct">Cancellation token</param>
         </member>
-        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketSocketClientGammaApi.SubscribeToXXXUpdatesAsync(System.Collections.Generic.IEnumerable{System.String},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketModel}},System.Threading.CancellationToken)">
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetEventTagsAsync(System.String,System.Threading.CancellationToken)">
             <summary>
-            
-            <para><a href="XXX" /></para>
+            Get event tags
+            <para><a href="https://docs.polymarket.com/api-reference/events/get-event-tags" /></para>
             </summary>
-            <param name="onMessage">The event handler for the received data</param>
-            <param name="ct">Cancellation token for closing this subscription</param>
-            <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
+            <param name="id">Id</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetMarketsAsync(System.Int64[],System.Nullable{System.Int64},System.String[],System.String[],System.String[],System.String[],System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.String,System.String[],System.Nullable{System.Decimal},System.String[],System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.Decimal},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Get events
+            <para><a href="https://docs.polymarket.com/api-reference/events/list-events" /></para>
+            </summary>
+            <param name="ids">Filter by ids</param>
+            <param name="slugs">Filter by slugs</param>
+            <param name="tagId">Filter by tag id</param>
+            <param name="cyom">Whether to return cyom</param>
+            <param name="clobTokenIds">Filter by CLOB token ids</param>
+            <param name="conditionIds">Filter by condition ids</param>
+            <param name="marketMakerAddresses">Filter by market maker addresses</param>
+            <param name="sportMarketTypes">Filter by sport market types</param>
+            <param name="questionIds">Filter by question ids</param>
+            <param name="closed">Whether to return closed</param>
+            <param name="umaResolutionStatus">Filter by UMA resolution status</param>
+            <param name="gameId">Filter by game id</param>
+            <param name="rewardsMin">Filter by min rewards</param>
+            <param name="relatedTags">Whether to return related tags</param>
+            <param name="includeTag">Whether to return tag</param>
+            <param name="liquidityMin">Filter by min liquidity</param>
+            <param name="liquidityMax">Filter by max liquidity</param>
+            <param name="volumeMin">Filter by min volume</param>
+            <param name="volumeMax">Filter by max volume</param>
+            <param name="startTimeMin">Filter start time by min value</param>
+            <param name="startTimeMax">Filter start time by max value</param>
+            <param name="endTimeMin">Filter end time by min value</param>
+            <param name="endTimeMax">Filter end time by max value</param>
+            <param name="limit">Max number of results</param>
+            <param name="offset">Result offset</param>
+            <param name="orderBy">Order by fields</param>
+            <param name="ascending">Ascending order</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetMarketByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Get market by id
+            <para><a href="https://docs.polymarket.com/api-reference/markets/get-market-by-id" /></para>
+            </summary>
+            <param name="id">Id</param>
+            <param name="includeTag">Include tag</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetMarketBySlugAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Get market by slug
+            <para><a href="https://docs.polymarket.com/api-reference/markets/get-market-by-id" /></para>
+            </summary>
+            <param name="slug">Slug</param>
+            <param name="includeTag">Include tag</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetMarketTagsAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get market tags
+            <para><a href="https://docs.polymarket.com/api-reference/markets/get-market-tags-by-id" /></para>
+            </summary>
+            <param name="id">Id</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetSeriesAsync(System.String[],System.String[],System.String[],System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Int32},System.Nullable{System.Int32},System.Collections.Generic.IEnumerable{System.String},System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Get series
+            <para><a href="https://docs.polymarket.com/api-reference/series/list-series" /></para>
+            </summary>
+            <param name="slugs">Filter by slugs</param>
+            <param name="categoryIds">Filter by category ids</param>
+            <param name="categoryLabels">Filter by category labels</param>
+            <param name="closed">Whether to return closed</param>
+            <param name="includeChat">Whether to include chat</param>
+            <param name="recurrence">Whether to return recurrence</param>
+            <param name="limit">Max number of results</param>
+            <param name="offset">Result offset</param>
+            <param name="orderBy">Order by fields</param>
+            <param name="ascending">Ascending order</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.GetSeriesByIdAsync(System.String,System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Get series by id
+            <para><a href="https://docs.polymarket.com/api-reference/series/get-series-by-id" /></para>
+            </summary>
+            <param name="id">Id</param>
+            <param name="includeChat">Whether to include chat</param>
+            <param name="ct">Cancellation token</param>
+        </member>
+        <member name="M:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketRestClientGammaApi.SearchAsync(System.String,System.Nullable{System.Boolean},System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String[],System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.String,System.Int64[],System.Nullable{System.Boolean},System.Threading.CancellationToken)">
+            <summary>
+            Public search
+            <para><a href="https://docs.polymarket.com/api-reference/search/search-markets-events-and-profiles" /></para>
+            </summary>
+            <param name="query">Search query</param>
+            <param name="cache">Cache</param>
+            <param name="eventStatus">Filter by event status</param>
+            <param name="limitPerType">Page size per type</param>
+            <param name="page">Page number</param>
+            <param name="eventTags">Filter by event tags</param>
+            <param name="keepClosedMarkets">Keep closed markets</param>
+            <param name="sort">Sort order</param>
+            <param name="ascending">Ascending order</param>
+            <param name="searchTags">Filter by search tags</param>
+            <param name="searchProfiles">Include profiles</param>
+            <param name="recurrence">Recurrence</param>
+            <param name="excludeTagIds">Exclude tag ids</param>
+            <param name="optimized">Optimized</param>
+            <param name="ct">Cancellation token</param>
         </member>
         <member name="T:Polymarket.Net.Interfaces.Clients.IPolymarketRestClient">
             <summary>
@@ -1634,12 +1755,6 @@
             Clob API endpoints
             </summary>
             <see cref="T:Polymarket.Net.Interfaces.Clients.ClobApi.IPolymarketSocketClientClobApi"/>
-        </member>
-        <member name="P:Polymarket.Net.Interfaces.Clients.IPolymarketSocketClient.GammaApi">
-            <summary>
-            Gamma API endpoints
-            </summary>
-            <see cref="T:Polymarket.Net.Interfaces.Clients.GammaApi.IPolymarketSocketClientGammaApi"/>
         </member>
         <member name="M:Polymarket.Net.Interfaces.Clients.IPolymarketSocketClient.SetApiCredentials(CryptoExchange.Net.Authentication.ApiCredentials)">
             <summary>
@@ -1704,11 +1819,6 @@
             Create a new Clob local order book instance
             </summary>
         </member>
-        <member name="T:Polymarket.Net.Interfaces.IPolymarketTrackerFactory">
-            <summary>
-            Tracker factory
-            </summary>
-        </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketApiKeys">
             <summary>
             API keys
@@ -1732,6 +1842,41 @@
         <member name="P:Polymarket.Net.Objects.Models.PolymarketBalanceAllowance.Allowances">
             <summary>
             Allowances
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketBookUpdate">
+            <summary>
+            Price change update
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketBookUpdate.Market">
+            <summary>
+            Market id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketBookUpdate.AssetId">
+            <summary>
+            Asset id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketBookUpdate.Hash">
+            <summary>
+            Hash
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketBookUpdate.LastTradePrice">
+            <summary>
+            Last trade price
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketBookUpdate.Bids">
+            <summary>
+            Bids
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketBookUpdate.Asks">
+            <summary>
+            Asks
             </summary>
         </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketBuySellPrice">
@@ -3014,9 +3159,9 @@
             Deploying time
             </summary>
         </member>
-        <member name="P:Polymarket.Net.Objects.Models.PolymarketGammaMarket.SchedulDeploymentTime">
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketGammaMarket.ScheduledDeploymentTime">
             <summary>
-            Schedul deployment time
+            Scheduled deployment time
             </summary>
         </member>
         <member name="P:Polymarket.Net.Objects.Models.PolymarketGammaMarket.RfqEnabled">
@@ -3107,6 +3252,46 @@
         <member name="P:Polymarket.Net.Objects.Models.PolymarketImageRef.Relname">
             <summary>
             Relname
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate">
+            <summary>
+            Last trade price update
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate.Market">
+            <summary>
+            Market id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate.AssetId">
+            <summary>
+            Asset id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate.TransactionHash">
+            <summary>
+            Transaction hash
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate.Price">
+            <summary>
+            Trade price
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate.Quantity">
+            <summary>
+            Quantity
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate.FeeRateBps">
+            <summary>
+            Fee rate BPS
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate.Side">
+            <summary>
+            Order side
             </summary>
         </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketMarket">
@@ -3669,6 +3854,61 @@
             Price
             </summary>
         </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketPriceChangeUpdate">
+            <summary>
+            Price change update
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChangeUpdate.Market">
+            <summary>
+            Market id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChangeUpdate.PriceChanges">
+            <summary>
+            Price changes
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketPriceChange">
+            <summary>
+            Price change info
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChange.AssetId">
+            <summary>
+            Asset id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChange.Price">
+            <summary>
+            Price
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChange.Quantity">
+            <summary>
+            Quantity
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChange.Side">
+            <summary>
+            Side
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChange.Hash">
+            <summary>
+            Hash
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChange.BestBid">
+            <summary>
+            Best bid price
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceChange.BestAsk">
+            <summary>
+            Best ask price
+            </summary>
+        </member>
         <member name="P:Polymarket.Net.Objects.Models.PolymarketPriceHistoryWrapper.History">
             <summary>
             History
@@ -3712,6 +3952,41 @@
         <member name="P:Polymarket.Net.Objects.Models.PolymarketRelatedTag.Rank">
             <summary>
             Rank
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketSearchResult">
+            <summary>
+            Search results
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSearchResult.Events">
+            <summary>
+            Events
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSearchResult.Tags">
+            <summary>
+            Tags
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSearchResult.Pagination">
+            <summary>
+            Pagination data
+            </summary>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketSearchPagination">
+            <summary>
+            Pagination data
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSearchPagination.HasMore">
+            <summary>
+            Has more
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSearchPagination.TotalResults">
+            <summary>
+            Total results
             </summary>
         </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketSeries">
@@ -4064,6 +4339,21 @@
             Header image optimized
             </summary>
         </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketSocketUpdate">
+            <summary>
+            Socket update
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSocketUpdate.EventType">
+            <summary>
+            Event type
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketSocketUpdate.Timestamp">
+            <summary>
+            Timestamp
+            </summary>
+        </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketSport">
             <summary>
             Sport info
@@ -4289,6 +4579,31 @@
             Minimum tick size
             </summary>
         </member>
+        <member name="T:Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate">
+            <summary>
+            Tick size update
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate.Market">
+            <summary>
+            Market id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate.AssetId">
+            <summary>
+            Asset id
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate.OldTickSize">
+            <summary>
+            Old tick size
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate.NewTickSize">
+            <summary>
+            New tick size
+            </summary>
+        </member>
         <member name="T:Polymarket.Net.Objects.Models.PolymarketTrade">
             <summary>
             Trade info
@@ -4504,21 +4819,83 @@
             The default addresses to connect to the Polymarket API
             </summary>
         </member>
-        <member name="T:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketSubscription`1">
+        <member name="T:Polymarket.Net.Objects.PolymarketCredentials">
+            <summary>
+            Polymarket credentials
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.PolymarketCredentials.PolymarketAddress">
+            <summary>
+            The polymarket address, can be found in your account in the web interface
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.PolymarketCredentials.L1PrivateKey">
+            <summary>
+            Private key for the funding address
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.PolymarketCredentials.L2ApiKey">
+            <summary>
+            The layer 2 API key previously obtained with <see cref="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync(System.Nullable{System.Int64})"/>
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.PolymarketCredentials.L2Secret">
+            <summary>
+            The layer 2 secret previously obtained with <see cref="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync(System.Nullable{System.Int64})"/>
+            </summary>
+        </member>
+        <member name="P:Polymarket.Net.Objects.PolymarketCredentials.L2Pass">
+            <summary>
+            The layer 2 passphrase previously obtained with <see cref="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync(System.Nullable{System.Int64})"/>
+            </summary>
+        </member>
+        <member name="M:Polymarket.Net.Objects.PolymarketCredentials.#ctor(System.String,System.String)">
+            <summary>
+            Create new API credentials with a Polymarket public address and the private key for the funding address
+            </summary>
+            <param name="polymarketAddress">The polymarket address, can be found in your account in the web interface</param>
+            <param name="l1PrivateKey">Private key for the funding address</param>
+        </member>
+        <member name="M:Polymarket.Net.Objects.PolymarketCredentials.#ctor(System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Create new API credentials with a Polymarket public address, the private key for the funding address and previously obtained layer 2 credentials using <see cref="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync(System.Nullable{System.Int64})"/>
+            </summary>
+            <param name="polymarketAddress">The polymarket address, can be found in your account in the web interface</param>
+            <param name="l1PrivateKey">Private key for the funding address</param>
+            <param name="l2Key">The layer 2 API key previously obtained with <see cref="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync(System.Nullable{System.Int64})"/></param>
+            <param name="l2Secret">The layer 2 secret previously obtained with <see cref="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync(System.Nullable{System.Int64})"/></param>
+            <param name="l2Pass">The layer 2 passphrase previously obtained with <see cref="M:Polymarket.Net.Clients.ClobApi.PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync(System.Nullable{System.Int64})"/></param>
+        </member>
+        <member name="M:Polymarket.Net.Objects.PolymarketCredentials.Copy">
+            <inheritdoc/>
+        </member>
+        <member name="T:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketSubscription`1.#ctor(Microsoft.Extensions.Logging.ILogger,System.String[],System.Action{System.DateTime,System.String,`0},System.Boolean)">
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.#ctor(Microsoft.Extensions.Logging.ILogger,Polymarket.Net.Clients.ClobApi.PolymarketSocketClientClobApi,System.String[],System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketPriceChangeUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketBookUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate}},System.Action{CryptoExchange.Net.Objects.Sockets.DataEvent{Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate}})">
             <summary>
             ctor
             </summary>
         </member>
-        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketSubscription`1.GetSubQuery(CryptoExchange.Net.Sockets.Default.SocketConnection)">
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.GetSubQuery(CryptoExchange.Net.Sockets.Default.SocketConnection)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketSubscription`1.GetUnsubQuery(CryptoExchange.Net.Sockets.Default.SocketConnection)">
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.GetUnsubQuery(CryptoExchange.Net.Sockets.Default.SocketConnection)">
             <inheritdoc />
         </member>
-        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketSubscription`1.DoHandleMessage(CryptoExchange.Net.Sockets.Default.SocketConnection,System.DateTime,System.String,`0)">
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.DoHandleMessage(CryptoExchange.Net.Sockets.Default.SocketConnection,System.DateTime,System.String,Polymarket.Net.Objects.Models.PolymarketPriceChangeUpdate)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.DoHandleMessage(CryptoExchange.Net.Sockets.Default.SocketConnection,System.DateTime,System.String,Polymarket.Net.Objects.Models.PolymarketTickSizeUpdate)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.DoHandleMessage(CryptoExchange.Net.Sockets.Default.SocketConnection,System.DateTime,System.String,Polymarket.Net.Objects.Models.PolymarketBookUpdate)">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.DoHandleMessage(CryptoExchange.Net.Sockets.Default.SocketConnection,System.DateTime,System.String,Polymarket.Net.Objects.Models.PolymarketBookUpdate[])">
+            <inheritdoc />
+        </member>
+        <member name="M:Polymarket.Net.Objects.Sockets.Subscriptions.PolymarketTokenSubscription.DoHandleMessage(CryptoExchange.Net.Sockets.Default.SocketConnection,System.DateTime,System.String,Polymarket.Net.Objects.Models.PolymarketLastTradePriceUpdate)">
             <inheritdoc />
         </member>
         <member name="T:Polymarket.Net.PolymarketEnvironment">
@@ -4603,21 +4980,6 @@
             Type of exchange
             </summary>
         </member>
-        <member name="P:Polymarket.Net.PolymarketExchange.AssetAliases">
-            <summary>
-            Aliases for Polymarket assets
-            </summary>
-        </member>
-        <member name="M:Polymarket.Net.PolymarketExchange.FormatSymbol(System.String,System.String,CryptoExchange.Net.SharedApis.TradingMode,System.Nullable{System.DateTime})">
-            <summary>
-            Format a base and quote asset to an Polymarket recognized symbol 
-            </summary>
-            <param name="baseAsset">Base asset</param>
-            <param name="quoteAsset">Quote asset</param>
-            <param name="tradingMode">Trading mode</param>
-            <param name="deliverTime">Delivery time for delivery futures</param>
-            <returns></returns>
-        </member>
         <member name="P:Polymarket.Net.PolymarketExchange.RateLimiter">
             <summary>
             Rate limiter configuration for the Polymarket API
@@ -4637,26 +4999,6 @@
             <summary>
             Event when the rate limit is updated. Note that it's only updated when a request is send, so there are no specific updates when the current usage is decaying.
             </summary>
-        </member>
-        <member name="T:Polymarket.Net.PolymarketTrackerFactory">
-            <inheritdoc />
-        </member>
-        <member name="M:Polymarket.Net.PolymarketTrackerFactory.#ctor">
-            <summary>
-            ctor
-            </summary>
-        </member>
-        <member name="M:Polymarket.Net.PolymarketTrackerFactory.#ctor(System.IServiceProvider)">
-            <summary>
-            ctor
-            </summary>
-            <param name="serviceProvider">Service provider for resolving logging and clients</param>
-        </member>
-        <member name="M:Polymarket.Net.PolymarketTrackerFactory.CreateKlineTracker(CryptoExchange.Net.SharedApis.SharedSymbol,CryptoExchange.Net.SharedApis.SharedKlineInterval,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
-            <inheritdoc />
-        </member>
-        <member name="M:Polymarket.Net.PolymarketTrackerFactory.CreateTradeTracker(CryptoExchange.Net.SharedApis.SharedSymbol,System.Nullable{System.Int32},System.Nullable{System.TimeSpan})">
-            <inheritdoc />
         </member>
         <member name="M:Polymarket.Net.Signing.LightEip712TypedDataEncoder.EncodeTypes(System.Collections.Generic.IDictionary{System.String,Polymarket.Net.Signing.MemberDescription[]},System.String)">
             <summary>

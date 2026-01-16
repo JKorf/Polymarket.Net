@@ -28,7 +28,7 @@ namespace Polymarket.Net
         /// <summary>
         /// Url to exchange image
         /// </summary>
-        public static string ImageUrl { get; } = "TODO";
+        public static string ImageUrl { get; } = "https://raw.githubusercontent.com/JKorf/Polymarket.Net/main/Polymarket.Net/Icon/icon.png";
 
         /// <summary>
         /// Url to the main website
@@ -48,33 +48,6 @@ namespace Polymarket.Net
         public static ExchangeType Type { get; } = ExchangeType.DEX;
 
         internal static JsonSerializerOptions _serializerContext = SerializerOptions.WithConverters(JsonSerializerContextCache.GetOrCreate<PolymarketSourceGenerationContext>());
-
-        /// <summary>
-        /// Aliases for Polymarket assets
-        /// </summary>
-        public static AssetAliasConfiguration AssetAliases { get; } = new AssetAliasConfiguration
-        {
-            Aliases = [
-                new AssetAlias("USDT", SharedSymbol.UsdOrStable.ToUpperInvariant(), AliasType.OnlyToExchange)
-            ]
-        };
-
-        /// <summary>
-        /// Format a base and quote asset to an Polymarket recognized symbol 
-        /// </summary>
-        /// <param name="baseAsset">Base asset</param>
-        /// <param name="quoteAsset">Quote asset</param>
-        /// <param name="tradingMode">Trading mode</param>
-        /// <param name="deliverTime">Delivery time for delivery futures</param>
-        /// <returns></returns>
-        public static string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
-        {
-            baseAsset = AssetAliases.CommonToExchangeName(baseAsset.ToUpperInvariant());
-            quoteAsset = AssetAliases.CommonToExchangeName(quoteAsset.ToUpperInvariant());
-
-#warning todo
-            return baseAsset;
-        }
 
         /// <summary>
         /// Rate limiter configuration for the Polymarket API

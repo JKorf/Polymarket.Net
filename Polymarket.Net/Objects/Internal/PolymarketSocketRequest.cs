@@ -13,5 +13,7 @@ namespace Polymarket.Net.Objects.Internal
         public string[] Assets { get; set; }
         [JsonPropertyName("type")]
         public string Type { get; set; }
+        [JsonPropertyName("custom_feature_enabled")]
+        public bool CustomFeatureEnabled { get; set; }
     }
 }

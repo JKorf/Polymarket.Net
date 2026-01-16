@@ -8,6 +8,19 @@ using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Converters
 {
+    [JsonSerializable(typeof(PolymarketMarketResolvedUpdate))]
+    [JsonSerializable(typeof(PolymarketNewMarketUpdate))]
+    [JsonSerializable(typeof(PolymarketBestBidAskUpdate))]
+    [JsonSerializable(typeof(PolymarketTickSizeUpdate))]
+    [JsonSerializable(typeof(PolymarketBookUpdate[]))]
+    [JsonSerializable(typeof(PolymarketBookUpdate))]
+    [JsonSerializable(typeof(PolymarketLastTradePriceUpdate))]
+    [JsonSerializable(typeof(PolymarketPriceChangeUpdate))]
+    [JsonSerializable(typeof(PolymarketSearchResult))]
+    [JsonSerializable(typeof(PolymarketSeries))]
+    [JsonSerializable(typeof(PolymarketSeries[]))]
+    [JsonSerializable(typeof(PolymarketGammaMarket))]
+    [JsonSerializable(typeof(PolymarketGammaMarket[]))]
     [JsonSerializable(typeof(PolymarketEvent[]))]
     [JsonSerializable(typeof(PolymarketRelatedTag[]))]
     [JsonSerializable(typeof(PolymarketTag))]
