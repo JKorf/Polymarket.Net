@@ -179,12 +179,6 @@ namespace Polymarket.Net.Clients.ClobApi
                     makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
                     takerQuantity = makerQuantity * price.Value;
                 }
-
-                takerQuantity *= 1000000;
-                makerQuantity *= 1000000;
-
-                takerQuantity = takerQuantity.Normalize();
-                makerQuantity = makerQuantity.Normalize();
             }
             else
             {
@@ -244,13 +238,15 @@ namespace Polymarket.Net.Clients.ClobApi
                     makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
                     takerQuantity = makerQuantity * price.Value;
                 }
-
-                takerQuantity *= 1000000;
-                makerQuantity *= 1000000;
-
-                takerQuantity = takerQuantity.Normalize();
-                makerQuantity = makerQuantity.Normalize();
             }
+
+            takerQuantity = ExchangeHelpers.RoundDown(takerQuantity, 2);
+
+            takerQuantity *= 1000000;
+            makerQuantity *= 1000000;
+
+            takerQuantity = takerQuantity.Normalize();
+            makerQuantity = makerQuantity.Normalize();
 
             return new CallResult<(decimal, decimal)>((makerQuantity, takerQuantity));
         }
