@@ -168,23 +168,6 @@ namespace Polymarket.Net.Clients.ClobApi
             {
                 if (price == null)
                     throw new ArgumentNullException(nameof(price), "Price is required for limit orders");
-
-                if (side == OrderSide.Buy)
-                {
-                    takerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
-                    makerQuantity = takerQuantity * price.Value;
-                }
-                else
-                {
-                    makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
-                    takerQuantity = makerQuantity * price.Value;
-                }
-
-                takerQuantity *= 1000000;
-                makerQuantity *= 1000000;
-
-                takerQuantity = takerQuantity.Normalize();
-                makerQuantity = makerQuantity.Normalize();
             }
             else
             {
@@ -234,23 +217,26 @@ namespace Polymarket.Net.Clients.ClobApi
                 }
 
                 price = Math.Round(price!.Value, 3).Normalize();
-                if (side == OrderSide.Buy)
-                {
-                    makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
-                    takerQuantity = makerQuantity / price.Value;
-                }
-                else
-                {
-                    makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
-                    takerQuantity = makerQuantity * price.Value;
-                }
-
-                takerQuantity *= 1000000;
-                makerQuantity *= 1000000;
-
-                takerQuantity = takerQuantity.Normalize();
-                makerQuantity = makerQuantity.Normalize();
             }
+
+            if (side == OrderSide.Buy)
+            {
+                takerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
+                makerQuantity = takerQuantity * price.Value;
+            }
+            else
+            {
+                makerQuantity = ExchangeHelpers.RoundDown(quantity, 2);
+                takerQuantity = makerQuantity * price.Value;
+            }
+
+            takerQuantity = ExchangeHelpers.RoundDown(takerQuantity, 2);
+
+            takerQuantity *= 1000000;
+            makerQuantity *= 1000000;
+
+            takerQuantity = takerQuantity.Normalize();
+            makerQuantity = makerQuantity.Normalize();
 
             return new CallResult<(decimal, decimal)>((makerQuantity, takerQuantity));
         }
