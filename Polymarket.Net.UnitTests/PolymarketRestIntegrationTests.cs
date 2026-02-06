@@ -9,6 +9,7 @@ using Polymarket.Net.Objects.Options;
 using Polymarket.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Polymarket.Net.UnitTests
 {
@@ -46,27 +47,31 @@ namespace Polymarket.Net.UnitTests
         [Test]
         public async Task TestClobExchangeData()
         {
+            var market = await CreateClient().GammaApi.GetMarketsAsync(closed: false, volumeMin: 1);
+            var marketId = market.Data.First().ConditionId;
+            var tokenId = market.Data.First().ClobTokenIds.First();
+
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetServerTimeAsync(default), false);
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetGeographicRestrictionsAsync(default), false);
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetSamplingSimplifiedMarketsAsync(default, default), false);
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetSamplingMarketsAsync(default, default), false);
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetSimplifiedMarketsAsync(default, default), false);
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetMarketsAsync(default, default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetMarketAsync("0x5eed579ff6763914d78a966c83473ba2485ac8910d0a0914eef6d9fcb33085de", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetPriceAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", Enums.OrderSide.Buy, default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetPricesAsync(new Dictionary<string, Enums.OrderSide> { { "11862165566757345985240476164489718219056735011698825377388402888080786399275", Enums.OrderSide.Buy } }, default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetMidpointPriceAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetMidpointPricesAsync(new[] { "11862165566757345985240476164489718219056735011698825377388402888080786399275" }, default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetPriceHistoryAsync("0x5eed579ff6763914d78a966c83473ba2485ac8910d0a0914eef6d9fcb33085de", default, default, Enums.DataInterval.OneDay, default, default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(new string[] { "11862165566757345985240476164489718219056735011698825377388402888080786399275" }, default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetOrderBookAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetOrderBooksAsync(new[] { "11862165566757345985240476164489718219056735011698825377388402888080786399275" }, default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetTickSizeAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetNegativeRiskAsyncAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetFeeRateBpsAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetLastTradePriceAsync("11862165566757345985240476164489718219056735011698825377388402888080786399275", default), false);
-            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetLastTradePricesAsync(new[] { "11862165566757345985240476164489718219056735011698825377388402888080786399275" }, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetMarketAsync(marketId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetPriceAsync(tokenId, Enums.OrderSide.Buy, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetPricesAsync(new Dictionary<string, Enums.OrderSide> { { "tokenId", Enums.OrderSide.Buy } }, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetMidpointPriceAsync(tokenId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetMidpointPricesAsync(new[] { tokenId }, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetPriceHistoryAsync(marketId, default, default, Enums.DataInterval.OneDay, default, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(tokenId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(new string[] { tokenId }, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetOrderBookAsync(tokenId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetOrderBooksAsync(new[] { tokenId }, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetTickSizeAsync(tokenId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetNegativeRiskAsyncAsync(tokenId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetFeeRateBpsAsync(tokenId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetLastTradePriceAsync(tokenId, default), false);
+            await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetLastTradePricesAsync(new[] { tokenId }, default), false);
         }
     }
 }
