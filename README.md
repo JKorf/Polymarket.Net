@@ -237,6 +237,11 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 1.1.0 - 06 Feb 2026
+    * Updated CryptoExchange.Net to version 10.4.0, see https://github.com/JKorf/CryptoExchange.Net/releases/ for full release notes
+    * Added OrderStatus.Matched value
+    * Fixed disposed clients getting returned from UserClientProvider
+
 * Version 1.0.1 - 27 Jan 2026
     * Fixed signing issue certain token values
     * Fixed rounding issue in quantity calculation
