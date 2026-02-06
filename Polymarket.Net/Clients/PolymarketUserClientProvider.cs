@@ -62,7 +62,7 @@ namespace Polymarket.Net.Clients
         /// <inheritdoc />
         public IPolymarketRestClient GetRestClient(string userIdentifier, PolymarketCredentials? credentials = null, PolymarketEnvironment? environment = null)
         {
-            if (!_restClients.TryGetValue(userIdentifier, out var client))
+            if (!_restClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateRestClient(userIdentifier, credentials, environment);
 
             return client;
@@ -71,7 +71,7 @@ namespace Polymarket.Net.Clients
         /// <inheritdoc />
         public IPolymarketSocketClient GetSocketClient(string userIdentifier, PolymarketCredentials? credentials = null, PolymarketEnvironment? environment = null)
         {
-            if (!_socketClients.TryGetValue(userIdentifier, out var client))
+            if (!_socketClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateSocketClient(userIdentifier, credentials, environment);
 
             return client;
