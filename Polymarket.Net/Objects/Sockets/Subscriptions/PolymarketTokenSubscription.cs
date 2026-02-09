@@ -52,7 +52,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
 
             foreach(var item in tokenIds)
             {
-                routes.Add(MessageRoute<PolymarketPriceChangeUpdate>.CreateWithTopicFilter("price_change", item, DoHandleMessage));
+                routes.Add(MessageRoute<PolymarketPriceChangeUpdate>.CreateWithoutTopicFilter("price_change", DoHandleMessage));
                 routes.Add(MessageRoute<PolymarketBookUpdate>.CreateWithTopicFilter("book", item, DoHandleMessage));
                 routes.Add(MessageRoute<PolymarketBookUpdate[]>.CreateWithTopicFilter("book_snapshot", item, DoHandleMessage));
                 routes.Add(MessageRoute<PolymarketLastTradePriceUpdate>.CreateWithTopicFilter("last_trade_price", item, DoHandleMessage));
