@@ -237,6 +237,10 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 1.3.1 - 17 Feb 2026
+    * Updated CryptoExchange.Net to version 10.6.2, see https://github.com/JKorf/CryptoExchange.Net/releases/ for full release notes
+    * Fixed not correctly handling book snapshot websocket update
+
 * Version 1.3.0 - 16 Feb 2026
     * Updated CryptoExchange.Net to version 10.6.0, see https://github.com/JKorf/CryptoExchange.Net/releases/ for full release notes
     * Fixed SymbolOrderBook websocket subscription not getting closed if when waiting for initial data times out
