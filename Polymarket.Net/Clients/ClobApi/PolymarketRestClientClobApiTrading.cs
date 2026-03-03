@@ -182,7 +182,7 @@ namespace Polymarket.Net.Clients.ClobApi
                     for (var i = bookInfo.Data.Asks.Length - 1; i >= 0; i--)
                     {
                         var ask = bookInfo.Data.Asks[i];
-                        sum += ask.Quantity * ask.Price;
+                        sum += ask.Quantity;
                         if (sum >= quantity)
                         {
                             marketPrice = ask.Price;
@@ -192,6 +192,9 @@ namespace Polymarket.Net.Clients.ClobApi
 
                     if (timeInForce == TimeInForce.FillOrKill && marketPrice == null)
                         return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
+
+                    if (marketPrice == null && bookInfo.Data.Asks.Length == 0)
+                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "Market order couldn't be filled due to empty order book")));
 
                     price = marketPrice ?? bookInfo.Data.Asks[0].Price;
                 }
@@ -212,6 +215,9 @@ namespace Polymarket.Net.Clients.ClobApi
 
                     if (timeInForce == TimeInForce.FillOrKill && marketPrice == null)
                         return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
+
+                    if (marketPrice == null && bookInfo.Data.Bids.Length == 0)
+                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "Market order couldn't be filled due to empty order book")));
 
                     price = marketPrice ?? bookInfo.Data.Bids[0].Price;
                 }
