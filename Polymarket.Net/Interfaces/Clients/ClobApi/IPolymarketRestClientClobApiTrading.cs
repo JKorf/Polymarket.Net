@@ -15,7 +15,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
     {
         /// <summary>
         /// Get open orders
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/get-active-order" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/get-active-order" /><br />
+        /// Endpoint:<br />
+        /// GET /data/orders
+        /// </para>
         /// </summary>
         /// <param name="orderId">Filter by order id</param>
         /// <param name="conditionId">Filter by market/condition id</param>
@@ -25,7 +30,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get an order by id
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/get-order" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/get-order" /><br />
+        /// Endpoint:<br />
+        /// GET /data/order/{orderId}
+        /// </para>
         /// </summary>
         /// <param name="orderId">Order id</param>
         /// <param name="ct">Cancellation token</param>
@@ -33,7 +43,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Check if an order is eligible or scoring for Rewards purposes
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/check-scoring" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/check-scoring" /><br />
+        /// Endpoint:<br />
+        /// GET /order-scoring
+        /// </para>
         /// </summary>
         /// <param name="orderId">Order id</param>
         /// <param name="ct">Cancellation token</param>
@@ -41,7 +56,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Check if orders are eligible or scoring for Rewards purposes
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/check-scoring" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/check-scoring" /><br />
+        /// Endpoint:<br />
+        /// POST /orders-scoring
+        /// </para>
         /// </summary>
         /// <param name="orderIds">Order ids</param>
         /// <param name="ct">Cancellation token</param>
@@ -49,7 +69,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Place a new order
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/create-order" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/create-order" /><br />
+        /// Endpoint:<br />
+        /// POST /order
+        /// </para>
         /// </summary>
         /// <param name="tokenId">Token id</param>
         /// <param name="side">Side</param>
@@ -81,7 +106,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Place multiple orders in a single request
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/create-order-batch" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/create-order-batch" /><br />
+        /// Endpoint:<br />
+        /// POST /orders
+        /// </para>
         /// </summary>
         /// <param name="requests">Order requests</param>
         /// <param name="ct">Cancellation token</param>
@@ -89,21 +119,36 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Cancel an order
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /><br />
+        /// Endpoint:<br />
+        /// DELETE /order
+        /// </para>
         /// </summary>
         /// <param name="orderId">Order id</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketCancelResult>> CancelOrderAsync(string orderId, CancellationToken ct = default);
         /// <summary>
         /// Cancel multiple orders
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /><br />
+        /// Endpoint:<br />
+        /// DELETE /orders
+        /// </para>
         /// </summary>
         /// <param name="orderIds">Ids of orders to cancel</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketCancelResult>> CancelOrdersAsync(IEnumerable<string> orderIds, CancellationToken ct = default);
         /// <summary>
         /// Cancel all orders for a specific market
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /><br />
+        /// Endpoint:<br />
+        /// DELETE /orders
+        /// </para>
         /// </summary>
         /// <param name="conditionId">The condition/market id</param>
         /// <param name="tokenId">Asset/token id</param>
@@ -111,14 +156,24 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         Task<WebCallResult<PolymarketCancelResult>> CancelOrdersOnMarketAsync(string? conditionId = null, string? tokenId = null, CancellationToken ct = default);
         /// <summary>
         /// Cancel all open orders
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/orders/cancel-orders" /><br />
+        /// Endpoint:<br />
+        /// DELETE /cancel-all
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketCancelResult>> CancelAllOrdersAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get trades matching the filters
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/trades/trades" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/trades/trades" /><br />
+        /// Endpoint:<br />
+        /// GET /data/trades
+        /// </para>
         /// </summary>
         /// <param name="tradeId">Filter by trade id</param>
         /// <param name="takerAddress">Filter by taker address</param>

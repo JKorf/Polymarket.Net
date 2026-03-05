@@ -22,7 +22,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get geographical restrictions for calling client
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/geoblock" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/geoblock" /><br />
+        /// Endpoint:<br />
+        /// GET /api/geoblock
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketGeoRestriction>> GetGeographicRestrictionsAsync(CancellationToken ct = default);
@@ -64,7 +69,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get price for a token
-        /// <para><a href="https://docs.polymarket.com/api-reference/pricing/get-market-price" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/pricing/get-market-price" /><br />
+        /// Endpoint:<br />
+        /// GET /price
+        /// </para>
         /// </summary>
         /// <param name="tokenId">Token id</param>
         /// <param name="side">Side</param>
@@ -73,7 +83,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get buy/sell prices for all markets
-        /// <para><a href="https://docs.polymarket.com/api-reference/pricing/get-multiple-market-prices" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/pricing/get-multiple-market-prices" /><br />
+        /// Endpoint:<br />
+        /// POST /prices
+        /// </para>
         /// </summary>
         /// <param name="tokens">Tokens to retrieve prices for</param>
         /// <param name="ct">Cancellation token</param>
@@ -81,7 +96,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get the midpoint price for a token
-        /// <para><a href="https://docs.polymarket.com/api-reference/pricing/get-midpoint-price" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/pricing/get-midpoint-price" /><br />
+        /// Endpoint:<br />
+        /// GET /midpoint
+        /// </para>
         /// </summary>
         /// <param name="tokenId">The token id</param>
         /// <param name="ct">Cancellation token</param>
@@ -96,7 +116,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get price history for a token
-        /// <para><a href="https://docs.polymarket.com/api-reference/pricing/get-price-history-for-a-traded-token" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/pricing/get-price-history-for-a-traded-token" /><br />
+        /// Endpoint:<br />
+        /// GET /prices-history
+        /// </para>
         /// </summary>
         /// <param name="market">The market</param>
         /// <param name="startTime">Filter by start time</param>
@@ -115,7 +140,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get bid/ask spread for specified token ids
-        /// <para><a href="https://docs.polymarket.com/api-reference/spreads/get-bid-ask-spreads" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/spreads/get-bid-ask-spreads" /><br />
+        /// Endpoint:<br />
+        /// POST /spreads
+        /// </para>
         /// </summary>
         /// <param name="tokenIds">Token ids</param>
         /// <param name="ct">Cancellation token</param>
@@ -123,7 +153,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get order book info for a token
-        /// <para><a href="https://docs.polymarket.com/api-reference/orderbook/get-order-book-summary" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/orderbook/get-order-book-summary" /><br />
+        /// Endpoint:<br />
+        /// GET /book
+        /// </para>
         /// </summary>
         /// <param name="tokenId">The token id</param>
         /// <param name="ct">Cancellation token</param>
@@ -131,7 +166,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get order book info for multiple tokens
-        /// <para><a href="https://docs.polymarket.com/api-reference/orderbook/get-multiple-order-books-summaries-by-request" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/orderbook/get-multiple-order-books-summaries-by-request" /><br />
+        /// Endpoint:<br />
+        /// POST /books
+        /// </para>
         /// </summary>
         /// <param name="tokenIds">The token ids</param>
         /// <param name="ct">Cancellation token</param>

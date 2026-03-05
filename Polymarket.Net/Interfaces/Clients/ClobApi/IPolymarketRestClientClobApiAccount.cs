@@ -15,7 +15,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
     {
         /// <summary>
         /// Create API credentials for the provided API credentials private key
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/authentication#l2-authentication" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/authentication#l2-authentication" /><br />
+        /// Endpoint:<br />
+        /// POST /auth/api-key
+        /// </para>
         /// </summary>
         /// <param name="nonce">Nonce, different nonces can be used to create different credentials</param>
         /// <param name="ct">Cancellation token</param>
@@ -23,7 +28,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get previously created API credentials for the provided API credentials private key
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/authentication#l2-authentication" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/authentication#l2-authentication" /><br />
+        /// Endpoint:<br />
+        /// GET /auth/derive-api-key
+        /// </para>
         /// </summary>
         /// <param name="nonce">Nonce</param>
         /// <param name="ct">Cancellation token</param>
@@ -31,7 +41,13 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Get previously created API credentials, or create new credentials if no credentials are created yet
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/authentication#l2-authentication" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/authentication#l2-authentication" /><br />
+        /// Endpoint:<br />
+        /// GET /auth/derive-api-key<br />
+        /// POST /auth/api-key
+        /// </para>
         /// </summary>
         /// <param name="nonce">Nonce</param>
         /// <param name="ct">Cancellation token</param>

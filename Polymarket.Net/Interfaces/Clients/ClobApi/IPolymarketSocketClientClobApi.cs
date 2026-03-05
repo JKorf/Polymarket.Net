@@ -16,7 +16,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
     {
         /// <summary>
         /// Subscribe to new market and market resolved updates
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/websocket/market-channel#new_market-message" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/websocket/market-channel#new_market-message" /><br />
+        /// Endpoint:<br />
+        /// WS /ws/market
+        /// </para>
         /// </summary>
         /// <param name="onNewMarketUpdate">New market update handler</param>
         /// <param name="onMarketResolvedUpdate">Market resolved update handler</param>
@@ -29,7 +34,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Subscribe to updates for specific tokens
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/websocket/market-channel#book-message" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/websocket/market-channel#book-message" /><br />
+        /// Endpoint:<br />
+        /// WS /ws/market
+        /// </para>
         /// </summary>
         /// <param name="tokenIds">Ids to subscribe</param>
         /// <param name="onPriceChangeUpdate">Price change update handler</param>
@@ -50,7 +60,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Subscribe to order and trade updates for the user
-        /// <para><a href="https://docs.polymarket.com/developers/CLOB/websocket/user-channel" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/CLOB/websocket/user-channel" /><br />
+        /// Endpoint:<br />
+        /// WS /ws/user
+        /// </para>
         /// </summary>
         /// <param name="onOrderUpdate">User order update handler</param>
         /// <param name="onTradeUpdate">User trade update handler</param>
@@ -63,7 +78,12 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Subscribe to sport matches updates
-        /// <para><a href="https://docs.polymarket.com/developers/sports-websocket/overview" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/developers/sports-websocket/overview" /><br />
+        /// Endpoint:<br />
+        /// WS /ws
+        /// </para>
         /// </summary>
         /// <param name="onSportsUpdate">Sport match update handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>

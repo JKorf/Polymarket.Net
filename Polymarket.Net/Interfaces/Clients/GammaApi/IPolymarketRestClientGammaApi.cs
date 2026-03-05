@@ -22,7 +22,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get list of all sports teams
-        /// <para><a href="https://docs.polymarket.com/api-reference/pricing/get-market-price" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/pricing/get-market-price" /><br />
+        /// Endpoint:<br />
+        /// GET /teams
+        /// </para>
         /// </summary>
         /// <param name="league">Filter by league name</param>
         /// <param name="name">Filter by name</param>
@@ -44,21 +49,36 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get sports meta data
-        /// <para><a href="https://docs.polymarket.com/api-reference/sports/get-sports-metadata-information" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/sports/get-sports-metadata-information" /><br />
+        /// Endpoint:<br />
+        /// GET /sports
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketSport[]>> GetSportsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get valid sport market types
-        /// <para><a href="https://docs.polymarket.com/api-reference/sports/get-valid-sports-market-types" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/sports/get-valid-sports-market-types" /><br />
+        /// Endpoint:<br />
+        /// GET /sports/market-types
+        /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<string[]>> GetSportMarketTypesAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get tags
-        /// <para><a href="https://docs.polymarket.com/api-reference/tags/list-tags" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/tags/list-tags" /><br />
+        /// Endpoint:<br />
+        /// GET /tags
+        /// </para>
         /// </summary>
         /// <param name="includeTemplate">Include template</param>
         /// <param name="isCarousel">Filter by carousel</param>
@@ -78,7 +98,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get tag by id
-        /// <para><a href="https://docs.polymarket.com/api-reference/tags/get-tag-by-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/tags/get-tag-by-id" /><br />
+        /// Endpoint:<br />
+        /// GET /tags/{id}
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="includeTemplate">Include template</param>
@@ -87,7 +112,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get tag by slug
-        /// <para><a href="https://docs.polymarket.com/api-reference/tags/get-tag-by-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/tags/get-tag-by-id" /><br />
+        /// Endpoint:<br />
+        /// GET /tags/slug/{slug}
+        /// </para>
         /// </summary>
         /// <param name="slug">Slug</param>
         /// <param name="includeTemplate">Include template</param>
@@ -96,7 +126,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get related tags for a tag
-        /// <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-id" /><br />
+        /// Endpoint:<br />
+        /// GET /tags/{id}/related-tags
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="omitEmpty">Omit empty</param>
@@ -106,7 +141,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get related tags for a tag
-        /// <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-slug" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-slug" /><br />
+        /// Endpoint:<br />
+        /// GET /tags/slug/{slug}/related-tags
+        /// </para>
         /// </summary>
         /// <param name="slug">Slug</param>
         /// <param name="omitEmpty">Omit empty</param>
@@ -116,7 +156,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get tags related to a tag by id
-        /// <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-id" /><br />
+        /// Endpoint:<br />
+        /// GET /tags/{id}/related-tags/tags
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="omitEmpty">Omit empty</param>
@@ -126,7 +171,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get tags related to a tag by slug
-        /// <para><a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-slug" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/tags/get-related-tags-relationships-by-tag-slug" /><br />
+        /// Endpoint:<br />
+        /// GET /tags/slug/{slug}/related-tags/tags
+        /// </para>
         /// </summary>
         /// <param name="slug">Slug</param>
         /// <param name="omitEmpty">Omit empty</param>
@@ -136,7 +186,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get events
-        /// <para><a href="https://docs.polymarket.com/api-reference/events/list-events" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/events/list-events" /><br />
+        /// Endpoint:<br />
+        /// GET /events
+        /// </para>
         /// </summary>
         /// <param name="ids">Filter by ids</param>
         /// <param name="tagId">Filter by tag id</param>
@@ -196,7 +251,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get event by id
-        /// <para><a href="https://docs.polymarket.com/api-reference/events/get-event-by-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/events/get-event-by-id" /><br />
+        /// Endpoint:<br />
+        /// GET /events/{id}
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="includeChat">Include chat</param>
@@ -206,7 +266,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get event by slug
-        /// <para><a href="https://docs.polymarket.com/api-reference/events/get-event-by-slug" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/events/get-event-by-slug" /><br />
+        /// Endpoint:<br />
+        /// GET /events/slug/{slug}
+        /// </para>
         /// </summary>
         /// <param name="slug">Slug</param>
         /// <param name="includeChat">Include chat</param>
@@ -216,7 +281,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get event tags
-        /// <para><a href="https://docs.polymarket.com/api-reference/events/get-event-tags" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/events/get-event-tags" /><br />
+        /// Endpoint:<br />
+        /// GET /events/{id}/tags
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="ct">Cancellation token</param>
@@ -224,7 +294,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get events
-        /// <para><a href="https://docs.polymarket.com/api-reference/events/list-events" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/events/list-events" /><br />
+        /// Endpoint:<br />
+        /// GET /markets
+        /// </para>
         /// </summary>
         /// <param name="ids">Filter by ids</param>
         /// <param name="slugs">Filter by slugs</param>
@@ -286,7 +361,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get market by id
-        /// <para><a href="https://docs.polymarket.com/api-reference/markets/get-market-by-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/get-market-by-id" /><br />
+        /// Endpoint:<br />
+        /// GET /markets/{id}
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="includeTag">Include tag</param>
@@ -295,7 +375,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get market by slug
-        /// <para><a href="https://docs.polymarket.com/api-reference/markets/get-market-by-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/get-market-by-id" /><br />
+        /// Endpoint:<br />
+        /// GET /markets/slug/{slug}
+        /// </para>
         /// </summary>
         /// <param name="slug">Slug</param>
         /// <param name="includeTag">Include tag</param>
@@ -304,7 +389,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get market tags
-        /// <para><a href="https://docs.polymarket.com/api-reference/markets/get-market-tags-by-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/get-market-tags-by-id" /><br />
+        /// Endpoint:<br />
+        /// GET /markets/{id}/tags
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="ct">Cancellation token</param>
@@ -312,7 +402,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get series
-        /// <para><a href="https://docs.polymarket.com/api-reference/series/list-series" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/series/list-series" /><br />
+        /// Endpoint:<br />
+        /// GET /series
+        /// </para>
         /// </summary>
         /// <param name="slugs">Filter by slugs</param>
         /// <param name="categoryIds">Filter by category ids</param>
@@ -340,7 +435,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Get series by id
-        /// <para><a href="https://docs.polymarket.com/api-reference/series/get-series-by-id" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/series/get-series-by-id" /><br />
+        /// Endpoint:<br />
+        /// GET /series/{id}
+        /// </para>
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="includeChat">Whether to include chat</param>
@@ -349,7 +449,12 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
 
         /// <summary>
         /// Public search
-        /// <para><a href="https://docs.polymarket.com/api-reference/search/search-markets-events-and-profiles" /></para>
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/search/search-markets-events-and-profiles" /><br />
+        /// Endpoint:<br />
+        /// GET /public-search
+        /// </para>
         /// </summary>
         /// <param name="query">Search query</param>
         /// <param name="cache">Cache</param>
