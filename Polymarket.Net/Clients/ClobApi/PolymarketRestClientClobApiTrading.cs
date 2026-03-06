@@ -68,7 +68,7 @@ namespace Polymarket.Net.Clients.ClobApi
             orderParameters.Add("tokenId", tokenId);
             orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
             orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
-            orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToMilliseconds(expiration.Value)));
+            orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)));
             orderParameters.AddString("nonce", nonce ?? 0);
             orderParameters.AddString("feeRateBps", feeRateBps ?? 0);
             orderParameters.AddEnum("side", side);
@@ -119,7 +119,7 @@ namespace Polymarket.Net.Clients.ClobApi
                 orderParameters.Add("tokenId", request.TokenId);
                 orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
                 orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
-                orderParameters.AddString("expiration", (ulong)(request.Expiration == null ? 0 : DateTimeConverter.ConvertToMilliseconds(request.Expiration.Value)));
+                orderParameters.AddString("expiration", (ulong)(request.Expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(request.Expiration.Value)));
                 orderParameters.AddString("nonce", request.Nonce ?? 0);
                 orderParameters.AddString("feeRateBps", request.FeeRateBps ?? 0);
                 orderParameters.AddEnum("side", request.Side);
