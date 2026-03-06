@@ -237,6 +237,13 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 1.5.1 - 06 Mar 2026
+    * Fixed bug in market order buy price determination
+    * Fixed exception in PlaceOrderAsync when placing a market order when order book is empty
+    * Fixed incorrect parameter serialization in restClient.ClobApi.Trading.GetUserTradesAsync endpoint
+    * Fixed order expiration serialization in PlaceOrder endpoints
+    * Fixed conditionIds not getting sent in restClient.GammaApi.GetMarketsAsync endpoint
+
 * Version 1.5.0 - 06 Mar 2026
     * Updated CryptoExchange.Net to version 10.8.0, see https://github.com/JKorf/CryptoExchange.Net/releases/ for full release notes
     * Improved method XML comments
