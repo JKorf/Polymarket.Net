@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,22 +13,22 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketPage<T>
     {
         /// <summary>
-        /// Pagination cursor
+        /// ["<c>next_cursor</c>"] Pagination cursor
         /// </summary>
         [JsonPropertyName("next_cursor")]
         public string NextPageCursor { get; set; } = string.Empty;
         /// <summary>
-        /// Max number of results
+        /// ["<c>limit</c>"] Max number of results
         /// </summary>
         [JsonPropertyName("limit")]
         public int Limit { get; set; }
         /// <summary>
-        /// Number of results
+        /// ["<c>count</c>"] Number of results
         /// </summary>
         [JsonPropertyName("count")]
         public int Count { get; set; }
         /// <summary>
-        /// Page data
+        /// ["<c>data</c>"] Page data
         /// </summary>
         [JsonPropertyName("data")]
         public T[] Data { get; set; } = [];

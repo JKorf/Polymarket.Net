@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketApiKeys
     {
         /// <summary>
-        /// API keys
+        /// ["<c>apiKeys</c>"] API keys
         /// </summary>
         [JsonPropertyName("apiKeys")]
         public string[] ApiKeys { get; set; } = [];

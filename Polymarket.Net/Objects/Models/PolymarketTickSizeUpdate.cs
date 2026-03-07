@@ -1,4 +1,4 @@
-﻿using Polymarket.Net.Enums;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,22 +14,22 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketTickSizeUpdate : PolymarketSocketUpdate
     {
         /// <summary>
-        /// Market id
+        /// ["<c>market</c>"] Market id
         /// </summary>
         [JsonPropertyName("market")]
         public string Market { get; set; } = string.Empty;
         /// <summary>
-        /// Asset id
+        /// ["<c>asset_id</c>"] Asset id
         /// </summary>
         [JsonPropertyName("asset_id")]
         public string AssetId { get; set; } = string.Empty;
         /// <summary>
-        /// Old tick size
+        /// ["<c>old_tick_size</c>"] Old tick size
         /// </summary>
         [JsonPropertyName("old_tick_size")]
         public decimal OldTickSize { get; set; }
         /// <summary>
-        /// New tick size
+        /// ["<c>new_tick_size</c>"] New tick size
         /// </summary>
         [JsonPropertyName("new_tick_size")]
         public decimal NewTickSize { get; set; }

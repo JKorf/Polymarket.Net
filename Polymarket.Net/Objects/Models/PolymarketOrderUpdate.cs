@@ -1,4 +1,4 @@
-﻿using Polymarket.Net.Enums;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,87 +14,87 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketOrderUpdate : PolymarketSocketUpdate
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Owner
+        /// ["<c>owner</c>"] Owner
         /// </summary>
         [JsonPropertyName("owner")]
         public string Owner { get; set; } = string.Empty;
         /// <summary>
-        /// Market id
+        /// ["<c>market</c>"] Market id
         /// </summary>
         [JsonPropertyName("market")]
         public string Market { get; set; } = string.Empty;
         /// <summary>
-        /// Asset id
+        /// ["<c>asset_id</c>"] Asset id
         /// </summary>
         [JsonPropertyName("asset_id")]
         public string AssetId { get; set; } = string.Empty;
         /// <summary>
-        /// Side
+        /// ["<c>side</c>"] Side
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Order owner
+        /// ["<c>order_owner</c>"] Order owner
         /// </summary>
         [JsonPropertyName("order_owner")]
         public string OrderOwner { get; set; } = string.Empty;
         /// <summary>
-        /// Original quantity
+        /// ["<c>original_size</c>"] Original quantity
         /// </summary>
         [JsonPropertyName("original_size")]
         public decimal OriginalQuantity { get; set; }
         /// <summary>
-        /// Quantity filled
+        /// ["<c>size_matched</c>"] Quantity filled
         /// </summary>
         [JsonPropertyName("size_matched")]
         public decimal QuantityFilled { get; set; }
         /// <summary>
-        /// Price
+        /// ["<c>price</c>"] Price
         /// </summary>
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Order trades
+        /// ["<c>associate_trades</c>"] Order trades
         /// </summary>
         [JsonPropertyName("associate_trades")]
         public string[] Trades { get; set; } = [];
         /// <summary>
-        /// Outcome
+        /// ["<c>outcome</c>"] Outcome
         /// </summary>
         [JsonPropertyName("outcome")]
         public string Outcome { get; set; } = string.Empty;
         /// <summary>
-        /// Order update type
+        /// ["<c>type</c>"] Order update type
         /// </summary>
         [JsonPropertyName("type")]
         public OrderUpdateType UpdateType { get; set; }
         /// <summary>
-        /// Create time
+        /// ["<c>created_at</c>"] Create time
         /// </summary>
         [JsonPropertyName("created_at")]
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// Expiration
+        /// ["<c>expiration</c>"] Expiration
         /// </summary>
         [JsonPropertyName("expiration")]
         public string Expiration { get; set; } = string.Empty;
         /// <summary>
-        /// Order type
+        /// ["<c>order_type</c>"] Order type
         /// </summary>
         [JsonPropertyName("order_type")]
         public TimeInForce TimeInForce { get; set; }
         /// <summary>
-        /// Order status
+        /// ["<c>status</c>"] Order status
         /// </summary>
         [JsonPropertyName("status")]
         public OrderStatus Status { get; set; }
         /// <summary>
-        /// Maker address
+        /// ["<c>maker_address</c>"] Maker address
         /// </summary>
         [JsonPropertyName("maker_address")]
         public string MakerAddress { get; set; } = string.Empty;

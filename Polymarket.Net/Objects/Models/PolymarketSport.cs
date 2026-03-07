@@ -1,4 +1,4 @@
-﻿using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Converters.SystemTextJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,32 +14,32 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketSport
     {
         /// <summary>
-        /// Sport
+        /// ["<c>sport</c>"] Sport
         /// </summary>
         [JsonPropertyName("sport")]
         public string Sport { get; set; } = string.Empty;
         /// <summary>
-        /// Image
+        /// ["<c>image</c>"] Image
         /// </summary>
         [JsonPropertyName("image")]
         public string Image { get; set; } = string.Empty;
         /// <summary>
-        /// Resolution
+        /// ["<c>resolution</c>"] Resolution
         /// </summary>
         [JsonPropertyName("resolution")]
         public string Resolution { get; set; } = string.Empty;
         /// <summary>
-        /// Ordering
+        /// ["<c>ordering</c>"] Ordering
         /// </summary>
         [JsonPropertyName("ordering")]
         public string Ordering { get; set; } = string.Empty;
         /// <summary>
-        /// Tags
+        /// ["<c>tags</c>"] Tags
         /// </summary>
         [JsonPropertyName("tags"), JsonConverter(typeof(CommaSplitStringConverter))]
         public string[] Tags { get; set; } = [];
         /// <summary>
-        /// Series
+        /// ["<c>series</c>"] Series
         /// </summary>
         [JsonPropertyName("series")]
         public string Series { get; set; } = string.Empty;

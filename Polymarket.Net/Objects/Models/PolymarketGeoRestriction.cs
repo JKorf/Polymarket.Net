@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,22 +13,22 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketGeoRestriction
     {
         /// <summary>
-        /// Is blocked
+        /// ["<c>blocked</c>"] Is blocked
         /// </summary>
         [JsonPropertyName("blocked")]
         public bool Blocked { get; set; }
         /// <summary>
-        /// IP address
+        /// ["<c>ip</c>"] IP address
         /// </summary>
         [JsonPropertyName("ip")]
         public string Ip { get; set; } = string.Empty;
         /// <summary>
-        /// Country
+        /// ["<c>country</c>"] Country
         /// </summary>
         [JsonPropertyName("country")]
         public string Country { get; set; } = string.Empty;
         /// <summary>
-        /// Region
+        /// ["<c>region</c>"] Region
         /// </summary>
         [JsonPropertyName("region")]
         public string Region { get; set; } = string.Empty;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,12 +13,12 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketSocketUpdate
     {
         /// <summary>
-        /// Event type
+        /// ["<c>event_type</c>"] Event type
         /// </summary>
         [JsonPropertyName("event_type")]
         public string EventType { get; set; } = string.Empty;
         /// <summary>
-        /// Timestamp
+        /// ["<c>timestamp</c>"] Timestamp
         /// </summary>
         [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }

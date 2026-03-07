@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,17 +13,17 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketCreds
     {
         /// <summary>
-        /// API key
+        /// ["<c>apiKey</c>"] API key
         /// </summary>
         [JsonPropertyName("apiKey")]
         public string ApiKey { get; set; } = string.Empty;
         /// <summary>
-        /// Secret
+        /// ["<c>secret</c>"] Secret
         /// </summary>
         [JsonPropertyName("secret")]
         public string Secret { get; set; } = string.Empty;
         /// <summary>
-        /// The passphrase
+        /// ["<c>passphrase</c>"] The passphrase
         /// </summary>
         [JsonPropertyName("passphrase")]
         public string Passphrase { get; set; } = string.Empty;

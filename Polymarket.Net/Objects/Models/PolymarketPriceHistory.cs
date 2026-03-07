@@ -6,7 +6,7 @@ namespace Polymarket.Net.Objects.Models
     internal record PolymarketPriceHistoryWrapper
     {
         /// <summary>
-        /// History
+        /// ["<c>history</c>"] History
         /// </summary>
         [JsonPropertyName("history")]
         public PolymarketPriceHistory[] History { get; set; } = [];
@@ -18,12 +18,12 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketPriceHistory
     {
         /// <summary>
-        /// Timestamp
+        /// ["<c>t</c>"] Timestamp
         /// </summary>
         [JsonPropertyName("t")]
         public DateTime Timestamp { get; set; }
         /// <summary>
-        /// Price
+        /// ["<c>p</c>"] Price
         /// </summary>
         [JsonPropertyName("p")]
         public decimal Price { get; set; }

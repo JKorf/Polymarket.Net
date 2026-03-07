@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,62 +13,62 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketTemplate
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Event title
+        /// ["<c>eventTitle</c>"] Event title
         /// </summary>
         [JsonPropertyName("eventTitle")]
         public string EventTitle { get; set; } = string.Empty;
         /// <summary>
-        /// Event slug
+        /// ["<c>eventSlug</c>"] Event slug
         /// </summary>
         [JsonPropertyName("eventSlug")]
         public string EventSlug { get; set; } = string.Empty;
         /// <summary>
-        /// Event image
+        /// ["<c>eventImage</c>"] Event image
         /// </summary>
         [JsonPropertyName("eventImage")]
         public string EventImage { get; set; } = string.Empty;
         /// <summary>
-        /// Market title
+        /// ["<c>marketTitle</c>"] Market title
         /// </summary>
         [JsonPropertyName("marketTitle")]
         public string MarketTitle { get; set; } = string.Empty;
         /// <summary>
-        /// Description
+        /// ["<c>description</c>"] Description
         /// </summary>
         [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
         /// <summary>
-        /// Resolution source
+        /// ["<c>resolutionSource</c>"] Resolution source
         /// </summary>
         [JsonPropertyName("resolutionSource")]
         public string ResolutionSource { get; set; } = string.Empty;
         /// <summary>
-        /// Negative risk
+        /// ["<c>negRisk</c>"] Negative risk
         /// </summary>
         [JsonPropertyName("negRisk")]
         public bool NegativeRisk { get; set; }
         /// <summary>
-        /// Sort by
+        /// ["<c>sortBy</c>"] Sort by
         /// </summary>
         [JsonPropertyName("sortBy")]
         public string SortBy { get; set; } = string.Empty;
         /// <summary>
-        /// Show market images
+        /// ["<c>showMarketImages</c>"] Show market images
         /// </summary>
         [JsonPropertyName("showMarketImages")]
         public bool ShowMarketImages { get; set; }
         /// <summary>
-        /// Series slug
+        /// ["<c>seriesSlug</c>"] Series slug
         /// </summary>
         [JsonPropertyName("seriesSlug")]
         public string SeriesSlug { get; set; } = string.Empty;
         /// <summary>
-        /// Outcomes
+        /// ["<c>outcomes</c>"] Outcomes
         /// </summary>
         [JsonPropertyName("outcomes")]
         public string Outcomes { get; set; } = string.Empty;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,57 +13,57 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketSportsUpdate
     {
         /// <summary>
-        /// Game id
+        /// ["<c>gameId</c>"] Game id
         /// </summary>
         [JsonPropertyName("gameId")]
         public long GameId { get; set; }
         /// <summary>
-        /// League abbreviation
+        /// ["<c>leagueAbbreviation</c>"] League abbreviation
         /// </summary>
         [JsonPropertyName("leagueAbbreviation")]
         public string LeagueAbbreviation { get; set; } = string.Empty;
         /// <summary>
-        /// Home team name
+        /// ["<c>homeTeam</c>"] Home team name
         /// </summary>
         [JsonPropertyName("homeTeam")]
         public string HomeTeam { get; set; } = string.Empty;
         /// <summary>
-        /// Away team name
+        /// ["<c>awayTeam</c>"] Away team name
         /// </summary>
         [JsonPropertyName("awayTeam")]
         public string AwayTeam { get; set; } = string.Empty;
         /// <summary>
-        /// Status
+        /// ["<c>status</c>"] Status
         /// </summary>
         [JsonPropertyName("status")]
         public string Status { get; set; } = string.Empty;
         /// <summary>
-        /// Score
+        /// ["<c>score</c>"] Score
         /// </summary>
         [JsonPropertyName("score")]
         public string Score { get; set; } = string.Empty;
         /// <summary>
-        /// Period
+        /// ["<c>period</c>"] Period
         /// </summary>
         [JsonPropertyName("period")]
         public string Period { get; set; } = string.Empty;
         /// <summary>
-        /// Elapsed
+        /// ["<c>elapsed</c>"] Elapsed
         /// </summary>
         [JsonPropertyName("elapsed")]
         public string? Elapsed { get; set; }
         /// <summary>
-        /// Turn
+        /// ["<c>turn</c>"] Turn
         /// </summary>
         [JsonPropertyName("turn")]
         public string? Turn { get; set; }
         /// <summary>
-        /// Is live
+        /// ["<c>live</c>"] Is live
         /// </summary>
         [JsonPropertyName("live")]
         public bool Live { get; set; }
         /// <summary>
-        /// Has ended
+        /// ["<c>ended</c>"] Has ended
         /// </summary>
         [JsonPropertyName("ended")]
         public bool Ended { get; set; }

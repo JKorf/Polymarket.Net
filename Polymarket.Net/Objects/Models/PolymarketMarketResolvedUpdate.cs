@@ -1,4 +1,4 @@
-﻿using Polymarket.Net.Enums;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,52 +14,52 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketMarketResolvedUpdate : PolymarketSocketUpdate
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Market Id
+        /// ["<c>market</c>"] Market Id
         /// </summary>
         [JsonPropertyName("market")]
         public string MarketId { get; set; } = string.Empty;
         /// <summary>
-        /// Slug
+        /// ["<c>slug</c>"] Slug
         /// </summary>
         [JsonPropertyName("slug")]
         public string Slug { get; set; } = string.Empty;
         /// <summary>
-        /// Description
+        /// ["<c>description</c>"] Description
         /// </summary>
         [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
         /// <summary>
-        /// Asset ids
+        /// ["<c>assets_ids</c>"] Asset ids
         /// </summary>
         [JsonPropertyName("assets_ids")]
         public string[] AssetIds { get; set; } = [];
         /// <summary>
-        /// Outcomes
+        /// ["<c>outcomes</c>"] Outcomes
         /// </summary>
         [JsonPropertyName("outcomes")]
         public string[] Outcomes { get; set; } = [];
         /// <summary>
-        /// Question
+        /// ["<c>question</c>"] Question
         /// </summary>
         [JsonPropertyName("question")]
         public string Question { get; set; } = string.Empty;
         /// <summary>
-        /// Winning asset id
+        /// ["<c>winning_asset_id</c>"] Winning asset id
         /// </summary>
         [JsonPropertyName("winning_asset_id")]
         public string WinningAssetId { get; set; } = string.Empty;
         /// <summary>
-        /// Winning outcome
+        /// ["<c>winning_outcome</c>"] Winning outcome
         /// </summary>
         [JsonPropertyName("winning_outcome")]
         public string WinningOutcome { get; set; } = string.Empty;
         /// <summary>
-        /// Event message
+        /// ["<c>event_message</c>"] Event message
         /// </summary>
         [JsonPropertyName("event_message")]
         public PolymarketNewMarketEvent EventMessage { get; set; } = null!;

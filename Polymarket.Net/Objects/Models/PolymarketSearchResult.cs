@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,12 +13,12 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketSearchResult
     {
         /// <summary>
-        /// Events
+        /// ["<c>events</c>"] Events
         /// </summary>
         [JsonPropertyName("events")]
         public PolymarketEvent[] Events { get; set; } = [];
         /// <summary>
-        /// Tags
+        /// ["<c>tags</c>"] Tags
         /// </summary>
         [JsonPropertyName("tags")]
         public PolymarketTag[] Tags { get; set; } = [];
@@ -28,7 +28,7 @@ namespace Polymarket.Net.Objects.Models
         //[JsonPropertyName("profiles")]
         //public PolymarketProfile[] Profiles { get; set; } = [];
         /// <summary>
-        /// Pagination data
+        /// ["<c>pagination</c>"] Pagination data
         /// </summary>
         [JsonPropertyName("pagination")]
         public PolymarketSearchPagination Pagination { get; set; } = null!;
@@ -40,12 +40,12 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketSearchPagination
     {
         /// <summary>
-        /// Has more
+        /// ["<c>hasMore</c>"] Has more
         /// </summary>
         [JsonPropertyName("hasMore")]
         public bool HasMore { get; set; }
         /// <summary>
-        /// Total results
+        /// ["<c>totalResults</c>"] Total results
         /// </summary>
         [JsonPropertyName("totalResults")]
         public int TotalResults { get; set; }

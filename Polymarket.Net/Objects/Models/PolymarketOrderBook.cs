@@ -10,47 +10,47 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketOrderBook
     {
         /// <summary>
-        /// Market
+        /// ["<c>market</c>"] Market
         /// </summary>
         [JsonPropertyName("market")]
         public string Market { get; set; } = string.Empty;
         /// <summary>
-        /// Asset/token id
+        /// ["<c>asset_id</c>"] Asset/token id
         /// </summary>
         [JsonPropertyName("asset_id")]
         public string TokenId { get; set; } = string.Empty;
         /// <summary>
-        /// Timestamp
+        /// ["<c>timestamp</c>"] Timestamp
         /// </summary>
         [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; }
         /// <summary>
-        /// Hash
+        /// ["<c>hash</c>"] Hash
         /// </summary>
         [JsonPropertyName("hash")]
         public string Hash { get; set; } = string.Empty;
         /// <summary>
-        /// Bids
+        /// ["<c>bids</c>"] Bids
         /// </summary>
         [JsonPropertyName("bids")]
         public PolymarketBookEntry[] Bids { get; set; } = [];
         /// <summary>
-        /// Asks
+        /// ["<c>asks</c>"] Asks
         /// </summary>
         [JsonPropertyName("asks")]
         public PolymarketBookEntry[] Asks { get; set; } = [];
         /// <summary>
-        /// Min order quantity
+        /// ["<c>min_order_size</c>"] Min order quantity
         /// </summary>
         [JsonPropertyName("min_order_size")]
         public decimal MinOrderQuantity { get; set; }
         /// <summary>
-        /// Tick quantity
+        /// ["<c>tick_size</c>"] Tick quantity
         /// </summary>
         [JsonPropertyName("tick_size")]
         public decimal TickQuantity { get; set; }
         /// <summary>
-        /// Negative risk enabled
+        /// ["<c>neg_risk</c>"] Negative risk enabled
         /// </summary>
         [JsonPropertyName("neg_risk")]
         public bool NegativeRisk { get; set; }
@@ -62,12 +62,12 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketBookEntry : ISymbolOrderBookEntry
     {
         /// <summary>
-        /// Price
+        /// ["<c>price</c>"] Price
         /// </summary>
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Quantity
+        /// ["<c>size</c>"] Quantity
         /// </summary>
         [JsonPropertyName("size")]
         public decimal Quantity { get; set; }

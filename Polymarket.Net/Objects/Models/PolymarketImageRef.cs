@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,52 +13,52 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketImageRef
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Image url source
+        /// ["<c>imageUrlSource</c>"] Image url source
         /// </summary>
         [JsonPropertyName("imageUrlSource")]
         public string ImageUrlSource { get; set; } = string.Empty;
         /// <summary>
-        /// Image url optimized
+        /// ["<c>imageUrlOptimized</c>"] Image url optimized
         /// </summary>
         [JsonPropertyName("imageUrlOptimized")]
         public string ImageUrlOptimized { get; set; } = string.Empty;
         /// <summary>
-        /// Image quantity kb source
+        /// ["<c>imageSizeKbSource</c>"] Image quantity kb source
         /// </summary>
         [JsonPropertyName("imageSizeKbSource")]
         public long ImageQuantityKbSource { get; set; }
         /// <summary>
-        /// Image quantity kb optimized
+        /// ["<c>imageSizeKbOptimized</c>"] Image quantity kb optimized
         /// </summary>
         [JsonPropertyName("imageSizeKbOptimized")]
         public long ImageQuantityKbOptimized { get; set; }
         /// <summary>
-        /// Image optimized complete
+        /// ["<c>imageOptimizedComplete</c>"] Image optimized complete
         /// </summary>
         [JsonPropertyName("imageOptimizedComplete")]
         public bool ImageOptimizedComplete { get; set; }
         /// <summary>
-        /// Image optimized last updated
+        /// ["<c>imageOptimizedLastUpdated</c>"] Image optimized last updated
         /// </summary>
         [JsonPropertyName("imageOptimizedLastUpdated")]
         public DateTime ImageOptimizedLastUpdated { get; set; }
         /// <summary>
-        /// Related id
+        /// ["<c>relID</c>"] Related id
         /// </summary>
         [JsonPropertyName("relID")]
         public decimal RelId { get; set; }
         /// <summary>
-        /// Field
+        /// ["<c>field</c>"] Field
         /// </summary>
         [JsonPropertyName("field")]
         public string Field { get; set; } = string.Empty;
         /// <summary>
-        /// Relname
+        /// ["<c>relname</c>"] Relname
         /// </summary>
         [JsonPropertyName("relname")]
         public string Relname { get; set; } = string.Empty;

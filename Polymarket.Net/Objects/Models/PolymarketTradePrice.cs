@@ -1,4 +1,4 @@
-﻿using Polymarket.Net.Enums;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +14,18 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketTradePrice
     {
         /// <summary>
-        /// Last trade price
+        /// ["<c>price</c>"] Last trade price
         /// </summary>
         [JsonPropertyName("price")]
         public decimal LastTradePrice { get; set; }
 
         /// <summary>
-        /// Order side
+        /// ["<c>side</c>"] Order side
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Token id
+        /// ["<c>token_id</c>"] Token id
         /// </summary>
         [JsonPropertyName("token_id")]
         public string? TokenId { get; set; }

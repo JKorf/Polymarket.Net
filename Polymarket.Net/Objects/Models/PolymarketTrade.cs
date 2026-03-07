@@ -1,4 +1,4 @@
-﻿using Polymarket.Net.Enums;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,92 +14,92 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketTrade
     {
         /// <summary>
-        /// Trade id
+        /// ["<c>id</c>"] Trade id
         /// </summary>
         [JsonPropertyName("id")]
         public string TradeId { get; set; } = string.Empty;
         /// <summary>
-        /// Taker order id
+        /// ["<c>taker_order_id</c>"] Taker order id
         /// </summary>
         [JsonPropertyName("taker_order_id")]
         public string TakerOrderId { get; set; } = string.Empty;
         /// <summary>
-        /// Condition/market id
+        /// ["<c>market</c>"] Condition/market id
         /// </summary>
         [JsonPropertyName("market")]
         public string ConditionId { get; set; } = string.Empty;
         /// <summary>
-        /// Asset/token id
+        /// ["<c>asset_id</c>"] Asset/token id
         /// </summary>
         [JsonPropertyName("asset_id")]
         public string TokenId { get; set; } = string.Empty;
         /// <summary>
-        /// Side
+        /// ["<c>side</c>"] Side
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Quantity
+        /// ["<c>size</c>"] Quantity
         /// </summary>
         [JsonPropertyName("size")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Fee rate BPS
+        /// ["<c>fee_rate_bps</c>"] Fee rate BPS
         /// </summary>
         [JsonPropertyName("fee_rate_bps")]
         public decimal FeeRateBps { get; set; }
         /// <summary>
-        /// Price
+        /// ["<c>price</c>"] Price
         /// </summary>
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Trade status
+        /// ["<c>status</c>"] Trade status
         /// </summary>
         [JsonPropertyName("status")]
         public TradeStatus Status { get; set; }
         /// <summary>
-        /// Matching time
+        /// ["<c>match_time</c>"] Matching time
         /// </summary>
         [JsonPropertyName("match_time")]
         public DateTime MatchTime { get; set; }
         /// <summary>
-        /// Last update time
+        /// ["<c>last_update</c>"] Last update time
         /// </summary>
         [JsonPropertyName("last_update")]
         public DateTime UpdateTime { get; set; }
         /// <summary>
-        /// Outcome string
+        /// ["<c>outcome</c>"] Outcome string
         /// </summary>
         [JsonPropertyName("outcome")]
         public string Outcome { get; set; } = string.Empty;
         /// <summary>
-        /// Maker address
+        /// ["<c>maker_address</c>"] Maker address
         /// </summary>
         [JsonPropertyName("maker_address")]
         public string MakerAddress { get; set; } = string.Empty;
         /// <summary>
-        /// API key of the taker of the trade
+        /// ["<c>owner</c>"] API key of the taker of the trade
         /// </summary>
         [JsonPropertyName("owner")]
         public string Owner { get; set; } = string.Empty;
         /// <summary>
-        /// Transaction hash
+        /// ["<c>transaction_hash</c>"] Transaction hash
         /// </summary>
         [JsonPropertyName("transaction_hash")]
         public string TransactionHash { get; set; } = string.Empty;
         /// <summary>
-        /// Index of bucket for trade in case trade is executed in multiple transactions
+        /// ["<c>bucket_index</c>"] Index of bucket for trade in case trade is executed in multiple transactions
         /// </summary>
         [JsonPropertyName("bucket_index")]
         public int BucketIndex { get; set; }
         /// <summary>
-        /// Trade role
+        /// ["<c>type</c>"] Trade role
         /// </summary>
         [JsonPropertyName("type")]
         public TradeRole Role { get; set; }
         /// <summary>
-        /// List of the maker trades the taker trade was filled against
+        /// ["<c>maker_orders</c>"] List of the maker trades the taker trade was filled against
         /// </summary>
         [JsonPropertyName("maker_orders")]
         public PolymarketOrderBase[] MakerOrders { get; set; } = [];

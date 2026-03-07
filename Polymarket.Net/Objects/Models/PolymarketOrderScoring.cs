@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketOrderScoring
     {
         /// <summary>
-        /// Is order scoring
+        /// ["<c>scoring</c>"] Is order scoring
         /// </summary>
         [JsonPropertyName("scoring")]
         public bool Scoring { get; set; }

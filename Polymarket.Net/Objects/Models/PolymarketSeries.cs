@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,197 +13,197 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketSeries
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Ticker
+        /// ["<c>ticker</c>"] Ticker
         /// </summary>
         [JsonPropertyName("ticker")]
         public string Ticker { get; set; } = string.Empty;
         /// <summary>
-        /// Slug
+        /// ["<c>slug</c>"] Slug
         /// </summary>
         [JsonPropertyName("slug")]
         public string Slug { get; set; } = string.Empty;
         /// <summary>
-        /// Title
+        /// ["<c>title</c>"] Title
         /// </summary>
         [JsonPropertyName("title")]
         public string Title { get; set; } = string.Empty;
         /// <summary>
-        /// Subtitle
+        /// ["<c>subtitle</c>"] Subtitle
         /// </summary>
         [JsonPropertyName("subtitle")]
         public string Subtitle { get; set; } = string.Empty;
         /// <summary>
-        /// Series type
+        /// ["<c>seriesType</c>"] Series type
         /// </summary>
         [JsonPropertyName("seriesType")]
         public string SeriesType { get; set; } = string.Empty;
         /// <summary>
-        /// Recurrence
+        /// ["<c>recurrence</c>"] Recurrence
         /// </summary>
         [JsonPropertyName("recurrence")]
         public string Recurrence { get; set; } = string.Empty;
         /// <summary>
-        /// Description
+        /// ["<c>description</c>"] Description
         /// </summary>
         [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
         /// <summary>
-        /// Image
+        /// ["<c>image</c>"] Image
         /// </summary>
         [JsonPropertyName("image")]
         public string Image { get; set; } = string.Empty;
         /// <summary>
-        /// Icon
+        /// ["<c>icon</c>"] Icon
         /// </summary>
         [JsonPropertyName("icon")]
         public string Icon { get; set; } = string.Empty;
         /// <summary>
-        /// Layout
+        /// ["<c>layout</c>"] Layout
         /// </summary>
         [JsonPropertyName("layout")]
         public string Layout { get; set; } = string.Empty;
         /// <summary>
-        /// Active
+        /// ["<c>active</c>"] Active
         /// </summary>
         [JsonPropertyName("active")]
         public bool Active { get; set; }
         /// <summary>
-        /// Closed
+        /// ["<c>closed</c>"] Closed
         /// </summary>
         [JsonPropertyName("closed")]
         public bool Closed { get; set; }
         /// <summary>
-        /// Archived
+        /// ["<c>archived</c>"] Archived
         /// </summary>
         [JsonPropertyName("archived")]
         public bool Archived { get; set; }
         /// <summary>
-        /// New
+        /// ["<c>new</c>"] New
         /// </summary>
         [JsonPropertyName("new")]
         public bool New { get; set; }
         /// <summary>
-        /// Featured
+        /// ["<c>featured</c>"] Featured
         /// </summary>
         [JsonPropertyName("featured")]
         public bool Featured { get; set; }
         /// <summary>
-        /// Restricted
+        /// ["<c>restricted</c>"] Restricted
         /// </summary>
         [JsonPropertyName("restricted")]
         public bool Restricted { get; set; }
         /// <summary>
-        /// Is template
+        /// ["<c>isTemplate</c>"] Is template
         /// </summary>
         [JsonPropertyName("isTemplate")]
         public bool IsTemplate { get; set; }
         /// <summary>
-        /// Template variables
+        /// ["<c>templateVariables</c>"] Template variables
         /// </summary>
         [JsonPropertyName("templateVariables")]
         public bool TemplateVariables { get; set; }
         /// <summary>
-        /// Publish time
+        /// ["<c>publishedAt</c>"] Publish time
         /// </summary>
         [JsonPropertyName("publishedAt")]
         public DateTime? PublishTime { get; set; }
         /// <summary>
-        /// Created by
+        /// ["<c>createdBy</c>"] Created by
         /// </summary>
         [JsonPropertyName("createdBy")]
         public string CreatedBy { get; set; } = string.Empty;
         /// <summary>
-        /// Updated by
+        /// ["<c>updatedBy</c>"] Updated by
         /// </summary>
         [JsonPropertyName("updatedBy")]
         public string UpdatedBy { get; set; } = string.Empty;
         /// <summary>
-        /// Create time
+        /// ["<c>createdAt</c>"] Create time
         /// </summary>
         [JsonPropertyName("createdAt")]
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// Update time
+        /// ["<c>updatedAt</c>"] Update time
         /// </summary>
         [JsonPropertyName("updatedAt")]
         public DateTime? UpdateTime { get; set; }
         /// <summary>
-        /// Comments enabled
+        /// ["<c>commentsEnabled</c>"] Comments enabled
         /// </summary>
         [JsonPropertyName("commentsEnabled")]
         public bool CommentsEnabled { get; set; }
         /// <summary>
-        /// Competitive
+        /// ["<c>competitive</c>"] Competitive
         /// </summary>
         [JsonPropertyName("competitive")]
         public decimal? Competitive { get; set; }
         /// <summary>
-        /// Volume24hr
+        /// ["<c>volume24hr</c>"] Volume24hr
         /// </summary>
         [JsonPropertyName("volume24hr")]
         public decimal Volume24hr { get; set; }
         /// <summary>
-        /// Volume
+        /// ["<c>volume</c>"] Volume
         /// </summary>
         [JsonPropertyName("volume")]
         public decimal Volume { get; set; }
         /// <summary>
-        /// Liquidity
+        /// ["<c>liquidity</c>"] Liquidity
         /// </summary>
         [JsonPropertyName("liquidity")]
         public decimal Liquidity { get; set; }
         /// <summary>
-        /// Start date
+        /// ["<c>startDate</c>"] Start date
         /// </summary>
         [JsonPropertyName("startDate")]
         public DateTime? StartDate { get; set; }
         /// <summary>
-        /// Pyth token id
+        /// ["<c>pythTokenID</c>"] Pyth token id
         /// </summary>
         [JsonPropertyName("pythTokenID")]
         public string PythTokenID { get; set; } = string.Empty;
         /// <summary>
-        /// Cg asset name
+        /// ["<c>cgAssetName</c>"] Cg asset name
         /// </summary>
         [JsonPropertyName("cgAssetName")]
         public string CgAssetName { get; set; } = string.Empty;
         /// <summary>
-        /// Score
+        /// ["<c>score</c>"] Score
         /// </summary>
         [JsonPropertyName("score")]
         public decimal Score { get; set; }
         /// <summary>
-        /// Events
+        /// ["<c>events</c>"] Events
         /// </summary>
         [JsonPropertyName("events")]
         public PolymarketEvent[]? Events { get; set; }
         /// <summary>
-        /// Collections
+        /// ["<c>collections</c>"] Collections
         /// </summary>
         [JsonPropertyName("collections")]
         public PolymarketSeriesCollection[]? Collections { get; set; }
         /// <summary>
-        /// Categories
+        /// ["<c>categories</c>"] Categories
         /// </summary>
         [JsonPropertyName("categories")]
         public PolymarketMarketCategory[]? Categories { get; set; }
         /// <summary>
-        /// Tags
+        /// ["<c>tags</c>"] Tags
         /// </summary>
         [JsonPropertyName("tags")]
         public PolymarketTag[]? Tags { get; set; }
         /// <summary>
-        /// Comment count
+        /// ["<c>commentCount</c>"] Comment count
         /// </summary>
         [JsonPropertyName("commentCount")]
         public decimal CommentCount { get; set; }
         /// <summary>
-        /// Chats
+        /// ["<c>chats</c>"] Chats
         /// </summary>
         [JsonPropertyName("chats")]
         public PolymarketChat[]? Chats { get; set; }

@@ -1,4 +1,4 @@
-﻿using Polymarket.Net.Enums;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +14,13 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketPriceChangeUpdate: PolymarketSocketUpdate
     {
         /// <summary>
-        /// Market id
+        /// ["<c>market</c>"] Market id
         /// </summary>
         [JsonPropertyName("market")]
         public string Market { get; set; } = string.Empty;
 
         /// <summary>
-        /// Price changes
+        /// ["<c>price_changes</c>"] Price changes
         /// </summary>
         [JsonPropertyName("price_changes")]
         public PolymarketPriceChange[] PriceChanges { get; set; } = [];
@@ -32,37 +32,37 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketPriceChange
     {
         /// <summary>
-        /// Asset id
+        /// ["<c>asset_id</c>"] Asset id
         /// </summary>
         [JsonPropertyName("asset_id")]
         public string AssetId { get; set; } = string.Empty;
         /// <summary>
-        /// Price
+        /// ["<c>price</c>"] Price
         /// </summary>
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Quantity
+        /// ["<c>size</c>"] Quantity
         /// </summary>
         [JsonPropertyName("size")]
         public decimal Quantity { get; set; }
         /// <summary>
-        /// Side
+        /// ["<c>side</c>"] Side
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }
         /// <summary>
-        /// Hash
+        /// ["<c>hash</c>"] Hash
         /// </summary>
         [JsonPropertyName("hash")]
         public string Hash { get; set; } = string.Empty;
         /// <summary>
-        /// Best bid price
+        /// ["<c>best_bid</c>"] Best bid price
         /// </summary>
         [JsonPropertyName("best_bid")]
         public decimal BestBid { get; set; }
         /// <summary>
-        /// Best ask price
+        /// ["<c>best_ask</c>"] Best ask price
         /// </summary>
         [JsonPropertyName("best_ask")]
         public decimal BestAsk { get; set; }

@@ -8,12 +8,12 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketBuySellPrice
     {
         /// <summary>
-        /// Buy price
+        /// ["<c>BUY</c>"] Buy price
         /// </summary>
         [JsonPropertyName("BUY")]
         public decimal? BuyPrice { get; set; }
         /// <summary>
-        /// Sell price
+        /// ["<c>SELL</c>"] Sell price
         /// </summary>
         [JsonPropertyName("SELL")]
         public decimal? SellPrice { get; set; }

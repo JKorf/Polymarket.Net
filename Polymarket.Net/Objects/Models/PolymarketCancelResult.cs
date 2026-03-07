@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,12 +13,12 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketCancelResult
     {
         /// <summary>
-        /// Canceled
+        /// ["<c>canceled</c>"] Canceled
         /// </summary>
         [JsonPropertyName("canceled")]
         public string[] Canceled { get; set; } = [];
         /// <summary>
-        /// Not canceled
+        /// ["<c>not_canceled</c>"] Not canceled
         /// </summary>
         [JsonPropertyName("not_canceled")]
         public Dictionary<string, string> NotCanceled { get; set; } = new Dictionary<string, string>();

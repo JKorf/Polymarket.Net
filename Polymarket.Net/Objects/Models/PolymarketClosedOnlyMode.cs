@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketClosedOnlyMode
     {
         /// <summary>
-        /// Is closed only enabled
+        /// ["<c>closed_only</c>"] Is closed only enabled
         /// </summary>
         [JsonPropertyName("closed_only")]
         public bool ClosedOnly { get; set; }

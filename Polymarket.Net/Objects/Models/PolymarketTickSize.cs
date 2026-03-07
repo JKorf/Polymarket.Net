@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketTickSize
     {
         /// <summary>
-        /// Minimum tick size
+        /// ["<c>minimum_tick_size</c>"] Minimum tick size
         /// </summary>
         [JsonPropertyName("minimum_tick_size")]
         public decimal MinTickSize { get; set; }

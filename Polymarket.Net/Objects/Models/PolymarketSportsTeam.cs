@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,47 +13,47 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketSportsTeam
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public long Id { get; set; }
         /// <summary>
-        /// Name
+        /// ["<c>name</c>"] Name
         /// </summary>
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
         /// <summary>
-        /// League
+        /// ["<c>league</c>"] League
         /// </summary>
         [JsonPropertyName("league")]
         public string League { get; set; } = string.Empty;
         /// <summary>
-        /// Record
+        /// ["<c>record</c>"] Record
         /// </summary>
         [JsonPropertyName("record")]
         public string Record { get; set; } = string.Empty;
         /// <summary>
-        /// Logo
+        /// ["<c>logo</c>"] Logo
         /// </summary>
         [JsonPropertyName("logo")]
         public string Logo { get; set; } = string.Empty;
         /// <summary>
-        /// Abbreviation
+        /// ["<c>abbreviation</c>"] Abbreviation
         /// </summary>
         [JsonPropertyName("abbreviation")]
         public string Abbreviation { get; set; } = string.Empty;
         /// <summary>
-        /// Alias
+        /// ["<c>alias</c>"] Alias
         /// </summary>
         [JsonPropertyName("alias")]
         public string Alias { get; set; } = string.Empty;
         /// <summary>
-        /// Create time
+        /// ["<c>createdAt</c>"] Create time
         /// </summary>
         [JsonPropertyName("createdAt")]
         public DateTime CreateTime { get; set; }
         /// <summary>
-        /// Update time
+        /// ["<c>updatedAt</c>"] Update time
         /// </summary>
         [JsonPropertyName("updatedAt")]
         public DateTime? UpdateTime { get; set; }

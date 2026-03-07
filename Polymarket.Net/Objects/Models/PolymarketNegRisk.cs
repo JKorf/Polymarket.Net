@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketNegRisk
     {
         /// <summary>
-        /// Negative risk
+        /// ["<c>neg-risk</c>"] Negative risk
         /// </summary>
         [JsonPropertyName("neg-risk")]
         public bool NegativeRisk { get; set; }

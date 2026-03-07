@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,37 +13,37 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketChat
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Channel id
+        /// ["<c>channelId</c>"] Channel id
         /// </summary>
         [JsonPropertyName("channelId")]
         public string ChannelId { get; set; } = string.Empty;
         /// <summary>
-        /// Channel name
+        /// ["<c>channelName</c>"] Channel name
         /// </summary>
         [JsonPropertyName("channelName")]
         public string ChannelName { get; set; } = string.Empty;
         /// <summary>
-        /// Channel image
+        /// ["<c>channelImage</c>"] Channel image
         /// </summary>
         [JsonPropertyName("channelImage")]
         public string ChannelImage { get; set; } = string.Empty;
         /// <summary>
-        /// Live
+        /// ["<c>live</c>"] Live
         /// </summary>
         [JsonPropertyName("live")]
         public bool Live { get; set; }
         /// <summary>
-        /// Start time
+        /// ["<c>startTime</c>"] Start time
         /// </summary>
         [JsonPropertyName("startTime")]
         public DateTime? StartTime { get; set; }
         /// <summary>
-        /// End time
+        /// ["<c>endTime</c>"] End time
         /// </summary>
         [JsonPropertyName("endTime")]
         public DateTime? EndTime { get; set; }

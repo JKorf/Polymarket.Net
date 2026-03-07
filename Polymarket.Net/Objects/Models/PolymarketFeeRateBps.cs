@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketFeeRateBps
     {
         /// <summary>
-        /// Fee rate in BPS
+        /// ["<c>base_fee</c>"] Fee rate in BPS
         /// </summary>
         [JsonPropertyName("base_fee")]
         public decimal BaseFee { get; set; }

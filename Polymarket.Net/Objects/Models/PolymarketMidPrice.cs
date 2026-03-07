@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +13,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketMidPrice
     {
         /// <summary>
-        /// Mid
+        /// ["<c>mid</c>"] Mid
         /// </summary>
         [JsonPropertyName("mid")]
         public decimal Mid { get; set; }

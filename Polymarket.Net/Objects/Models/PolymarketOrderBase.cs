@@ -1,4 +1,4 @@
-﻿using Polymarket.Net.Enums;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketOrderBase
     {
         /// <summary>
-        /// Order id
+        /// ["<c>order_id</c>"] Order id
         /// </summary>
         [JsonPropertyName("order_id")]
         public string OrderId { get; set; } = string.Empty;
@@ -27,27 +27,27 @@ namespace Polymarket.Net.Objects.Models
         }
 
         /// <summary>
-        /// Maker address
+        /// ["<c>maker_address</c>"] Maker address
         /// </summary>
         [JsonPropertyName("maker_address")]
         public string MakerAddress { get; set; } = string.Empty;
         /// <summary>
-        /// Asset/token id
+        /// ["<c>asset_id</c>"] Asset/token id
         /// </summary>
         [JsonPropertyName("asset_id")]
         public string TokenId { get; set; } = string.Empty;
         /// <summary>
-        /// Market id
+        /// ["<c>market</c>"] Market id
         /// </summary>
         [JsonPropertyName("market")]
         public string Market { get; set; } = string.Empty;
         /// <summary>
-        /// API key of the order owner
+        /// ["<c>owner</c>"] API key of the order owner
         /// </summary>
         [JsonPropertyName("owner")]
         public string Owner { get; set; } = string.Empty;
         /// <summary>
-        /// Quantity matched in trade
+        /// ["<c>matched_amount</c>"] Quantity matched in trade
         /// </summary>
         [JsonPropertyName("matched_amount")]
         public decimal QuantityFilled { get; set; }
@@ -60,27 +60,27 @@ namespace Polymarket.Net.Objects.Models
         }
 
         /// <summary>
-        /// Fee rate in BPS
+        /// ["<c>fee_rate_bps</c>"] Fee rate in BPS
         /// </summary>
         [JsonPropertyName("fee_rate_bps")]
         public decimal FeeRateBps { get; set; }
         /// <summary>
-        /// Price
+        /// ["<c>price</c>"] Price
         /// </summary>
         [JsonPropertyName("price")]
         public decimal Price { get; set; }
         /// <summary>
-        /// Order outcome description
+        /// ["<c>outcome</c>"] Order outcome description
         /// </summary>
         [JsonPropertyName("outcome")]
         public string Outcome { get; set; } = string.Empty;
         /// <summary>
-        /// Outcome index
+        /// ["<c>outcome_index</c>"] Outcome index
         /// </summary>
         [JsonPropertyName("outcome_index")]
         public int? OutcomeIndex { get; set; }
         /// <summary>
-        /// Order side
+        /// ["<c>side</c>"] Order side
         /// </summary>
         [JsonPropertyName("side")]
         public OrderSide Side { get; set; }

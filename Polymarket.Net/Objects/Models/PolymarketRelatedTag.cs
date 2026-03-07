@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,22 +13,22 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketRelatedTag
     {
         /// <summary>
-        /// Id
+        /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = string.Empty;
         /// <summary>
-        /// Tag id
+        /// ["<c>tagID</c>"] Tag id
         /// </summary>
         [JsonPropertyName("tagID")]
         public long TagId { get; set; }
         /// <summary>
-        /// Related tag id
+        /// ["<c>relatedTagID</c>"] Related tag id
         /// </summary>
         [JsonPropertyName("relatedTagID")]
         public long RelatedTagId { get; set; }
         /// <summary>
-        /// Rank
+        /// ["<c>rank</c>"] Rank
         /// </summary>
         [JsonPropertyName("rank")]
         public long Rank { get; set; }

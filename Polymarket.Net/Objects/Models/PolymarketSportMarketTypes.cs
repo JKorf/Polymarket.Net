@@ -1,4 +1,4 @@
-﻿using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Converters.SystemTextJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace Polymarket.Net.Objects.Models
     internal record PolymarketSportMarketTypes
     {
         /// <summary>
-        /// Tags
+        /// ["<c>marketTypes</c>"] Tags
         /// </summary>
         [JsonPropertyName("marketTypes")]
         public string[] MarketTypes { get; set; } = [];

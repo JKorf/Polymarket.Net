@@ -8,7 +8,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketPrice
     {
         /// <summary>
-        /// Price
+        /// ["<c>price</c>"] Price
         /// </summary>
         [JsonPropertyName("price")]
         public decimal Price { get; set; }

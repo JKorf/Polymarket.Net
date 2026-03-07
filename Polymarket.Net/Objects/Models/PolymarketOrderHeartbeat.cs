@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Objects.Models
 {
@@ -8,7 +8,7 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketOrderHeartbeat
     {
         /// <summary>
-        /// The heart beat id, should be used for subsequent heartbeat requests
+        /// ["<c>heartbeat_id</c>"] The heart beat id, should be used for subsequent heartbeat requests
         /// </summary>
         [JsonPropertyName("heartbeat_id")]
         public string HeartbeatId { get; set; } = string.Empty;
