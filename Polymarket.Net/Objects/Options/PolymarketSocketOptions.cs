@@ -1,3 +1,4 @@
+using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects.Options;
 
 namespace Polymarket.Net.Objects.Options
@@ -5,7 +6,7 @@ namespace Polymarket.Net.Objects.Options
     /// <summary>
     /// Options for the PolymarketSocketClient
     /// </summary>
-    public class PolymarketSocketOptions : SocketExchangeOptions<PolymarketEnvironment, PolymarketCredentials>
+    public class PolymarketSocketOptions : SocketExchangeOptions<PolymarketEnvironment>
     {
         /// <summary>
         /// Default options for new clients

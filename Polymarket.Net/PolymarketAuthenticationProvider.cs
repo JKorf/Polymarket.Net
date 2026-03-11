@@ -1,4 +1,3 @@
-using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Authentication.Signing;
 using CryptoExchange.Net.Clients;
@@ -21,33 +20,21 @@ using System.Text;
 
 namespace Polymarket.Net
 {
-    internal class PolymarketAuthenticationProvider : AuthenticationProvider<PolymarketCredentials>
+    internal class PolymarketAuthenticationProvider : AuthenticationProvider
     {
-        private string? _publicAddress;
-        private byte[]? _hmacBytes;
-
         private const string _l1SignMessage = "This message attests that I control the given wallet";
 
         private static IStringMessageSerializer _serializer = new SystemTextJsonMessageSerializer(PolymarketPlatform._serializerContext);
 
-        public string PublicAddress => GetPublicAddress();
-        public SignType SignatureType => _credentials.SignatureType;
-        public string? PolymarketFundingAddress => _credentials.PolymarketFundingAddress;
-        public override ApiCredentialsType[] SupportedCredentialTypes => [ApiCredentialsType.Hmac];
+        public PolymarketCredential PolyCredential => (PolymarketCredential)Credential;
 
-        public PolymarketAuthenticationProvider(PolymarketCredentials credentials) : base(credentials)
+        public string PublicAddress => PolyCredential.GetPublicAddress();
+        public SignType SignatureType => PolyCredential.SignatureType;
+        public string? PolymarketFundingAddress => PolyCredential.PolymarketFundingAddress;
+        public override ApiCredentialsType[] SupportedCredentialTypes => [ApiCredentialsType.Custom];
+
+        public PolymarketAuthenticationProvider(ApiCredentials credentials) : base(credentials, typeof(PolymarketCredential))
         {
-            if (!string.IsNullOrEmpty(_credentials.L2Secret))
-            {
-                try
-                {
-                    _hmacBytes = Convert.FromBase64String(_credentials.L2Secret!.Replace('-', '+').Replace('_', '/'));
-                }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException("Provided secret invalid, not in base64 format", ex);
-                }
-            }
         }
 
         public override void ProcessRequest(RestApiClient apiClient, RestRequestConfiguration requestConfig)
@@ -70,10 +57,10 @@ namespace Polymarket.Net
 
         public override Query? GetAuthenticationQuery(SocketApiClient apiClient, SocketConnection connection, Dictionary<string, object?>? context = null)
         {
-            if (_credentials.L2ApiKey == null)
+            if (PolyCredential.L2ApiKey == null)
                 throw new InvalidOperationException("Layer 2 credentials required");
 
-            return new PolymarketInitialQuery<object>("USER", _credentials.L2ApiKey, _credentials.L2Secret!, _credentials.L2Pass!);
+            return new PolymarketInitialQuery<object>("USER", PolyCredential.L2ApiKey, PolyCredential.L2Secret!, PolyCredential.L2Pass!);
         }
 
         private void SignL1Custom(RestRequestConfiguration requestConfig, uint chainId)
@@ -87,7 +74,7 @@ namespace Polymarket.Net
 
             var signature = SignHash(keccakSigned);
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("POLY_ADDRESS", GetPublicAddress());
+            requestConfig.Headers.Add("POLY_ADDRESS", PolyCredential.GetPublicAddress());
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.ToLowerInvariant());
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
             requestConfig.Headers.Add("POLY_NONCE", nonce?.ToString() ?? "0");
@@ -95,14 +82,13 @@ namespace Polymarket.Net
 
         private void SignL2(RestApiClient client, RestRequestConfiguration requestConfig)
         {
-            if (_hmacBytes == null)
-                throw new ArgumentException("Layer 2 credentials required");
-
+            var hmacBytes = PolyCredential.GetL2HmacBytes() 
+                ?? throw new ArgumentException("Layer 2 credentials required");
             var timestamp = DateTimeConverter.ConvertToSeconds(DateTime.UtcNow);
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("POLY_ADDRESS", GetPublicAddress());
-            requestConfig.Headers.Add("POLY_API_KEY", _credentials.L2ApiKey!);
-            requestConfig.Headers.Add("POLY_PASSPHRASE", _credentials.L2Pass!);
+            requestConfig.Headers.Add("POLY_ADDRESS", PolyCredential.GetPublicAddress());
+            requestConfig.Headers.Add("POLY_API_KEY", PolyCredential.L2ApiKey!);
+            requestConfig.Headers.Add("POLY_PASSPHRASE", PolyCredential.L2Pass!);
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
 
             var signData = timestamp + requestConfig.Method.ToString() + requestConfig.Path;
@@ -114,7 +100,7 @@ namespace Polymarket.Net
             }
 
             string signature;
-            using (var hmac = new HMACSHA256(_hmacBytes))
+            using (var hmac = new HMACSHA256(hmacBytes))
                 signature = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(signData)));
 
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.Replace('+', '-').Replace('/', '_'));
@@ -141,23 +127,7 @@ namespace Polymarket.Net
             requestConfig.Headers.Add("POLY_BUILDER_TIMESTAMP", timestamp.Value.ToString());
         }
 
-        public string GetPublicAddress()
-        {
-            if (_publicAddress != null)
-                return _publicAddress;
-
-            var publicKeyBytes = Secp256k1.CreatePublicKey(HexToBytesString(_credentials.L1PrivateKey), false);
-
-            var withoutPrefix = new byte[64];
-            Array.Copy(publicKeyBytes, 1, withoutPrefix, 0, 64);
-
-            var hash = CeSha3Keccack.CalculateHash(withoutPrefix);
-            var pubAddress = new byte[20];
-            Array.Copy(hash, hash.Length - 20, pubAddress, 0, 20);
-
-            _publicAddress = "0x" + BytesToHexString(pubAddress); // Public address
-            return _publicAddress;
-        }
+        
 
         public string GetOrderSignature(ParameterCollection parameters, uint chainId, bool negativeRisk)
         {
@@ -169,7 +139,7 @@ namespace Polymarket.Net
 
         private string SignHash(byte[] hash)
         {
-            (var signature, var recover) = Secp256k1.SignRecoverable(hash, HexToBytesString(_credentials.L1PrivateKey));
+            (var signature, var recover) = Secp256k1.SignRecoverable(hash, HexToBytesString(PolyCredential.L1PrivateKey));
             var hexCompactR = BytesToHexString(new ArraySegment<byte>(signature, 0, 32));
             var hexCompactS = BytesToHexString(new ArraySegment<byte>(signature, 32, 32));
             var hexCompactV = BytesToHexString([(byte)(recover + 27)]);

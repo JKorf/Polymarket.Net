@@ -56,13 +56,6 @@ namespace Polymarket.Net.Clients
 
         #endregion
 
-        /// <inheritdoc />
-        public void SetOptions(UpdateOptions options)
-        {
-            GammaApi.SetOptions(options);
-            ClobApi.SetOptions(options);
-        }
-
         /// <summary>
         /// Set the default options to be used when creating new clients
         /// </summary>
@@ -78,27 +71,20 @@ namespace Polymarket.Net.Clients
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
 
-            var existingCreds = (PolymarketCredentials?)((PolymarketRestClientClobApi)ClobApi).ApiCredentials;
-            if (existingCreds == null)
-                throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");            
-
-            var newCredentials = new PolymarketCredentials(
-                existingCreds.SignatureType,
-                existingCreds.L1PrivateKey,
+            var existingCreds = ((PolymarketRestClientClobApi)ClobApi).ApiCredentials
+                ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
+            var existingCredential = existingCreds.GetCredential<PolymarketCredential>()
+                ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
+            var newCredentials = new PolymarketCredential(
+                existingCredential.SignatureType,
+                existingCredential.L1PrivateKey,
                 credentials.ApiKey,
                 credentials.Secret,
                 credentials.Passphrase,
-                existingCreds.PolymarketFundingAddress
+                existingCredential.PolymarketFundingAddress
                 );
 
-            SetApiCredentials(newCredentials);
-        }
-
-        /// <inheritdoc />
-        public void SetApiCredentials(PolymarketCredentials credentials)
-        {            
-            ClobApi.SetApiCredentials(credentials);
-            GammaApi.SetApiCredentials(credentials);
+            SetApiCredentials(new ApiCredentials(newCredentials));
         }
     }
 }

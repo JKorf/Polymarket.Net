@@ -47,7 +47,7 @@ namespace Polymarket.Net.Clients
         }
 
         /// <inheritdoc />
-        public void InitializeUserClient(string userIdentifier, PolymarketCredentials credentials, PolymarketEnvironment? environment = null)
+        public void InitializeUserClient(string userIdentifier, ApiCredentials credentials, PolymarketEnvironment? environment = null)
         {
             CreateRestClient(userIdentifier, credentials, environment);
             CreateSocketClient(userIdentifier, credentials, environment);
@@ -61,7 +61,7 @@ namespace Polymarket.Net.Clients
         }
 
         /// <inheritdoc />
-        public IPolymarketRestClient GetRestClient(string userIdentifier, PolymarketCredentials? credentials = null, PolymarketEnvironment? environment = null)
+        public IPolymarketRestClient GetRestClient(string userIdentifier, ApiCredentials? credentials = null, PolymarketEnvironment? environment = null)
         {
             if (!_restClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateRestClient(userIdentifier, credentials, environment);
@@ -70,7 +70,7 @@ namespace Polymarket.Net.Clients
         }
 
         /// <inheritdoc />
-        public IPolymarketSocketClient GetSocketClient(string userIdentifier, PolymarketCredentials? credentials = null, PolymarketEnvironment? environment = null)
+        public IPolymarketSocketClient GetSocketClient(string userIdentifier, ApiCredentials? credentials = null, PolymarketEnvironment? environment = null)
         {
             if (!_socketClients.TryGetValue(userIdentifier, out var client) || client.Disposed)
                 client = CreateSocketClient(userIdentifier, credentials, environment);
@@ -78,7 +78,7 @@ namespace Polymarket.Net.Clients
             return client;
         }
 
-        private IPolymarketRestClient CreateRestClient(string userIdentifier, PolymarketCredentials? credentials, PolymarketEnvironment? environment)
+        private IPolymarketRestClient CreateRestClient(string userIdentifier, ApiCredentials? credentials, PolymarketEnvironment? environment)
         {
             var clientRestOptions = SetRestEnvironment(environment);
             var client = new PolymarketRestClient(_httpClient, _loggerFactory, clientRestOptions);
@@ -90,7 +90,7 @@ namespace Polymarket.Net.Clients
             return client;
         }
 
-        private IPolymarketSocketClient CreateSocketClient(string userIdentifier, PolymarketCredentials? credentials, PolymarketEnvironment? environment)
+        private IPolymarketSocketClient CreateSocketClient(string userIdentifier, ApiCredentials? credentials, PolymarketEnvironment? environment)
         {
             var clientSocketOptions = SetSocketEnvironment(environment);
             var client = new PolymarketSocketClient(clientSocketOptions!, _loggerFactory);

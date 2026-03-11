@@ -75,7 +75,7 @@ namespace Polymarket.Net.Clients.ClobApi
 
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
-            => new PolymarketAuthenticationProvider((PolymarketCredentials)credentials);
+            => new PolymarketAuthenticationProvider(credentials);
 
         /// <inheritdoc />
         public async Task<CallResult<UpdateSubscription>> SubscribeToPlatformUpdatesAsync(

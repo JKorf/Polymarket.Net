@@ -5,7 +5,7 @@ namespace Polymarket.Net.Objects.Options
     /// <summary>
     /// Options for the PolymarketRestClient
     /// </summary>
-    public class PolymarketRestOptions : RestExchangeOptions<PolymarketEnvironment, PolymarketCredentials>
+    public class PolymarketRestOptions : RestExchangeOptions<PolymarketEnvironment>
     {
         /// <summary>
         /// Default options for new clients

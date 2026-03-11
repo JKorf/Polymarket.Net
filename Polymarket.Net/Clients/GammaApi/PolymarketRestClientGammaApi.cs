@@ -59,7 +59,7 @@ namespace Polymarket.Net.Clients.GammaApi
 
         /// <inheritdoc />
         protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
-            => new PolymarketAuthenticationProvider((PolymarketCredentials)credentials);
+            => new PolymarketAuthenticationProvider(credentials);
 
         internal Task<WebCallResult> SendAsync(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)
             => SendToAddressAsync(BaseAddress, definition, parameters, cancellationToken, weight);
