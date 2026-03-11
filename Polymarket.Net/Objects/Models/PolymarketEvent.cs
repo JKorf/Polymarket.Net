@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using CryptoExchange.Net.Converters.SystemTextJson;
 
 namespace Polymarket.Net.Objects.Models
 {
@@ -205,7 +206,8 @@ namespace Polymarket.Net.Objects.Models
         /// <summary>
         /// ["<c>parentEvent</c>"] Parent event
         /// </summary>
-        [JsonPropertyName("parentEvent")]
+        [JsonPropertyName("parentEventId")]
+        [JsonConverter(typeof(NumberStringConverter))]
         public string ParentEvent { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>enableOrderBook</c>"] Enabled order book

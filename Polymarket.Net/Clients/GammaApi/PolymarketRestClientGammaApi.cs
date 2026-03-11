@@ -17,6 +17,7 @@ using Polymarket.Net.Clients.MessageHandlers;
 using Polymarket.Net.Objects;
 using Polymarket.Net.Objects.Models;
 using System.Collections.Generic;
+using System.Linq;
 using Polymarket.Net.Enums;
 using CryptoExchange.Net.RateLimiting.Guards;
 
@@ -279,9 +280,9 @@ namespace Polymarket.Net.Clients.GammaApi
             CancellationToken ct = default)
         {
             var parameters = new ParameterCollection();
-            parameters.AddOptional("id", ids);
+            parameters.AddOptional("id", ids?.Cast<object>().ToArray());
             parameters.AddOptional("tag_id", tagId);
-            parameters.AddOptional("exclude_tag_id", excludeTagIds);
+            parameters.AddOptional("exclude_tag_id", excludeTagIds?.Cast<object>().ToArray());
             parameters.AddOptional("slug", slugs);
             parameters.AddOptional("tag_slug", tagSlug);
             parameters.AddOptionalBoolString("related_tags", relatedTags);
