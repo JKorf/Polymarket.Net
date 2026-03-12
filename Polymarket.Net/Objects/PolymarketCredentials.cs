@@ -1,60 +1,60 @@
 ﻿using CryptoExchange.Net.Authentication;
-using Polymarket.Net.Clients.ClobApi;
 using Polymarket.Net.Enums;
-using System;
-using System.Linq;
 
 namespace Polymarket.Net.Objects
 {
     /// <summary>
-    /// Polymarket credentials
+    /// Polymarket API credentials
     /// </summary>
     public class PolymarketCredentials : ApiCredentials
     {
-        /// <summary>
-        /// Polymarket credentials
-        /// </summary>
-        public PolymarketCredential? Poly
-        {
-            get => (PolymarketCredential?)CredentialPairs.SingleOrDefault(x => x.CredentialType == ApiCredentialsType.Custom);
-            set => AddOrRemoveCredential(ApiCredentialsType.Custom, value);
-        }
+        public PolymarketL1Credential L1Credential => GetCredential<PolymarketL1Credential>();
+        public HMACCredential L2Credential => GetCredential<HMACCredential>();
 
         /// <summary>
-        /// DI constructor
+        /// Create credentials using Layer 1 private key and optional Polymarket funding address. If the FuturesV3 API will be used use <see cref="PolymarketCredentials.PolymarketCredentials(HMACCredential?, PolymarketECDSACredential?)" /> instead.
         /// </summary>
-        [Obsolete("Parameterless constructor is only for deserialization purposes and should not be used directly. Use with parameters instead.")]
-        public PolymarketCredentials() { }
+        public PolymarketCredentials(SignType signType, string privateKey, string? polymarketFundingAddress = null)
+            : this(new PolymarketL1Credential(signType, privateKey, polymarketFundingAddress)) { }
 
-        /// <summary>
-        /// Create new API credentials with a Polymarket public address and the private key for the funding address
-        /// </summary>
-        /// <param name="signType">The signature type</param>
-        /// <param name="polymarketFundingAddress">The polymarket funding address when using email/magic wallets. Can be found in your account in the web interface</param>
-        /// <param name="l1PrivateKey">Private key for the trading wallet</param>
-        public PolymarketCredentials(SignType signType, string l1PrivateKey, string? polymarketFundingAddress = null)
-            : base(new PolymarketCredential(signType, l1PrivateKey, polymarketFundingAddress))
-        {
-        }
-
-        /// <summary>
-        /// Create new API credentials with a Polymarket public address, the private key for the funding address and previously obtained layer 2 credentials using <see cref="PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync"/>
-        /// </summary>
-        /// <param name="signType">The signature type</param>
-        /// <param name="polymarketFundingAddress">The polymarket funding address when using email/magic wallets. Can be found in your account in the web interface</param>
-        /// <param name="l1PrivateKey">Private key for the trading wallet</param>
-        /// <param name="l2Key">The layer 2 API key previously obtained with <see cref="PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync"/></param>
-        /// <param name="l2Secret">The layer 2 secret previously obtained with <see cref="PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync"/></param>
-        /// <param name="l2Pass">The layer 2 passphrase previously obtained with <see cref="PolymarketRestClientClobApiAccount.GetOrCreateApiCredentialsAsync"/></param>
-        public PolymarketCredentials(
-            SignType signType,
+        public PolymarketCredentials(SignType signType,
             string l1PrivateKey,
             string l2Key,
             string l2Secret,
             string l2Pass,
-            string? polymarketFundingAddress = null) 
-            : base(new PolymarketCredential(signType, l1PrivateKey, l2Key, l2Secret, l2Pass, polymarketFundingAddress))
+            string? polymarketFundingAddress = null)
+            : this (new PolymarketL1Credential(signType, l1PrivateKey, polymarketFundingAddress), new HMACCredential(l2Key, l2Secret, l2Pass)) { }
+
+        /// <summary>
+        /// Create credentials using HMAC credentials. If the FuturesV3 API will be used use <see cref="PolymarketCredentials.PolymarketCredentials(HMACCredential?, PolymarketECDSACredential?)" /> instead.
+        /// </summary>
+        /// <param name="hmacCredential">HMAC credentials for the Spot and Futures API</param>
+        public PolymarketCredentials(HMACCredential hmacCredential)
+            : this(null, hmacCredential) 
         {
         }
+
+        /// <summary>
+        /// Create credentials using ECDSA credentials. This only grants access to the FuturesV3 API.If the Spot API will be used use <see cref="PolymarketCredentials.PolymarketCredentials(HMACCredential?, PolymarketECDSACredential?)" /> instead.
+        /// </summary>
+        /// <param name="futuresV3Credential">ECDSA credentials for the FuturesV3 API</param>
+        public PolymarketCredentials(PolymarketL1Credential futuresV3Credential)
+            : this(futuresV3Credential, null)
+        {
+        }
+
+        /// <summary>
+        /// Create credentials proving both HMAC credentials for the Spot/Futures API's and ECDSA credentials for the FuturesV3 API
+        /// </summary>
+        /// <param name="hmacCredential">HMAC credentials for the Spot and Futures API</param>
+        /// <param name="futuresV3Credential">ECDSA credentials for the FuturesV3 API</param>
+        public PolymarketCredentials(PolymarketL1Credential? futuresV3Credential, HMACCredential? hmacCredential)
+            : base(hmacCredential, futuresV3Credential)
+        {
+        }
+
+        /// <inheritdoc />
+        public override ApiCredentials Copy() => 
+            new PolymarketCredentials(GetCredential<PolymarketL1Credential>(), GetCredential<HMACCredential>());
     }
 }

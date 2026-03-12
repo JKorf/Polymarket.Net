@@ -19,7 +19,7 @@ using Polymarket.Net.Objects;
 namespace Polymarket.Net.Clients.ClobApi
 {
     /// <inheritdoc cref="IPolymarketRestClientClobApi" />
-    internal partial class PolymarketRestClientClobApi : RestApiClient, IPolymarketRestClientClobApi
+    internal partial class PolymarketRestClientClobApi : RestApiClient<PolymarketEnvironment, PolymarketCredentials>, IPolymarketRestClientClobApi
     {
         #region fields 
         protected override ErrorMapping ErrorMapping => PolymarketErrors.Errors;
@@ -61,7 +61,7 @@ namespace Polymarket.Net.Clients.ClobApi
 
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
+        protected override AuthenticationProvider<PolymarketCredentials> CreateAuthenticationProvider(PolymarketCredentials credentials)
             => new PolymarketAuthenticationProvider(credentials);
 
         internal Task<WebCallResult> SendAsync(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)

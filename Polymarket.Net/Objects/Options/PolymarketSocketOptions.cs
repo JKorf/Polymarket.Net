@@ -6,7 +6,7 @@ namespace Polymarket.Net.Objects.Options
     /// <summary>
     /// Options for the PolymarketSocketClient
     /// </summary>
-    public class PolymarketSocketOptions : SocketExchangeOptions<PolymarketEnvironment>
+    public class PolymarketSocketOptions : SocketExchangeOptions<PolymarketEnvironment, PolymarketCredentials>
     {
         /// <summary>
         /// Default options for new clients
@@ -28,12 +28,12 @@ namespace Polymarket.Net.Objects.Options
          /// <summary>
         /// Clob API options
         /// </summary>
-        public SocketApiOptions ClobOptions { get; private set; } = new SocketApiOptions();
+        public SocketApiOptions<PolymarketCredentials> ClobOptions { get; private set; } = new SocketApiOptions<PolymarketCredentials>();
 
         /// <summary>
         /// Gamma API options
         /// </summary>
-        public SocketApiOptions GammaOptions { get; private set; } = new SocketApiOptions();
+        public SocketApiOptions<PolymarketCredentials> GammaOptions { get; private set; } = new SocketApiOptions<PolymarketCredentials>();
 
         internal PolymarketSocketOptions Set(PolymarketSocketOptions targetOptions)
         {

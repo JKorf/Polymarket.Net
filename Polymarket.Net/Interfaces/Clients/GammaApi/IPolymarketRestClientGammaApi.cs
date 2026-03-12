@@ -1,6 +1,7 @@
 using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects;
 using Polymarket.Net.Enums;
+using Polymarket.Net.Objects;
 using Polymarket.Net.Objects.Models;
 using Polymarket.Net.Objects.Options;
 using System;
@@ -13,7 +14,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
     /// <summary>
     /// Polymarket Gamma API endpoints
     /// </summary>
-    public interface IPolymarketRestClientGammaApi : IRestApiClient, IDisposable
+    public interface IPolymarketRestClientGammaApi : IRestApiClient<PolymarketCredentials>, IDisposable
     {
         /// <summary>
         /// Options

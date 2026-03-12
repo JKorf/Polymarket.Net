@@ -23,7 +23,7 @@ using CryptoExchange.Net.RateLimiting.Guards;
 namespace Polymarket.Net.Clients.GammaApi
 {
     /// <inheritdoc cref="IPolymarketRestClientGammaApi" />
-    internal partial class PolymarketRestClientGammaApi : RestApiClient, IPolymarketRestClientGammaApi
+    internal partial class PolymarketRestClientGammaApi : RestApiClient<PolymarketEnvironment, PolymarketCredentials>, IPolymarketRestClientGammaApi
     {
         #region fields 
         private static readonly RequestDefinitionCache _definitions = new RequestDefinitionCache();
@@ -58,7 +58,7 @@ namespace Polymarket.Net.Clients.GammaApi
 
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
+        protected override AuthenticationProvider<PolymarketCredentials> CreateAuthenticationProvider(PolymarketCredentials credentials)
             => new PolymarketAuthenticationProvider(credentials);
 
         internal Task<WebCallResult> SendAsync(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)

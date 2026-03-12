@@ -11,7 +11,7 @@ namespace Polymarket.Net.Interfaces.Clients
     /// <summary>
     /// Client for accessing the Polymarket Rest API. 
     /// </summary>
-    public interface IPolymarketRestClient : IRestClient
+    public interface IPolymarketRestClient : IRestClient<PolymarketCredentials>
     {
         /// <summary>
         /// Clob API endpoints

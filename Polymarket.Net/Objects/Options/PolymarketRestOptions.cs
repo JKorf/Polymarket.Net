@@ -5,7 +5,7 @@ namespace Polymarket.Net.Objects.Options
     /// <summary>
     /// Options for the PolymarketRestClient
     /// </summary>
-    public class PolymarketRestOptions : RestExchangeOptions<PolymarketEnvironment>
+    public class PolymarketRestOptions : RestExchangeOptions<PolymarketEnvironment, PolymarketCredentials>
     {
         /// <summary>
         /// Default options for new clients
@@ -27,12 +27,12 @@ namespace Polymarket.Net.Objects.Options
          /// <summary>
         /// Clob API options
         /// </summary>
-        public RestApiOptions ClobOptions { get; private set; } = new RestApiOptions();
+        public RestApiOptions<PolymarketCredentials> ClobOptions { get; private set; } = new RestApiOptions<PolymarketCredentials>();
 
         /// <summary>
         /// Gamma API options
         /// </summary>
-        public RestApiOptions GammaOptions { get; private set; } = new RestApiOptions();
+        public RestApiOptions<PolymarketCredentials> GammaOptions { get; private set; } = new RestApiOptions<PolymarketCredentials>();
 
         /// <summary>
         /// Builder API api key

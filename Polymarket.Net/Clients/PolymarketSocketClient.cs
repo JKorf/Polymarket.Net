@@ -16,7 +16,7 @@ using CryptoExchange.Net.Authentication;
 namespace Polymarket.Net.Clients
 {
     /// <inheritdoc cref="IPolymarketSocketClient" />
-    public class PolymarketSocketClient : BaseSocketClient, IPolymarketSocketClient
+    public class PolymarketSocketClient : BaseSocketClient<PolymarketEnvironment, PolymarketCredentials>, IPolymarketSocketClient
     {
         #region fields
         #endregion
@@ -69,18 +69,9 @@ namespace Polymarket.Net.Clients
 
             var existingCreds = ((PolymarketRestClientClobApi)ClobApi).ApiCredentials
                 ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
-            var existingCredential = existingCreds.GetCredential<PolymarketCredential>()
-                ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
-            var newCredentials = new PolymarketCredential(
-                existingCredential.SignatureType,
-                existingCredential.L1PrivateKey,
-                credentials.ApiKey,
-                credentials.Secret,
-                credentials.Passphrase,
-                existingCredential.PolymarketFundingAddress
-                );
 
-            SetApiCredentials(new ApiCredentials(newCredentials));
+            var l2Credentials = new HMACCredential(credentials.ApiKey, credentials.Secret, credentials.Passphrase);
+            SetApiCredentials(new PolymarketCredentials(existingCreds.L1Credential, l2Credentials));
         }
 
     }

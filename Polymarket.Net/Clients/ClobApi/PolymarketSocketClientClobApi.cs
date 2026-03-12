@@ -32,7 +32,7 @@ namespace Polymarket.Net.Clients.ClobApi
     /// <summary>
     /// Client providing access to the Polymarket Clob websocket Api
     /// </summary>
-    internal partial class PolymarketSocketClientClobApi : SocketApiClient, IPolymarketSocketClientClobApi
+    internal partial class PolymarketSocketClientClobApi : SocketApiClient<PolymarketEnvironment, PolymarketCredentials>, IPolymarketSocketClientClobApi
     {
         #region fields
         private string _sportUri;
@@ -74,7 +74,7 @@ namespace Polymarket.Net.Clients.ClobApi
         public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new PolymarketSocketSpotMessageHandler();
 
         /// <inheritdoc />
-        protected override AuthenticationProvider CreateAuthenticationProvider(ApiCredentials credentials)
+        protected override AuthenticationProvider<PolymarketCredentials> CreateAuthenticationProvider(PolymarketCredentials credentials)
             => new PolymarketAuthenticationProvider(credentials);
 
         /// <inheritdoc />
