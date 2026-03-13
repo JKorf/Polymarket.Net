@@ -251,9 +251,9 @@ namespace Polymarket.Net.Clients.GammaApi
 
         /// <inheritdoc />
         public async Task<WebCallResult<PolymarketEvent[]>> GetEventsAsync(
-            long[]? ids = null,
+            string[]? ids = null,
             long? tagId = null,
-            long[]? excludeTagIds = null,
+            string[]? excludeTagIds = null,
             string[]? slugs = null,
             string? tagSlug = null,
             bool? relatedTags = null,
@@ -280,9 +280,9 @@ namespace Polymarket.Net.Clients.GammaApi
             CancellationToken ct = default)
         {
             var parameters = new ParameterCollection();
-            parameters.AddOptional("id", ids?.Cast<object>().ToArray());
+            parameters.AddOptional("id", ids);
             parameters.AddOptional("tag_id", tagId);
-            parameters.AddOptional("exclude_tag_id", excludeTagIds?.Cast<object>().ToArray());
+            parameters.AddOptional("exclude_tag_id", excludeTagIds);
             parameters.AddOptional("slug", slugs);
             parameters.AddOptional("tag_slug", tagSlug);
             parameters.AddOptionalBoolString("related_tags", relatedTags);

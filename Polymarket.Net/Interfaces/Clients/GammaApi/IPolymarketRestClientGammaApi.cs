@@ -221,9 +221,9 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="ascending">["<c>ascending</c>"] Ascending order</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketEvent[]>> GetEventsAsync(
-            long[]? ids = null,
+            string[]? ids = null,
             long? tagId = null,
-            long[]? excludeTagIds = null,
+            string[]? excludeTagIds = null,
             string[]? slugs = null,
             string? tagSlug = null,
             bool? relatedTags = null,
