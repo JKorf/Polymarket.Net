@@ -1,7 +1,6 @@
 using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects;
 using Polymarket.Net.Enums;
-using Polymarket.Net.Objects;
 using Polymarket.Net.Objects.Models;
 using Polymarket.Net.Objects.Options;
 using System;

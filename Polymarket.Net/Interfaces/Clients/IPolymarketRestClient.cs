@@ -3,7 +3,6 @@ using CryptoExchange.Net.Interfaces.Clients;
 using CryptoExchange.Net.Objects.Options;
 using Polymarket.Net.Interfaces.Clients.ClobApi;
 using Polymarket.Net.Interfaces.Clients.GammaApi;
-using Polymarket.Net.Objects;
 using Polymarket.Net.Objects.Models;
 
 namespace Polymarket.Net.Interfaces.Clients

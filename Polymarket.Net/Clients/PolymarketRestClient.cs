@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using CryptoExchange.Net.Objects.Options;
 using Polymarket.Net.Interfaces.Clients.ClobApi;
 using Polymarket.Net.Clients.ClobApi;
-using Polymarket.Net.Objects;
 using Polymarket.Net.Interfaces.Clients.GammaApi;
 using Polymarket.Net.Clients.GammaApi;
 using Polymarket.Net.Objects.Models;

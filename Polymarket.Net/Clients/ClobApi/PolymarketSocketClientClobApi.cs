@@ -14,7 +14,6 @@ using CryptoExchange.Net.Sockets.Default;
 using Microsoft.Extensions.Logging;
 using Polymarket.Net.Clients.MessageHandlers;
 using Polymarket.Net.Interfaces.Clients.ClobApi;
-using Polymarket.Net.Objects;
 using Polymarket.Net.Objects.Models;
 using Polymarket.Net.Objects.Options;
 using Polymarket.Net.Objects.Sockets;
@@ -32,7 +31,7 @@ namespace Polymarket.Net.Clients.ClobApi
     /// <summary>
     /// Client providing access to the Polymarket Clob websocket Api
     /// </summary>
-    internal partial class PolymarketSocketClientClobApi : SocketApiClient<PolymarketEnvironment, PolymarketCredentials>, IPolymarketSocketClientClobApi
+    internal partial class PolymarketSocketClientClobApi : SocketApiClient<PolymarketEnvironment, PolymarketAuthenticationProvider, PolymarketCredentials>, IPolymarketSocketClientClobApi
     {
         #region fields
         private string _sportUri;
@@ -74,7 +73,7 @@ namespace Polymarket.Net.Clients.ClobApi
         public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new PolymarketSocketSpotMessageHandler();
 
         /// <inheritdoc />
-        protected override AuthenticationProvider<PolymarketCredentials> CreateAuthenticationProvider(PolymarketCredentials credentials)
+        protected override PolymarketAuthenticationProvider CreateAuthenticationProvider(PolymarketCredentials credentials)
             => new PolymarketAuthenticationProvider(credentials);
 
         /// <inheritdoc />

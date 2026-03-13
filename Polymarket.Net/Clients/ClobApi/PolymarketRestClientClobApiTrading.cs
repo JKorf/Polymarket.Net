@@ -76,10 +76,10 @@ namespace Polymarket.Net.Clients.ClobApi
 
             var parameters = new ParameterCollection();
             var orderParameters = new ParameterCollection();
-            var authProvider = (PolymarketAuthenticationProvider)_baseClient.AuthenticationProvider!;
+            var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
             orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
-            orderParameters.Add("maker", authProvider.ApiCredentials.L1Credential.PolymarketFundingAddress ?? authProvider.ApiCredentials.L1Credential.GetPublicAddress());
-            orderParameters.Add("signer", authProvider.ApiCredentials.L1Credential.GetPublicAddress());
+            orderParameters.Add("maker", credentials.L1Credential.PolymarketFundingAddress ?? credentials.L1Credential.GetPublicAddress());
+            orderParameters.Add("signer", credentials.L1Credential.GetPublicAddress());
             orderParameters.Add("taker", takerAddress ?? "0x0000000000000000000000000000000000000000");
             orderParameters.Add("tokenId", tokenId);
             orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
@@ -88,15 +88,15 @@ namespace Polymarket.Net.Clients.ClobApi
             orderParameters.AddString("nonce", nonce ?? 0);
             orderParameters.AddString("feeRateBps", feeRateBps ?? 0);
             orderParameters.AddEnum("side", side);
-            orderParameters.Add("signatureType", (int)authProvider.ApiCredentials.L1Credential.SignType);
+            orderParameters.Add("signatureType", (int)credentials.L1Credential.SignType);
             orderParameters.Add("signature", 
-                authProvider.GetOrderSignature(
+                _baseClient.AuthenticationProvider.GetOrderSignature(
                     orderParameters,
                     _baseClient.ClientOptions.Environment.ChainId,
                     tokenResult.Data.NegativeRisk).ToLowerInvariant());
 
             parameters.Add("order", orderParameters);
-            parameters.Add("owner", authProvider.ApiCredentials.L2Credential.Key!);
+            parameters.Add("owner", credentials.L2Credential.PublicKey!);
             parameters.AddEnum("orderType", timeInForce ?? TimeInForce.GoodTillCanceled);
             parameters.AddOptional("postOnly", postOnly);
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
@@ -127,10 +127,10 @@ namespace Polymarket.Net.Clients.ClobApi
 
                 var parameters = new ParameterCollection();
                 var orderParameters = new ParameterCollection();
-                var authProvider = (PolymarketAuthenticationProvider)_baseClient.AuthenticationProvider!;
+                var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
                 orderParameters.Add("salt", (ulong)(request.ClientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
-                orderParameters.Add("maker", authProvider.ApiCredentials.L1Credential.PolymarketFundingAddress ?? authProvider.ApiCredentials.L1Credential.GetPublicAddress());
-                orderParameters.Add("signer", authProvider.ApiCredentials.L1Credential.GetPublicAddress());
+                orderParameters.Add("maker", credentials.L1Credential.PolymarketFundingAddress ?? credentials.L1Credential.GetPublicAddress());
+                orderParameters.Add("signer", credentials.L1Credential.GetPublicAddress());
                 orderParameters.Add("taker", request.TakerAddress ?? "0x0000000000000000000000000000000000000000");
                 orderParameters.Add("tokenId", request.TokenId);
                 orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
@@ -139,15 +139,15 @@ namespace Polymarket.Net.Clients.ClobApi
                 orderParameters.AddString("nonce", request.Nonce ?? 0);
                 orderParameters.AddString("feeRateBps", request.FeeRateBps ?? 0);
                 orderParameters.AddEnum("side", request.Side);
-                orderParameters.Add("signatureType", (int)authProvider.ApiCredentials.L1Credential.SignType);
+                orderParameters.Add("signatureType", (int)credentials.L1Credential.SignType);
                 orderParameters.Add("signature",
-                    authProvider.GetOrderSignature(
+                    _baseClient.AuthenticationProvider.GetOrderSignature(
                         orderParameters,
                         _baseClient.ClientOptions.Environment.ChainId,
                         tokenResult.Data.NegativeRisk).ToLowerInvariant());
 
                 parameters.Add("order", orderParameters);
-                parameters.Add("owner", authProvider.ApiCredentials.L2Credential.Key!);
+                parameters.Add("owner", credentials.L2Credential.PublicKey!);
                 parameters.AddEnum("orderType", request.TimeInForce ?? TimeInForce.GoodTillCanceled);
                 parameters.AddOptional("postOnly", request.PostOnly);
                 parameterList.Add(parameters);

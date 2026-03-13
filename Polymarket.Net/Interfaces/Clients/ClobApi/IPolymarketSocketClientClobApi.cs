@@ -6,7 +6,6 @@ using CryptoExchange.Net.Objects.Sockets;
 using Polymarket.Net.Objects.Models;
 using CryptoExchange.Net.Interfaces.Clients;
 using System.Collections.Generic;
-using Polymarket.Net.Objects;
 
 namespace Polymarket.Net.Interfaces.Clients.ClobApi
 {

@@ -1,7 +1,7 @@
 ﻿using CryptoExchange.Net.Authentication;
 using Polymarket.Net.Enums;
 
-namespace Polymarket.Net.Objects
+namespace Polymarket.Net
 {
     /// <summary>
     /// Polymarket API credentials

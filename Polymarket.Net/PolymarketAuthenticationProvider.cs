@@ -7,7 +7,6 @@ using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using Polymarket.Net.Enums;
-using Polymarket.Net.Objects;
 using Polymarket.Net.Objects.Options;
 using Polymarket.Net.Objects.Sockets;
 using Polymarket.Net.Utils;
@@ -26,11 +25,8 @@ namespace Polymarket.Net
 
         private static IStringMessageSerializer _serializer = new SystemTextJsonMessageSerializer(PolymarketPlatform._serializerContext);
 
-        //public string PublicAddress => ApiCredentials.L1Credential.PublicIdentifier;
-        //public SignType SignatureType => ApiCredentials.L1Credential.SignType;
-        //public string? PolymarketFundingAddress => ApiCredentials.L1Credential.PolymarketFundingAddress;
         public override ApiCredentialsType[] SupportedCredentialTypes => [ApiCredentialsType.Custom];
-        public override string PublicIdentifier => ApiCredentials.L1Credential.PublicIdentifier;
+        public override string PublicKey => ApiCredentials.L1Credential.PublicKey;
 
         public PolymarketAuthenticationProvider(PolymarketCredentials credentials) : base(credentials)
         {
@@ -59,7 +55,7 @@ namespace Polymarket.Net
             if (ApiCredentials.L2Credential == null)
                 throw new InvalidOperationException("Layer 2 credentials required");
 
-            return new PolymarketInitialQuery<object>("USER", ApiCredentials.L2Credential.Key, ApiCredentials.L2Credential.Secret!, ApiCredentials.L2Credential.Pass!);
+            return new PolymarketInitialQuery<object>("USER", ApiCredentials.L2Credential.PublicKey, ApiCredentials.L2Credential.Secret!, ApiCredentials.L2Credential.Pass!);
         }
 
         private void SignL1Custom(RestRequestConfiguration requestConfig, uint chainId)
@@ -86,8 +82,8 @@ namespace Polymarket.Net
             _hmacBytes ??= Convert.FromBase64String(ApiCredentials.L2Credential.Secret!.Replace('-', '+').Replace('_', '/'));
             var timestamp = DateTimeConverter.ConvertToSeconds(DateTime.UtcNow);
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.L1Credential.GetPublicAddress());
-            requestConfig.Headers.Add("POLY_API_KEY", ApiCredentials.L2Credential.Key!);
+            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.L1Credential.PublicKey!);
+            requestConfig.Headers.Add("POLY_API_KEY", ApiCredentials.L2Credential.PublicKey!);
             requestConfig.Headers.Add("POLY_PASSPHRASE", ApiCredentials.L2Credential.Pass!);
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
 

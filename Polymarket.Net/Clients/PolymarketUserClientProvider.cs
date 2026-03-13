@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
-using Polymarket.Net.Objects;
 
 namespace Polymarket.Net.Clients
 {

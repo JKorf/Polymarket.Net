@@ -1,5 +1,4 @@
 using CryptoExchange.Net.Authentication;
-using Polymarket.Net.Objects;
 
 namespace Polymarket.Net.Interfaces.Clients
 {

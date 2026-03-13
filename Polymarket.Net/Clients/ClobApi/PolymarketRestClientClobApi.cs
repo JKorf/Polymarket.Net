@@ -14,12 +14,11 @@ using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using Polymarket.Net.Clients.MessageHandlers;
-using Polymarket.Net.Objects;
 
 namespace Polymarket.Net.Clients.ClobApi
 {
     /// <inheritdoc cref="IPolymarketRestClientClobApi" />
-    internal partial class PolymarketRestClientClobApi : RestApiClient<PolymarketEnvironment, PolymarketCredentials>, IPolymarketRestClientClobApi
+    internal partial class PolymarketRestClientClobApi : RestApiClient<PolymarketEnvironment, PolymarketAuthenticationProvider, PolymarketCredentials>, IPolymarketRestClientClobApi
     {
         #region fields 
         protected override ErrorMapping ErrorMapping => PolymarketErrors.Errors;
@@ -61,7 +60,7 @@ namespace Polymarket.Net.Clients.ClobApi
 
 
         /// <inheritdoc />
-        protected override AuthenticationProvider<PolymarketCredentials> CreateAuthenticationProvider(PolymarketCredentials credentials)
+        protected override PolymarketAuthenticationProvider CreateAuthenticationProvider(PolymarketCredentials credentials)
             => new PolymarketAuthenticationProvider(credentials);
 
         internal Task<WebCallResult> SendAsync(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)

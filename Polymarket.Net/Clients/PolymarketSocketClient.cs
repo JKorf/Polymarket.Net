@@ -10,7 +10,6 @@ using Polymarket.Net.Clients.ClobApi;
 using Polymarket.Net.Clients.GammaApi;
 using Polymarket.Net.Interfaces.Clients.GammaApi;
 using Polymarket.Net.Objects.Models;
-using Polymarket.Net.Objects;
 using CryptoExchange.Net.Authentication;
 
 namespace Polymarket.Net.Clients
