@@ -96,7 +96,7 @@ namespace Polymarket.Net.Clients.ClobApi
                     tokenResult.Data.NegativeRisk).ToLowerInvariant());
 
             parameters.Add("order", orderParameters);
-            parameters.Add("owner", credentials.L2Credential.PublicKey!);
+            parameters.Add("owner", credentials.L2Credential!.Key!);
             parameters.AddEnum("orderType", timeInForce ?? TimeInForce.GoodTillCanceled);
             parameters.AddOptional("postOnly", postOnly);
             var request = _definitions.GetOrCreate(HttpMethod.Post, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
@@ -147,7 +147,7 @@ namespace Polymarket.Net.Clients.ClobApi
                         tokenResult.Data.NegativeRisk).ToLowerInvariant());
 
                 parameters.Add("order", orderParameters);
-                parameters.Add("owner", credentials.L2Credential.PublicKey!);
+                parameters.Add("owner", credentials.L2Credential!.Key!);
                 parameters.AddEnum("orderType", request.TimeInForce ?? TimeInForce.GoodTillCanceled);
                 parameters.AddOptional("postOnly", request.PostOnly);
                 parameterList.Add(parameters);
