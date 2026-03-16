@@ -19,7 +19,7 @@ namespace Polymarket.Net.UnitTests
         {
             var client = new PolymarketSocketClient(opts =>
             {
-                opts.ApiCredentials = new PolymarketCredentials(Enums.SignType.EOA, "456", "1", "MTIz", "3", "123");
+                opts.ApiCredentials = new PolymarketCredentials(Enums.SignType.EOA, "0x1212121212121212121212121212121212121212121212121212121212121212", "1", "MTIz", "3", "123");
             });
             var tester = new SocketSubscriptionValidator<PolymarketSocketClient>(client, "Subscriptions/Clob", "wss://ws-subscriptions-clob.polymarket.com");
             await tester.ValidateAsync<PolymarketOrderUpdate>((client, handler) => client.ClobApi.SubscribeToUserUpdatesAsync(handler, null), "OrderUpdate", ignoreProperties: ["type"]);
@@ -34,7 +34,7 @@ namespace Polymarket.Net.UnitTests
 
             var client = new PolymarketSocketClient(Options.Create(new PolymarketSocketOptions
             {
-                ApiCredentials = new PolymarketCredentials(Enums.SignType.EOA, "456"),
+                ApiCredentials = new PolymarketCredentials(Enums.SignType.EOA, "0x1212121212121212121212121212121212121212121212121212121212121212"),
                 OutputOriginalData = true
             }), logger);
 
