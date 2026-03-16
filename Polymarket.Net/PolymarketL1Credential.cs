@@ -28,7 +28,7 @@ namespace Polymarket.Net
         public string? PolymarketFundingAddress { get; set; }
 
         /// <inheritdoc />
-        public override ApiCredentialsType CredentialType => ApiCredentialsType.Ecdsa;
+        public override ApiCredentialsType CredentialType => ApiCredentialsType.ECDsa;
 
         /// <summary>
         /// Create new Polymarket Layer 1 credentials
