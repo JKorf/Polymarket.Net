@@ -28,7 +28,7 @@ namespace Polymarket.Net.UnitTests
             {
                 AutoTimestamp = false,
                 OutputOriginalData = true,
-                ApiCredentials = Authenticated ? new PolymarketCredentials(Enums.SignType.EOA, key, sec) : null
+                ApiCredentials = Authenticated ? new PolymarketCredentials().WithL1(Enums.SignType.EOA, key, sec) : null
             }));
         }
 

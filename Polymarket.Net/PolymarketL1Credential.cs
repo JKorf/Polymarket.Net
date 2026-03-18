@@ -27,9 +27,6 @@ namespace Polymarket.Net
         /// </summary>
         public string? PolymarketFundingAddress { get; set; }
 
-        /// <inheritdoc />
-        public override ApiCredentialsType CredentialType => ApiCredentialsType.ECDsa;
-
         /// <summary>
         /// Create new Polymarket Layer 1 credentials
         /// </summary>
@@ -54,6 +51,9 @@ namespace Polymarket.Net
             _publicAddress = GetPublicAddress(PrivateKey);
             return _publicAddress;
         }
+
+        /// <inheritdoc />
+        public override ApiCredentials Copy() => new PolymarketL1Credential(SignType, PrivateKey, PolymarketFundingAddress);
 
         private static string GetPublicAddress(string privateKey)
         {

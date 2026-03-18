@@ -69,8 +69,10 @@ namespace Polymarket.Net.Clients
             var existingCreds = ((PolymarketRestClientClobApi)ClobApi).ApiCredentials
                 ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
 
-            var l2Credentials = new HMACCredential(credentials.ApiKey, credentials.Secret, credentials.Passphrase);
-            SetApiCredentials(new PolymarketCredentials(existingCreds.L1Credential, l2Credentials));
+            SetApiCredentials(
+                new PolymarketCredentials()
+                    .WithL1(existingCreds.L1.SignType, existingCreds.L1.PrivateKey, existingCreds.L1.PolymarketFundingAddress)
+                    .WithL2(credentials.ApiKey, credentials.Secret, credentials.Passphrase));
         }
 
     }

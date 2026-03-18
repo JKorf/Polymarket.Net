@@ -27,12 +27,12 @@ namespace Polymarket.Net.Objects.Options
          /// <summary>
         /// Clob API options
         /// </summary>
-        public RestApiOptions<PolymarketCredentials> ClobOptions { get; private set; } = new RestApiOptions<PolymarketCredentials>();
+        public RestApiOptions ClobOptions { get; private set; } = new RestApiOptions();
 
         /// <summary>
         /// Gamma API options
         /// </summary>
-        public RestApiOptions<PolymarketCredentials> GammaOptions { get; private set; } = new RestApiOptions<PolymarketCredentials>();
+        public RestApiOptions GammaOptions { get; private set; } = new RestApiOptions();
 
         /// <summary>
         /// Builder API api key

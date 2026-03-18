@@ -40,7 +40,7 @@ namespace Polymarket.Net.UnitTests
             {
                 AutoTimestamp = false,
                 Environment = PolymarketEnvironment.CreateCustom("UnitTest", 137, "https://clob.polymarket.com", "https://clob.polymarket.com", "wss://localhost", "wss://localhost"),
-                ApiCredentials = new PolymarketCredentials(Enums.SignType.Email, "0x1212121212121212121212121212121212121212121212121212121212121212", "1", "MTIz", "3", "12")
+                ApiCredentials = new PolymarketCredentials().WithL1(Enums.SignType.Email, "0x1212121212121212121212121212121212121212121212121212121212121212").WithL2("MTIz", "MTIz", "12")
             }));
             var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Clob/Trading", "https://clob.polymarket.com", IsAuthenticated);
             await tester.ValidateAsync(client => client.ClobApi.Trading.GetOrderAsync("123"), "GetOrder");

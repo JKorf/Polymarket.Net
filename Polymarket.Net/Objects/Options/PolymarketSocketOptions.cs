@@ -28,12 +28,12 @@ namespace Polymarket.Net.Objects.Options
          /// <summary>
         /// Clob API options
         /// </summary>
-        public SocketApiOptions<PolymarketCredentials> ClobOptions { get; private set; } = new SocketApiOptions<PolymarketCredentials>();
+        public SocketApiOptions ClobOptions { get; private set; } = new SocketApiOptions();
 
         /// <summary>
         /// Gamma API options
         /// </summary>
-        public SocketApiOptions<PolymarketCredentials> GammaOptions { get; private set; } = new SocketApiOptions<PolymarketCredentials>();
+        public SocketApiOptions GammaOptions { get; private set; } = new SocketApiOptions();
 
         internal PolymarketSocketOptions Set(PolymarketSocketOptions targetOptions)
         {

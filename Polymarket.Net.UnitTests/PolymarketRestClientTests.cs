@@ -21,7 +21,7 @@ namespace Polymarket.Net.UnitTests
             var address = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
 
-            var authProvider = new PolymarketAuthenticationProvider(new PolymarketCredentials(Enums.SignType.EOA, privateKey, address));
+            var authProvider = new PolymarketAuthenticationProvider(new PolymarketCredentials().WithL1(Enums.SignType.EOA, privateKey, address));
 
             var parameters = new ParameterCollection
             {
@@ -50,7 +50,7 @@ namespace Polymarket.Net.UnitTests
             var privateKey = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
             var address = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
-            var authProvider = new PolymarketAuthenticationProvider(new PolymarketCredentials(Enums.SignType.EOA, privateKey, address));
+            var authProvider = new PolymarketAuthenticationProvider(new PolymarketCredentials().WithL1(Enums.SignType.EOA, privateKey, address));
 
             var parameters = new ParameterCollection
             {
