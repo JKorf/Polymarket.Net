@@ -4,6 +4,7 @@ using CryptoExchange.Net.Authentication.Signing;
 using Polymarket.Net.Enums;
 using Secp256k1Net;
 using System;
+using System.Net;
 
 namespace Polymarket.Net
 {
@@ -67,6 +68,15 @@ namespace Polymarket.Net
             Array.Copy(hash, hash.Length - 20, pubAddress, 0, 20);
 
             return "0x" + ExchangeHelpers.BytesToHexString(pubAddress);
+        }
+
+        /// <inheritdoc />
+        public override void Validate()
+        {
+            base.Validate();
+
+            if (string.IsNullOrEmpty(PrivateKey))
+                throw new ArgumentException("PrivateKey not set", nameof(PrivateKey));
         }
     }
 }
