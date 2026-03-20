@@ -11,7 +11,7 @@ namespace Polymarket.Net
     /// <summary>
     /// Layer 1 credential
     /// </summary>
-    public class PolymarketL1Credential : CredentialPair
+    public class PolymarketL1Credential : CredentialSet
     {
         private string? _publicAddress;
 
