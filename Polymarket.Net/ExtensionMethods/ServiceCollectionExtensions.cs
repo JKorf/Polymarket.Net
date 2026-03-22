@@ -108,8 +108,6 @@ namespace Microsoft.Extensions.DependencyInjection
             }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
             services.Add(new ServiceDescriptor(typeof(IPolymarketSocketClient), x => { return new PolymarketSocketClient(x.GetRequiredService<IOptions<PolymarketSocketOptions>>(), x.GetRequiredService<ILoggerFactory>()); }, socketClientLifeTime ?? ServiceLifetime.Singleton));
 
-            services.AddTransient<ICryptoRestClient, CryptoRestClient>();
-            services.AddSingleton<ICryptoSocketClient, CryptoSocketClient>();
             services.AddTransient<IPolymarketOrderBookFactory, PolymarketOrderBookFactory>();
             services.AddSingleton<IPolymarketUserClientProvider, PolymarketUserClientProvider>(x =>
                 new PolymarketUserClientProvider(
