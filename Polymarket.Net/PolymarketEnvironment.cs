@@ -18,10 +18,16 @@ namespace Polymarket.Net
         /// Rest Clob API address
         /// </summary>
         public string ClobRestClientAddress { get; }
+        
         /// <summary>
         /// Rest Gamma API address
         /// </summary>
         public string GammaRestClientAddress { get; }
+
+        /// <summary>
+        /// Rest Data API address
+        /// </summary>
+        public string DataRestClientAddress { get; }
 
         /// <summary>
         /// Socket Clob API address
@@ -38,6 +44,7 @@ namespace Polymarket.Net
             uint chainId,
             string clobRestAddress,
             string gammaRestAddress,
+            string dataRestAddress,
             string clobStreamAddress,
             string sportStreamAddress) :
             base(name)
@@ -45,6 +52,7 @@ namespace Polymarket.Net
             ChainId = chainId;
             ClobRestClientAddress = clobRestAddress;
             GammaRestClientAddress = gammaRestAddress;
+            DataRestClientAddress = dataRestAddress;
             ClobSocketClientAddress = clobStreamAddress;
             SportSocketClientAddress = sportStreamAddress;
         }
@@ -84,6 +92,7 @@ namespace Polymarket.Net
                                      137,
                                      PolymarketApiAddresses.Default.ClobRestClientAddress,
                                      PolymarketApiAddresses.Default.GammaRestClientAddress,
+                                     PolymarketApiAddresses.Default.DataRestClientAddress,
                                      PolymarketApiAddresses.Default.ClobSocketClientAddress,
                                      PolymarketApiAddresses.Default.SportsSocketClientAddress);
 
@@ -95,6 +104,7 @@ namespace Polymarket.Net
                                      80002,
                                      PolymarketApiAddresses.Default.ClobRestClientAddress,
                                      PolymarketApiAddresses.Default.GammaRestClientAddress,
+                                     PolymarketApiAddresses.Default.DataRestClientAddress,
                                      PolymarketApiAddresses.Default.ClobSocketClientAddress,
                                      PolymarketApiAddresses.Default.SportsSocketClientAddress);
 
@@ -107,8 +117,9 @@ namespace Polymarket.Net
                         uint chainId,
                         string clobRestAddress,
                         string gammaRestAddress,
+                        string dataRestAddress,
                         string clobSocketStreamsAddress,
                         string sportSocketStreamsAddress)
-            => new PolymarketEnvironment(name, chainId, clobRestAddress, gammaRestAddress, clobSocketStreamsAddress, sportSocketStreamsAddress);
+            => new PolymarketEnvironment(name, chainId, clobRestAddress, gammaRestAddress, dataRestAddress, clobSocketStreamsAddress, sportSocketStreamsAddress);
     }
 }

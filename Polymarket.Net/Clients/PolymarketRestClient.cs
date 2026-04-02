@@ -1,17 +1,19 @@
-using Microsoft.Extensions.Logging;
-using System.Net.Http;
-using System;
 using CryptoExchange.Net.Authentication;
-using Polymarket.Net.Interfaces.Clients;
-using Polymarket.Net.Objects.Options;
 using CryptoExchange.Net.Clients;
-using Microsoft.Extensions.Options;
 using CryptoExchange.Net.Objects.Options;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polymarket.Net.Clients.ClobApi;
-using Polymarket.Net.Interfaces.Clients.GammaApi;
 using Polymarket.Net.Clients.GammaApi;
+using Polymarket.Net.Interfaces.Clients;
+using Polymarket.Net.Interfaces.Clients.ClobApi;
+using Polymarket.Net.Interfaces.Clients.GammaApi;
 using Polymarket.Net.Objects.Models;
+using Polymarket.Net.Objects.Options;
+using System;
+using System.Net.Http;
+using Polymarket.Net.Interfaces.Clients.DataApi;
+using Polymarket.Net.Clients.DataApi;
 
 namespace Polymarket.Net.Clients
 {
@@ -25,6 +27,9 @@ namespace Polymarket.Net.Clients
 
         /// <inheritdoc />
         public IPolymarketRestClientGammaApi GammaApi { get; }
+
+        /// <inheritdoc />
+        public IPolymarketRestClientDataApi DataApi { get; }
 
         #endregion
 
@@ -51,6 +56,7 @@ namespace Polymarket.Net.Clients
             
             ClobApi = AddApiClient(new PolymarketRestClientClobApi(_logger, httpClient, options.Value));
             GammaApi = AddApiClient(new PolymarketRestClientGammaApi(_logger, httpClient, options.Value));
+            DataApi = AddApiClient(new PolymarketRestClientDataApi(_logger, httpClient, options.Value));
         }
 
         #endregion

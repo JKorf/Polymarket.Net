@@ -35,6 +35,11 @@ namespace Polymarket.Net.Objects.Options
         public RestApiOptions GammaOptions { get; private set; } = new RestApiOptions();
 
         /// <summary>
+        /// Data API options
+        /// </summary>
+        public RestApiOptions DataOptions { get; private set; } = new RestApiOptions();
+
+        /// <summary>
         /// Builder API api key
         /// </summary>
         public string? BuilderApiKey { get; set; }

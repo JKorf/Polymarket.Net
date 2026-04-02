@@ -1,15 +1,17 @@
+using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Testing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
 using Polymarket.Net.Clients;
-using Polymarket.Net.Objects.Options;
+using Polymarket.Net.Clients.DataApi;
+using Polymarket.Net.Enums;
 using Polymarket.Net.Objects;
-using CryptoExchange.Net.Objects.Errors;
+using Polymarket.Net.Objects.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Polymarket.Net.UnitTests
 {
@@ -72,6 +74,13 @@ namespace Polymarket.Net.UnitTests
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetFeeRateBpsAsync(tokenId, default), false);
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetLastTradePriceAsync(tokenId, default), false);
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetLastTradePricesAsync(new[] { tokenId }, default), false);
+        }
+
+        [Test]
+        public async Task TestDataApi() {
+            var user = "0x0000000000000000000000000000000000000000";
+
+            await RunAndCheckResult(client => client.DataApi.GetPositionsAsync(user, default), false);
         }
     }
 }

@@ -68,14 +68,20 @@ namespace Polymarket.Net
             GammaApi = new RateLimitGate("Gamma")
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Request), 1000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding)); // 1000 requests per 10 seconds
 
+            DataApi = new RateLimitGate("Data")
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Request), 1000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding)); // 1000 requests per 10 seconds
+
             ClobApi.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
             ClobApi.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
             GammaApi.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
             GammaApi.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
+            DataApi.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            DataApi.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
         }
 
 
         internal IRateLimitGate ClobApi { get; private set; }
         internal IRateLimitGate GammaApi { get; private set; }
+        internal IRateLimitGate DataApi { get; private set; }
     }
 }

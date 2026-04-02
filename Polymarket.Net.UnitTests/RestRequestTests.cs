@@ -39,7 +39,7 @@ namespace Polymarket.Net.UnitTests
             var client = new PolymarketRestClient(null, loggerFactory, Options.Create(new PolymarketRestOptions
             {
                 AutoTimestamp = false,
-                Environment = PolymarketEnvironment.CreateCustom("UnitTest", 137, "https://clob.polymarket.com", "https://clob.polymarket.com", "wss://localhost", "wss://localhost"),
+                Environment = PolymarketEnvironment.CreateCustom("UnitTest", 137, "https://clob.polymarket.com", "https://clob.polymarket.com", "https://data-api.polymarket.com", "wss://localhost", "wss://localhost"),
                 ApiCredentials = new PolymarketCredentials().WithL1(Enums.SignType.Email, "0x1212121212121212121212121212121212121212121212121212121212121212").WithL2("MTIz", "MTIz", "12")
             }));
             var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Clob/Trading", "https://clob.polymarket.com", IsAuthenticated);
