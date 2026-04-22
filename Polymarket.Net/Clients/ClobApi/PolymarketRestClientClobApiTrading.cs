@@ -246,22 +246,28 @@ namespace Polymarket.Net.Clients.ClobApi
             {
                 if (orderType == OrderType.Market)
                 {
-                    takerQuantity = quantity;
-                    if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
+					// Maker quantity is USDC spend for market buy orders and
+					// then used to calculate the taker quantity (asset amount).
+					makerQuantity = quantity;
+                    if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
                     {
-                        takerQuantity = RoundUp(takerQuantity, rounding.Amount + 4);
-                        if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
-                            takerQuantity = RoundDown(takerQuantity, rounding.Amount);
+                        makerQuantity = RoundUp(makerQuantity, rounding.Amount + 4);
+                        if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
+                            makerQuantity = RoundDown(makerQuantity, rounding.Amount);
                     }
 
-                    makerQuantity = takerQuantity * price.Value;
-                    makerQuantity = Round(makerQuantity, rounding.Size);
-
+                    // Taker quantity is the asset amount for market buy orders
+                    takerQuantity = makerQuantity / price.Value;
+                    takerQuantity = RoundDown(takerQuantity, rounding.Size);
                 }
                 else
                 {
-                    takerQuantity = RoundDown(quantity, rounding.Size);
-                    makerQuantity = takerQuantity * price.Value;
+					// Taker quantity is the asset amount for limit buy orders
+					// and then used to calculate the maker quantity (USDC spend).
+					takerQuantity = RoundDown(quantity, rounding.Size);
+
+					// Maker quantity is the USDC spend for limit buy orders
+					makerQuantity = takerQuantity * price.Value;
 
                     if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
                     {
@@ -273,7 +279,10 @@ namespace Polymarket.Net.Clients.ClobApi
             }
             else
             {
-                makerQuantity = RoundDown(quantity, rounding.Size);
+				// For sell orders, maker quantity is the asset amount and taker quantity is the USDC amount
+				// regardless of order type and then used to calculate the other quantity based on the price. 
+				// This is because for sell orders, the user is always giving the asset and receiving USDC.
+				makerQuantity = RoundDown(quantity, rounding.Size);
                 takerQuantity = makerQuantity * price.Value;
 
                 if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
