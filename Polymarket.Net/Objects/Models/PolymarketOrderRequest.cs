@@ -24,10 +24,10 @@ namespace Polymarket.Net.Objects.Models
         /// Order type
         /// </summary>
         public OrderType OrderType { get; set; }
-        /// <summary>
-        /// Quantity
-        /// </summary>
-        public decimal Quantity { get; set; }
+		/// <summary>
+		/// Quantity: MARKET BUY: USDC amount, MARKET SELL: asset amount, LIMIT BUY: asset amount, LIMIT SELL: asset amount
+		/// </summary>
+		public decimal Quantity { get; set; }
         /// <summary>
         /// Price
         /// </summary>

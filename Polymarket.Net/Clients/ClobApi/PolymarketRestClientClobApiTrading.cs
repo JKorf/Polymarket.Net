@@ -55,8 +55,8 @@ namespace Polymarket.Net.Clients.ClobApi
             string tokenId,
             OrderSide side,
             OrderType orderType,
-            decimal quantity,
-            decimal? price = null,
+            decimal quantity, // <-- MARKET BUY: USDC amount, MARKET SELL: asset amount, LIMIT BUY: asset amount, LIMIT SELL: asset amount
+			decimal? price = null,
             TimeInForce? timeInForce = null,
             bool? postOnly = null,
             long? feeRateBps = null,
