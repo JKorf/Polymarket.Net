@@ -248,17 +248,16 @@ namespace Polymarket.Net.Clients.ClobApi
                 {
 					// Maker quantity is USDC spend for market buy orders and
 					// then used to calculate the taker quantity (asset amount).
-					makerQuantity = quantity;
-                    if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
-                    {
-                        makerQuantity = RoundUp(makerQuantity, rounding.Amount + 4);
-                        if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
-                            makerQuantity = RoundDown(makerQuantity, rounding.Amount);
-                    }
+					makerQuantity = RoundDown(quantity, rounding.Size);
 
-                    // Taker quantity is the asset amount for market buy orders
-                    takerQuantity = makerQuantity / price.Value;
-                    takerQuantity = RoundDown(takerQuantity, rounding.Size);
+					// Taker quantity is the asset amount for market buy orders
+					takerQuantity = makerQuantity / price.Value;
+                    if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
+                    {
+                        takerQuantity = RoundUp(takerQuantity, rounding.Amount + 4);
+                        if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
+                            takerQuantity = RoundDown(takerQuantity, rounding.Amount);
+                    }
                 }
                 else
                 {
