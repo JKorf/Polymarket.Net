@@ -3,6 +3,7 @@ using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.RateLimiting.Guards;
+using CryptoExchange.Net.Requests;
 using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Logging;
 using Polymarket.Net.Enums;
@@ -51,67 +52,82 @@ namespace Polymarket.Net.Clients.ClobApi
             _logger = logger;
         }
 
-        public async Task<WebCallResult<PolymarketOrderResult>> PlaceOrderAsync(
-            string tokenId,
-            OrderSide side,
-            OrderType orderType,
-            decimal quantity, // <-- MARKET BUY: USDC amount, MARKET SELL: asset amount, LIMIT BUY: asset amount, LIMIT SELL: asset amount
-			decimal? price = null,
-            TimeInForce? timeInForce = null,
-            bool? postOnly = null,
-            long? feeRateBps = null,
-            string? takerAddress = null,
-            long? clientOrderId = null,
-            DateTime? expiration = null,
-            long? nonce = null,
-            CancellationToken ct = default)
-        {
-            var tokenResult = await PolymarketUtils.GetTokenInfoAsync(tokenId, _baseClient).ConfigureAwait(false);
-            if (!tokenResult)
-                return new WebCallResult<PolymarketOrderResult>(tokenResult.Error);
 
-            var makerTakerQuantities = await GetMakerTakerQuantitiesAsync(tokenId, side, orderType, quantity, price, timeInForce, tokenResult.Data.TickQuantity).ConfigureAwait(false);
-            if (!makerTakerQuantities)
-                return new WebCallResult<PolymarketOrderResult>(makerTakerQuantities.Error);
 
-            var parameters = new ParameterCollection();
-            var orderParameters = new ParameterCollection();
-            var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
-            orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
-            orderParameters.Add("maker", credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress());
-            orderParameters.Add("signer", credentials.L1.GetPublicAddress());
-            orderParameters.Add("taker", takerAddress ?? "0x0000000000000000000000000000000000000000");
-            orderParameters.Add("tokenId", tokenId);
-            orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
-            orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
-            orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)));
-            orderParameters.AddString("nonce", nonce ?? 0);
-            orderParameters.AddString("feeRateBps", feeRateBps ?? 0);
-            orderParameters.AddEnum("side", side);
-            orderParameters.Add("signatureType", (int)credentials.L1.SignType);
-            orderParameters.Add("signature", 
-                _baseClient.AuthenticationProvider.GetOrderSignature(
-                    orderParameters,
-                    _baseClient.ClientOptions.Environment.ChainId,
-                    tokenResult.Data.NegativeRisk).ToLowerInvariant());
 
-            parameters.Add("order", orderParameters);
-            parameters.Add("owner", credentials.L2!.Key!);
-            parameters.AddEnum("orderType", timeInForce ?? (orderType == OrderType.Limit ? TimeInForce.GoodTillCanceled : TimeInForce.ImmediateOrCancel));
-            parameters.AddOptional("postOnly", postOnly);
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
-                limitGuard: new SingleLimitGuard(3500, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
-            var result = await _baseClient.SendAsync<PolymarketOrderResult>(request, parameters, ct).ConfigureAwait(false);
 
-            if (!result)
-                return result;
+		/// <summary>
+        /// Places a new limit order to the Polymarket platform asynchronously using the specified order request parameters.
+        /// </summary>
+        /// <remarks>The method validates the provided order request and retrieves necessary token and
+        /// quantity information before submitting the order. If validation fails or required data cannot be retrieved,
+        /// the result will contain error information. The caller should check the returned WebCallResult for success or
+        /// failure and handle errors appropriately.</remarks>
+        /// <param name="request">An object containing the details of the order to be placed, including token information, side, quantity (number of shares),
+        /// price, and time in force. Cannot be null.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the asynchronous operation.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a WebCallResult with the result
+        /// of the order placement, including order details if successful or error information if the operation fails.</returns>
+		public async Task<WebCallResult<PolymarketOrderResult>> PlaceOrderAsync(
+			PolymarketOrderRequest request,
+			CancellationToken ct = default)
+		{
+			var tokenResult = await PolymarketUtils.GetTokenInfoAsync(request.TokenId, _baseClient).ConfigureAwait(false);
+			if (!tokenResult)
+				return new WebCallResult<PolymarketOrderResult>(tokenResult.Error);
 
-            if (!string.IsNullOrEmpty(result.Data.Error))
-                return result.AsError<PolymarketOrderResult>(new ServerError(_baseClient.GetErrorInfo(result.Data.Error!, result.Data.Error)));
+			var makerTakerQuantities = await GetMakerTakerQuantitiesAsync(request.TokenId, request.Side, OrderType.Limit, request.Quantity, request.Price, request.TimeInForce, tokenResult.Data.TickQuantity).ConfigureAwait(false);
+			if (!makerTakerQuantities)
+				return new WebCallResult<PolymarketOrderResult>(makerTakerQuantities.Error);
 
-            return result;
-        }
+			var parameters = BuildOrderParameters(
+		        request.TokenId, request.Side, makerTakerQuantities.Data.MakerQuantity, makerTakerQuantities.Data.TakerQuantity,
+		        tokenResult.Data.NegativeRisk, request.TakerAddress, request.ClientOrderId, request.Expiration, request.Nonce, request.FeeRateBps,
+		        request.TimeInForce ?? TimeInForce.GoodTillCanceled,
+		        null);
 
+			return await SendOrderAsync(parameters, ct).ConfigureAwait(false);
+		}
+
+
+		/// <summary>
+		/// Places a new market order to the Polymarket platform asynchronously using the specified order request parameters.
+		/// </summary>
+		/// <remarks>The method validates the provided token information and calculates maker and taker
+		/// quantities before submitting the order. If validation fails, the result will contain error details. The
+		/// operation is performed asynchronously and can be cancelled using the provided cancellation token.</remarks>
+		/// <param name="request">The market order request containing details such as token ID, side, amount (BUY = USDC spend amount, SELL = asset/shares amount), and other order parameters.
+		/// Cannot be null.</param>
+		/// <param name="ct">A cancellation token that can be used to cancel the asynchronous operation.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains a WebCallResult with the result
+		/// of the placed market order, or error information if the operation fails.</returns>
+		public async Task<WebCallResult<PolymarketOrderResult>> PlaceMarketOrderAsync(
+			PolymarketMarketOrderRequest request,
+			CancellationToken ct = default)
+		{
+			var tokenResult = await PolymarketUtils.GetTokenInfoAsync(request.TokenId, _baseClient).ConfigureAwait(false);
+			if (!tokenResult)
+				return new WebCallResult<PolymarketOrderResult>(tokenResult.Error);
+
+			var makerTakerQuantities = await GetMakerTakerQuantitiesAsync(request.TokenId, request.Side, OrderType.Market, request.Amount, null, request.TimeInForce, tokenResult.Data.TickQuantity).ConfigureAwait(false);
+			if (!makerTakerQuantities)
+				return new WebCallResult<PolymarketOrderResult>(makerTakerQuantities.Error);
+
+			var parameters = BuildOrderParameters(
+				request.TokenId, request.Side, makerTakerQuantities.Data.MakerQuantity, makerTakerQuantities.Data.TakerQuantity,
+				tokenResult.Data.NegativeRisk, request.TakerAddress, request.ClientOrderId, request.Expiration, request.Nonce, request.FeeRateBps,
+				request.TimeInForce ?? TimeInForce.ImmediateOrCancel,
+				null);
+
+			return await SendOrderAsync(parameters, ct).ConfigureAwait(false);
+		}        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requests"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
         public async Task<WebCallResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
             var parameterList = new List<ParameterCollection>();
@@ -121,35 +137,16 @@ namespace Polymarket.Net.Clients.ClobApi
                 if (!tokenResult)
                     return new WebCallResult<CallResult<PolymarketOrderResult>[]>(tokenResult.Error);
 
-                var makerTakerQuantities = await GetMakerTakerQuantitiesAsync(request.TokenId, request.Side, request.OrderType, request.Quantity, request.Price, request.TimeInForce, tokenResult.Data.TickQuantity).ConfigureAwait(false);
+                var makerTakerQuantities = await GetMakerTakerQuantitiesAsync(request.TokenId, request.Side, OrderType.Limit, request.Quantity, request.Price, request.TimeInForce, tokenResult.Data.TickQuantity).ConfigureAwait(false);
                 if (!makerTakerQuantities)
                     return new WebCallResult<CallResult<PolymarketOrderResult>[]>(makerTakerQuantities.Error);
 
-                var parameters = new ParameterCollection();
-                var orderParameters = new ParameterCollection();
-                var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
-                orderParameters.Add("salt", (ulong)(request.ClientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
-                orderParameters.Add("maker", credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress());
-                orderParameters.Add("signer", credentials.L1.GetPublicAddress());
-                orderParameters.Add("taker", request.TakerAddress ?? "0x0000000000000000000000000000000000000000");
-                orderParameters.Add("tokenId", request.TokenId);
-                orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
-                orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
-                orderParameters.AddString("expiration", (ulong)(request.Expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(request.Expiration.Value)));
-                orderParameters.AddString("nonce", request.Nonce ?? 0);
-                orderParameters.AddString("feeRateBps", request.FeeRateBps ?? 0);
-                orderParameters.AddEnum("side", request.Side);
-                orderParameters.Add("signatureType", (int)credentials.L1.SignType);
-                orderParameters.Add("signature",
-                    _baseClient.AuthenticationProvider.GetOrderSignature(
-                        orderParameters,
-                        _baseClient.ClientOptions.Environment.ChainId,
-                        tokenResult.Data.NegativeRisk).ToLowerInvariant());
+                var parameters = BuildOrderParameters(
+                    request.TokenId, request.Side, makerTakerQuantities.Data.MakerQuantity, makerTakerQuantities.Data.TakerQuantity,
+                    tokenResult.Data.NegativeRisk, request.TakerAddress, request.ClientOrderId, request.Expiration, request.Nonce, request.FeeRateBps,
+                    request.TimeInForce ?? TimeInForce.GoodTillCanceled,
+                    request.PostOnly);
 
-                parameters.Add("order", orderParameters);
-                parameters.Add("owner", credentials.L2!.Key!);
-                parameters.AddEnum("orderType", request.TimeInForce ?? TimeInForce.GoodTillCanceled);
-                parameters.AddOptional("postOnly", request.PostOnly);
                 parameterList.Add(parameters);
             }
 
@@ -174,6 +171,108 @@ namespace Polymarket.Net.Clients.ClobApi
                 return result.AsErrorWithData(new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All orders failed")), ordersResult.ToArray());
 
             return result.As(ordersResult.ToArray());
+        }
+
+        public async Task<WebCallResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleMarketOrdersAsync(IEnumerable<PolymarketMarketOrderRequest> requests, CancellationToken ct = default)
+        {
+            var parameterList = new List<ParameterCollection>();
+            foreach (var request in requests)
+            {
+                var tokenResult = await PolymarketUtils.GetTokenInfoAsync(request.TokenId, _baseClient).ConfigureAwait(false);
+                if (!tokenResult)
+                    return new WebCallResult<CallResult<PolymarketOrderResult>[]>(tokenResult.Error);
+
+                var makerTakerQuantities = await GetMakerTakerQuantitiesAsync(request.TokenId, request.Side, OrderType.Market, request.Amount, null, request.TimeInForce, tokenResult.Data.TickQuantity).ConfigureAwait(false);
+                if (!makerTakerQuantities)
+                    return new WebCallResult<CallResult<PolymarketOrderResult>[]>(makerTakerQuantities.Error);
+
+                var parameters = BuildOrderParameters(
+                    request.TokenId, request.Side, makerTakerQuantities.Data.MakerQuantity, makerTakerQuantities.Data.TakerQuantity,
+                    tokenResult.Data.NegativeRisk, request.TakerAddress, request.ClientOrderId, request.Expiration, request.Nonce, request.FeeRateBps,
+                    request.TimeInForce ?? TimeInForce.ImmediateOrCancel,
+                    null);
+
+                parameterList.Add(parameters);
+            }
+
+            var requestParams = new ParameterCollection();
+            requestParams.SetBody(parameterList.ToArray());
+            var requestDef = _definitions.GetOrCreate(HttpMethod.Post, "/orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+                limitGuard: new SingleLimitGuard(1000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<PolymarketOrderResult[]>(requestDef, requestParams, ct).ConfigureAwait(false);
+            if (!result)
+                return result.As<CallResult<PolymarketOrderResult>[]>(default);
+
+            var ordersResult = new List<CallResult<PolymarketOrderResult>>();
+            foreach (var item in result.Data)
+            {
+                if (!string.IsNullOrEmpty(item.Error))
+                    ordersResult.Add(new CallResult<PolymarketOrderResult>(item, null, new ServerError(_baseClient.GetErrorInfo(item.Error!, item.Error))));
+                else
+                    ordersResult.Add(new CallResult<PolymarketOrderResult>(item));
+            }
+
+            if (ordersResult.All(x => !x.Success))
+                return result.AsErrorWithData(new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All orders failed")), ordersResult.ToArray());
+
+            return result.As(ordersResult.ToArray());
+        }
+
+        private ParameterCollection BuildOrderParameters(
+            string tokenId,
+            OrderSide side,
+            decimal makerQuantity,
+            decimal takerQuantity,
+            bool negativeRisk,
+            string? takerAddress,
+            long? clientOrderId,
+            DateTime? expiration,
+            long? nonce,
+            long? feeRateBps,
+            TimeInForce timeInForce,
+            bool? postOnly)
+        {
+            var parameters = new ParameterCollection();
+            var orderParameters = new ParameterCollection();
+            var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
+            orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
+            orderParameters.Add("maker", credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress());
+            orderParameters.Add("signer", credentials.L1.GetPublicAddress());
+            orderParameters.Add("taker", takerAddress ?? "0x0000000000000000000000000000000000000000");
+            orderParameters.Add("tokenId", tokenId);
+            orderParameters.AddString("makerAmount", makerQuantity);
+            orderParameters.AddString("takerAmount", takerQuantity);
+            orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)));
+            orderParameters.AddString("nonce", nonce ?? 0);
+            orderParameters.AddString("feeRateBps", feeRateBps ?? 0);
+            orderParameters.AddEnum("side", side);
+            orderParameters.Add("signatureType", (int)credentials.L1.SignType);
+            orderParameters.Add("signature",
+                _baseClient.AuthenticationProvider.GetOrderSignature(
+                    orderParameters,
+                    _baseClient.ClientOptions.Environment.ChainId,
+                    negativeRisk).ToLowerInvariant());
+
+            parameters.Add("order", orderParameters);
+            parameters.Add("owner", credentials.L2!.Key!);
+            parameters.AddEnum("orderType", timeInForce);
+            parameters.AddOptional("postOnly", postOnly);
+            return parameters;
+        }
+
+        private async Task<WebCallResult<PolymarketOrderResult>> SendOrderAsync(ParameterCollection parameters, CancellationToken ct)
+        {
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+                limitGuard: new SingleLimitGuard(3500, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
+            var result = await _baseClient.SendAsync<PolymarketOrderResult>(request, parameters, ct).ConfigureAwait(false);
+
+            if (!result)
+                return result;
+
+            if (!string.IsNullOrEmpty(result.Data.Error))
+                return result.AsError<PolymarketOrderResult>(new ServerError(_baseClient.GetErrorInfo(result.Data.Error!, result.Data.Error)));
+
+            return result;
         }
 
         private async Task<CallResult<(decimal MakerQuantity, decimal TakerQuantity)>> GetMakerTakerQuantitiesAsync(string tokenId, OrderSide side, OrderType orderType, decimal quantity, decimal? price, TimeInForce? timeInForce, decimal tickSize)
@@ -242,45 +341,45 @@ namespace Polymarket.Net.Clients.ClobApi
             }
 
             price = Math.Round(price!.Value, rounding.Price).Normalize();
-            if (side == OrderSide.Buy)
-            {
-                if (orderType == OrderType.Market)
-                {
-					// Maker quantity is USDC spend for market buy orders and
-					// then used to calculate the taker quantity (asset amount).
+			if (side == OrderSide.Buy)
+			{
+				if (orderType == OrderType.Market)
+				{
+					// For market buy orders, quantity represents the USDC spend amount.
+					// makerQuantity = USDC amount (what the buyer gives)
 					makerQuantity = RoundDown(quantity, rounding.Size);
 
-					// Taker quantity is the asset amount for market buy orders
+					// takerQuantity = asset/token amount (what the buyer receives)
 					takerQuantity = makerQuantity / price.Value;
-                    if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
-                    {
-                        takerQuantity = RoundUp(takerQuantity, rounding.Amount + 4);
-                        if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
-                            takerQuantity = RoundDown(takerQuantity, rounding.Amount);
-                    }
-                }
-                else
-                {
-					// Taker quantity is the asset amount for limit buy orders
-					// and then used to calculate the maker quantity (USDC spend).
+					if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
+					{
+						takerQuantity = RoundUp(takerQuantity, rounding.Amount + 4);
+						if (GetDecimalPlaces(takerQuantity) > rounding.Amount)
+							takerQuantity = RoundDown(takerQuantity, rounding.Amount);
+					}
+				}
+				else
+				{
+					// For limit buy orders, quantity represents the asset/shares amount.
+					// takerQuantity = asset amount (what the buyer receives)
 					takerQuantity = RoundDown(quantity, rounding.Size);
 
-					// Maker quantity is the USDC spend for limit buy orders
+					// makerQuantity = USDC spend (what the buyer gives)
 					makerQuantity = takerQuantity * price.Value;
 
-                    if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
-                    {
-                        makerQuantity = RoundUp(makerQuantity, rounding.Amount + 4);
-                        if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
-                            makerQuantity = RoundDown(makerQuantity, rounding.Amount);
-                    }
-                }
-            }
-            else
-            {
-				// For sell orders, maker quantity is the asset amount and taker quantity is the USDC amount
-				// regardless of order type and then used to calculate the other quantity based on the price. 
-				// This is because for sell orders, the user is always giving the asset and receiving USDC.
+					if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
+					{
+						makerQuantity = RoundUp(makerQuantity, rounding.Amount + 4);
+						if (GetDecimalPlaces(makerQuantity) > rounding.Amount)
+							makerQuantity = RoundDown(makerQuantity, rounding.Amount);
+					}
+				}
+			}
+			else
+			{
+				// For sell orders, quantity is always the asset/shares amount regardless of order type.
+				// makerQuantity = asset amount (what the seller gives)
+				// takerQuantity = USDC amount (what the seller receives)
 				makerQuantity = RoundDown(quantity, rounding.Size);
                 takerQuantity = makerQuantity * price.Value;
 

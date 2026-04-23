@@ -4,9 +4,10 @@ using System;
 namespace Polymarket.Net.Objects.Models
 {
     /// <summary>
-    /// Order request
+    /// Market order request. For market orders, the amount parameter represents
+    /// the USDC spend for BUY orders or the asset amount for SELL orders.
     /// </summary>
-    public record PolymarketOrderRequest
+    public record PolymarketMarketOrderRequest
     {
         /// <summary>
         /// Token id
@@ -16,24 +17,16 @@ namespace Polymarket.Net.Objects.Models
         /// Order side
         /// </summary>
         public OrderSide Side { get; set; }
-		/// <summary>
-		/// Quantity of asset/shares
-		/// </summary>
-		public decimal Quantity { get; set; }
-		/// <summary>
-		/// Price: Value between 0 and 1. For example 0.001 means 0.1c in the UI, 0.5 means 50c in UI
-		/// </summary>
-		public decimal? Price { get; set; }
+        /// <summary>
+        /// Amount: BUY = USDC spend amount, SELL = asset/shares amount
+        /// </summary>
+        public decimal Amount { get; set; }
         /// <summary>
         /// Time in force
         /// </summary>
         public TimeInForce? TimeInForce { get; set; }
         /// <summary>
-        /// Is post only
-        /// </summary>
-        public bool? PostOnly { get; set; }
-        /// <summary>
-        /// Fee rate BPS required by operator
+        /// Fee rate BPS
         /// </summary>
         public long? FeeRateBps { get; set; }
         /// <summary>
@@ -52,6 +45,5 @@ namespace Polymarket.Net.Objects.Models
         /// Nonce
         /// </summary>
         public long? Nonce { get; set; }
-
     }
 }
