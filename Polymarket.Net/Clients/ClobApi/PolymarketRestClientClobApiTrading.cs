@@ -52,10 +52,6 @@ namespace Polymarket.Net.Clients.ClobApi
             _logger = logger;
         }
 
-
-
-
-
 		/// <summary>
         /// Places a new limit order to the Polymarket platform asynchronously using the specified order request parameters.
         /// </summary>
@@ -89,7 +85,6 @@ namespace Polymarket.Net.Clients.ClobApi
 			return await SendOrderAsync(parameters, ct).ConfigureAwait(false);
 		}
 
-
 		/// <summary>
 		/// Places a new market order to the Polymarket platform asynchronously using the specified order request parameters.
 		/// </summary>
@@ -120,14 +115,19 @@ namespace Polymarket.Net.Clients.ClobApi
 				null);
 
 			return await SendOrderAsync(parameters, ct).ConfigureAwait(false);
-		}        
+		}
 
         /// <summary>
-        /// 
+        /// Places multiple limit orders asynchronously based on the specified order requests.
         /// </summary>
-        /// <param name="requests"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
+        /// <remarks>If all orders fail, the returned data will indicate the failure for each order.
+        /// Partial success is possible; callers should inspect each CallResult in the returned array to determine the
+        /// status of individual orders.</remarks>
+        /// <param name="requests">A collection of limit order requests to be placed. Each request specifies the order details such as token,
+        /// side, quantity (number of shares), and additional order parameters.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a WebCallResult with an array of
+        /// CallResult objects, each representing the outcome of an individual limit order request.</returns>
         public async Task<WebCallResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
             var parameterList = new List<ParameterCollection>();
@@ -173,6 +173,17 @@ namespace Polymarket.Net.Clients.ClobApi
             return result.As(ordersResult.ToArray());
         }
 
+        /// <summary>
+        /// Places multiple market orders asynchronously based on the specified order requests.
+        /// </summary>
+        /// <remarks>If all orders fail, the returned data will indicate the failure for each order.
+        /// Partial success is possible; callers should inspect each CallResult in the returned array to determine the
+        /// status of individual orders.</remarks>
+        /// <param name="requests">A collection of market order requests to be placed. Each request specifies the order details such as token,
+        /// side, amount (BUY = USDC spend amount, SELL = asset/shares amount), and additional order parameters.</param>
+        /// <param name="ct">A cancellation token that can be used to cancel the operation.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a WebCallResult with an array of
+        /// CallResult objects, each representing the outcome of an individual market order request.</returns>
         public async Task<WebCallResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleMarketOrdersAsync(IEnumerable<PolymarketMarketOrderRequest> requests, CancellationToken ct = default)
         {
             var parameterList = new List<ParameterCollection>();
