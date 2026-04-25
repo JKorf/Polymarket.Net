@@ -94,9 +94,9 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("bucket_index")]
         public int BucketIndex { get; set; }
         /// <summary>
-        /// ["<c>type</c>"] Trade role
+        /// ["<c>trader_side</c>"] Trade role
         /// </summary>
-        [JsonPropertyName("type")]
+        [JsonPropertyName("trader_side")]
         public TradeRole Role { get; set; }
         /// <summary>
         /// ["<c>maker_orders</c>"] List of the maker trades the taker trade was filled against

@@ -61,5 +61,9 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         public long? Nonce { get; set; }
 
+        /// <summary>
+        /// Type of quantity for an order, either in shares (default) or in value (USD). Value is only available for market buy orders
+        /// </summary>
+        public QuantityType? QuantityType { get; set; }
     }
 }

@@ -1,0 +1,30 @@
+GET
+/data/trades
+true
+{
+  "limit": 100,
+  "next_cursor": "MTAw",
+  "count": 2,
+  "data": [
+    {
+      "id": "trade-123",
+      "taker_order_id": "0xabcdef1234567890abcdef1234567890abcdef12",
+      "market": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "asset_id": "15871154585880608648532107628464183779895785213830018178010423617714102767076",
+      "side": "BUY",
+      "size": "100000000",
+      "fee_rate_bps": "30",
+      "price": "0.5",
+      "status": "TRADE_STATUS_CONFIRMED",
+      "match_time": "1700000000",
+      "last_update": "1700000000",
+      "outcome": "YES",
+      "bucket_index": 0,
+      "owner": "f4f247b7-4ac7-ff29-a152-04fda0a8755a",
+      "maker_address": "0x1234567890123456789012345678901234567890",
+      "transaction_hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      "trader_side": "TAKER",
+      "maker_orders": []
+    }
+  ]
+}

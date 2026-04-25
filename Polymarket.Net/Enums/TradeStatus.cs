@@ -11,29 +11,29 @@ namespace Polymarket.Net.Enums
     public enum TradeStatus
     {
         /// <summary>
-        /// ["<c>MATCHED</c>"] Matched
+        /// ["<c>MATCHED</c>", "<c>TRADE_STATUS_MATCHED</c>"] Matched
         /// </summary>
-        [Map("MATCHED")]
+        [Map("MATCHED", "TRADE_STATUS_MATCHED")]
         Matched,
         /// <summary>
-        /// ["<c>MINED</c>"] Mined
+        /// ["<c>MINED</c>", "<c>TRADE_STATUS_MINED</c>"] Mined
         /// </summary>
-        [Map("MINED")]
+        [Map("MINED", "TRADE_STATUS_MINED")]
         Mined,
         /// <summary>
-        /// ["<c>CONFIRMED</c>"] Confirmed
+        /// ["<c>CONFIRMED</c>", "<c>TRADE_STATUS_CONFIRMED</c>"] Confirmed
         /// </summary>
-        [Map("CONFIRMED")]
+        [Map("CONFIRMED", "TRADE_STATUS_CONFIRMED")]
         Confirmed,
         /// <summary>
-        /// ["<c>RETRYING</c>"] Retrying
+        /// ["<c>RETRYING</c>", "<c>TRADE_STATUS_RETRYING</c>"] Retrying
         /// </summary>
-        [Map("RETRYING")]
+        [Map("RETRYING", "TRADE_STATUS_RETRYING")]
         Retrying,
         /// <summary>
-        /// ["<c>FAILED</c>"] Failed
+        /// ["<c>FAILED</c>", "<c>TRADE_STATUS_FAILED</c>"] Failed
         /// </summary>
-        [Map("FAILED")]
+        [Map("FAILED", "TRADE_STATUS_FAILED")]
         Failed,
     }
 }

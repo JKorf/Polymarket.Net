@@ -89,6 +89,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="clientOrderId">["<c>order.salt</c>"] Client order id</param>
         /// <param name="expiration">["<c>order.expiration</c>"] Expiration time</param>
         /// <param name="nonce">["<c>order.nonce</c>"] Nonce</param>
+        /// <param name="quantityType">Type of quantity for an order, either in shares (default) or in value (USD). Value is only available for market buy orders</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketOrderResult>> PlaceOrderAsync(
             string tokenId,
@@ -103,6 +104,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
             long? clientOrderId = null,
             DateTime? expiration = null,
             long? nonce = null,
+            QuantityType? quantityType = null,
             CancellationToken ct = default);
 
         /// <summary>

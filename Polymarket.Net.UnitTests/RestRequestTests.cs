@@ -46,6 +46,7 @@ namespace Polymarket.Net.UnitTests
             await tester.ValidateAsync(client => client.ClobApi.Trading.GetOrderAsync("123"), "GetOrder");
             await tester.ValidateAsync(client => client.ClobApi.Trading.CancelOrderAsync("123"), "CancelOrder");
             await tester.ValidateAsync(client => client.ClobApi.Trading.PlaceOrderAsync("123", Enums.OrderSide.Buy, Enums.OrderType.Limit, 5, 0.01m), "PlaceOrder");
+            await tester.ValidateAsync(client => client.ClobApi.Trading.GetUserTradesAsync("123"), "GetUserTrades");
         }
 
         private bool IsAuthenticated(WebCallResult result)

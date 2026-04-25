@@ -267,6 +267,11 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 2.2.0 - 24 Apr 2026
+    * Added QuantityType parameter to PlaceOrder endpoints which allows to specify market buy orders in USD value instead of number of shares
+    * Updated book caching logic to only store for 2 seconds instead of indefinitely to fix outdated info preventing correct order placement
+    * Fixed PolymarketTrade Role mapping
+
 * Version 2.1.1 - 13 Apr 2026
     * Default timeInForce to ImmediateOrCancel for market orders if parameter not provided
     * Fixed order quantity rounding issues
