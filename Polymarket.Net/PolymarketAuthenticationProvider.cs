@@ -1,3 +1,4 @@
+using CryptoExchange.Net;
 using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Authentication.Signing;
 using CryptoExchange.Net.Clients;
@@ -102,27 +103,6 @@ namespace Polymarket.Net
                 signature = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(signData)));
 
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.Replace('+', '-').Replace('/', '_'));
-
-            var options = (PolymarketRestOptions)client.ClientOptions;
-            if (string.IsNullOrEmpty(options.BuilderApiKey)
-                || string.IsNullOrEmpty(options.BuilderSecret)
-                || string.IsNullOrEmpty(options.BuilderPass))
-            {
-                return;
-            }
-
-            // Builder headers
-            var secret = Convert.FromBase64String(options.BuilderSecret!.Replace('-', '+').Replace('_', '/'));
-
-            using var encryptor = new HMACSHA256(secret);
-            var resultBytes = encryptor.ComputeHash(Encoding.UTF8.GetBytes(signData));
-            var builderSignature = BytesToBase64String(resultBytes);
-            builderSignature = builderSignature.Replace('+', '-').Replace('/', '_');
-
-            requestConfig.Headers.Add("POLY_BUILDER_API_KEY", options.BuilderApiKey!);
-            requestConfig.Headers.Add("POLY_BUILDER_PASSPHRASE", options.BuilderPass!);
-            requestConfig.Headers.Add("POLY_BUILDER_SIGNATURE", builderSignature);
-            requestConfig.Headers.Add("POLY_BUILDER_TIMESTAMP", timestamp.Value.ToString());
         }
 
         
@@ -166,7 +146,7 @@ namespace Polymarket.Net
                 DomainRawValues = new CeMemberValue[]
                 {
                     new CeMemberValue { TypeName = "string", Value = "Polymarket CTF Exchange" },
-                    new CeMemberValue { TypeName = "string", Value = "1" },
+                    new CeMemberValue { TypeName = "string", Value = "2" },
                     new CeMemberValue { TypeName = "uint256", Value = chainId },
                     new CeMemberValue { TypeName = "address", Value = GetContract(order, chainId, negativeRisk) }
                 },
@@ -175,15 +155,14 @@ namespace Polymarket.Net
                     new CeMemberValue { TypeName = "uint256", Value = order["salt"].ToString()! },
                     new CeMemberValue { TypeName = "address", Value = order["maker"]},
                     new CeMemberValue { TypeName = "address", Value = order["signer"]},
-                    new CeMemberValue { TypeName = "address", Value = order["taker"]},
                     new CeMemberValue { TypeName = "uint256", Value = (string)order["tokenId"]},
                     new CeMemberValue { TypeName = "uint256", Value = (string)order["makerAmount"]},
                     new CeMemberValue { TypeName = "uint256", Value = (string)order["takerAmount"]},
-                    new CeMemberValue { TypeName = "uint256", Value = (string)order["expiration"]},
-                    new CeMemberValue { TypeName = "uint256", Value = (string)order["nonce"]},
-                    new CeMemberValue { TypeName = "uint256", Value = (string)order["feeRateBps"]},
                     new CeMemberValue { TypeName = "uint8", Value = (byte)((string)order["side"] == "BUY" ? 0 : 1)},
-                    new CeMemberValue { TypeName = "uint8", Value = (byte)(int)order["signatureType"]}
+                    new CeMemberValue { TypeName = "uint8", Value = (byte)(int)order["signatureType"]},
+                    new CeMemberValue { TypeName = "uint256", Value = order["timestamp"]},
+                    new CeMemberValue { TypeName = "bytes32", Value = ((string)order["metadata"]).HexStringToBytes()},
+                    new CeMemberValue { TypeName = "bytes32", Value = ((string)order["builder"]).HexStringToBytes()},
                 },
                 Types = new Dictionary<string, CeMemberDescription[]>
                 {
@@ -202,15 +181,14 @@ namespace Polymarket.Net
                             new CeMemberDescription { Name = "salt", Type = "uint256" },
                             new CeMemberDescription { Name = "maker", Type = "address" },
                             new CeMemberDescription { Name = "signer", Type = "address" },
-                            new CeMemberDescription { Name = "taker", Type = "address" },
                             new CeMemberDescription { Name = "tokenId", Type = "uint256" },
                             new CeMemberDescription { Name = "makerAmount", Type = "uint256" },
                             new CeMemberDescription { Name = "takerAmount", Type = "uint256" },
-                            new CeMemberDescription { Name = "expiration", Type = "uint256" },
-                            new CeMemberDescription { Name = "nonce", Type = "uint256" },
-                            new CeMemberDescription { Name = "feeRateBps", Type = "uint256" },
                             new CeMemberDescription { Name = "side", Type = "uint8" },
                             new CeMemberDescription { Name = "signatureType", Type = "uint8" },
+                            new CeMemberDescription { Name = "timestamp", Type = "uint256" },
+                            new CeMemberDescription { Name = "metadata", Type = "bytes32" },
+                            new CeMemberDescription { Name = "builder", Type = "bytes32" },
                         }
                     }
                 }

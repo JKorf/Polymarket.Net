@@ -35,7 +35,7 @@ namespace Polymarket.Net.Objects
         /// </summary>
         public static PolymarketApiAddresses Default = new PolymarketApiAddresses
         {
-            ClobRestClientAddress = "https://clob.polymarket.com",
+            ClobRestClientAddress = "https://clob-v2.polymarket.com",
             GammaRestClientAddress = "https://gamma-api.polymarket.com",
             DataRestClientAddress = "https://data-api.polymarket.com",
             ClobSocketClientAddress = "wss://ws-subscriptions-clob.polymarket.com",

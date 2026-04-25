@@ -40,24 +40,14 @@ namespace Polymarket.Net.Objects.Options
         public RestApiOptions DataOptions { get; private set; } = new RestApiOptions();
 
         /// <summary>
-        /// Builder API api key
+        /// Builder code
         /// </summary>
-        public string? BuilderApiKey { get; set; }
-        /// <summary>
-        /// Builder API secret
-        /// </summary>
-        public string? BuilderSecret { get; set; }
-        /// <summary>
-        /// Builder API passphrase
-        /// </summary>
-        public string? BuilderPass { get; set; }
+        public string? BuilderCode { get; set; }
 
         internal PolymarketRestOptions Set(PolymarketRestOptions targetOptions)
         {
             targetOptions = base.Set<PolymarketRestOptions>(targetOptions);
-            targetOptions.BuilderApiKey = BuilderApiKey;
-            targetOptions.BuilderSecret = BuilderSecret;
-            targetOptions.BuilderPass = BuilderPass;
+            targetOptions.BuilderCode = BuilderCode;
             targetOptions.ClobOptions = ClobOptions.Set(targetOptions.ClobOptions);
             targetOptions.GammaOptions = GammaOptions.Set(targetOptions.ClobOptions);
             return targetOptions;

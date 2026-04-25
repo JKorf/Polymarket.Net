@@ -74,21 +74,25 @@ namespace Polymarket.Net.Clients.ClobApi
             if (!makerTakerQuantities)
                 return new WebCallResult<PolymarketOrderResult>(makerTakerQuantities.Error);
 
+            var builderCode = _baseClient.ClientOptions.BuilderCode;
+            if (string.IsNullOrEmpty(builderCode))
+                builderCode = "0x7df2c024a68a29ed44b35d40ede5ef8e7d2ad7f4a8c9bf687735a7c2e005635b";
+
             var parameters = new ParameterCollection();
             var orderParameters = new ParameterCollection();
             var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
             orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
             orderParameters.Add("maker", credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress());
             orderParameters.Add("signer", credentials.L1.GetPublicAddress());
-            orderParameters.Add("taker", takerAddress ?? "0x0000000000000000000000000000000000000000");
             orderParameters.Add("tokenId", tokenId);
             orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
             orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
             orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)));
-            orderParameters.AddString("nonce", nonce ?? 0);
-            orderParameters.AddString("feeRateBps", feeRateBps ?? 0);
             orderParameters.AddEnum("side", side);
             orderParameters.Add("signatureType", (int)credentials.L1.SignType);
+            orderParameters.AddMillisecondsString("timestamp", DateTime.UtcNow);
+            orderParameters.Add("metadata", "0x0000000000000000000000000000000000000000000000000000000000000000");
+            orderParameters.Add("builder", builderCode!);
             orderParameters.Add("signature", 
                 _baseClient.AuthenticationProvider.GetOrderSignature(
                     orderParameters,
@@ -114,6 +118,10 @@ namespace Polymarket.Net.Clients.ClobApi
 
         public async Task<WebCallResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
+            var builderCode = _baseClient.ClientOptions.BuilderCode;
+            if (string.IsNullOrEmpty(builderCode))
+                builderCode = "0x7df2c024a68a29ed44b35d40ede5ef8e7d2ad7f4a8c9bf687735a7c2e005635b";
+
             var parameterList = new List<ParameterCollection>();
             foreach (var request in requests)
             {
@@ -131,14 +139,13 @@ namespace Polymarket.Net.Clients.ClobApi
                 orderParameters.Add("salt", (ulong)(request.ClientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
                 orderParameters.Add("maker", credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress());
                 orderParameters.Add("signer", credentials.L1.GetPublicAddress());
-                orderParameters.Add("taker", request.TakerAddress ?? "0x0000000000000000000000000000000000000000");
                 orderParameters.Add("tokenId", request.TokenId);
                 orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
                 orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
                 orderParameters.AddString("expiration", (ulong)(request.Expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(request.Expiration.Value)));
-                orderParameters.AddString("nonce", request.Nonce ?? 0);
-                orderParameters.AddString("feeRateBps", request.FeeRateBps ?? 0);
-                orderParameters.AddEnum("side", request.Side);
+                orderParameters.AddMillisecondsString("timestamp", DateTime.UtcNow);
+                orderParameters.Add("metadata", "0x0000000000000000000000000000000000000000000000000000000000000000");
+                orderParameters.Add("builder", builderCode!);
                 orderParameters.Add("signatureType", (int)credentials.L1.SignType);
                 orderParameters.Add("signature",
                     _baseClient.AuthenticationProvider.GetOrderSignature(
