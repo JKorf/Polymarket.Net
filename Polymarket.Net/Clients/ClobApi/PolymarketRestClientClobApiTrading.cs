@@ -75,10 +75,7 @@ namespace Polymarket.Net.Clients.ClobApi
             if (!makerTakerQuantities)
                 return new WebCallResult<PolymarketOrderResult>(makerTakerQuantities.Error);
 
-            var builderCode = _baseClient.ClientOptions.BuilderCode;
-            if (string.IsNullOrEmpty(builderCode))
-                builderCode = "0x7df2c024a68a29ed44b35d40ede5ef8e7d2ad7f4a8c9bf687735a7c2e005635b";
-
+            var builderCode = _baseClient.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
             var parameters = new ParameterCollection();
             var orderParameters = new ParameterCollection();
             var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
@@ -119,10 +116,7 @@ namespace Polymarket.Net.Clients.ClobApi
 
         public async Task<WebCallResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
-            var builderCode = _baseClient.ClientOptions.BuilderCode;
-            if (string.IsNullOrEmpty(builderCode))
-                builderCode = "0x7df2c024a68a29ed44b35d40ede5ef8e7d2ad7f4a8c9bf687735a7c2e005635b";
-
+            var builderCode = _baseClient.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
             var parameterList = new List<ParameterCollection>();
             foreach (var request in requests)
             {
