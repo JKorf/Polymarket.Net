@@ -1,0 +1,27 @@
+GET
+/clob-markets/{tokenId}
+false
+UriParams: {"condition_id": "123"}
+{
+  "gst": "2023-11-07T05:31:56Z",
+  "r": {},
+  "t": [
+    {
+      "t": "71321045679252212594626385532706912750332728571942532289631379312455583992563",
+      "o": "Yes"
+    }
+  ],
+  "mos": 5,
+  "mts": 0.01,
+  "mbf": 0,
+  "tbf": 0,
+  "rfqe": true,
+  "itode": true,
+  "ibce": true,
+  "fd": {
+    "r": 0.02,
+    "e": 2,
+    "to": true
+  },
+  "oas": 123
+}

@@ -28,6 +28,7 @@ namespace Polymarket.Net.UnitTests
             await tester.ValidateAsync(client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(["123"]), "GetBidAskSpreads");
             await tester.ValidateAsync(client => client.ClobApi.ExchangeData.GetOrderBookAsync("123"), "GetTokenInfo");
             await tester.ValidateAsync(client => client.ClobApi.ExchangeData.GetOrderBooksAsync(["123"]), "GetTokenInfos");
+            await tester.ValidateAsync(client => client.ClobApi.ExchangeData.GetMarketInfoAsync("123"), "GetMarketInfo");
         }
 
         [Test]

@@ -28,19 +28,19 @@ namespace Polymarket.Net.UnitTests
                 { "salt", "479249096354" },
                 { "maker", address },
                 { "signer", address },
-                { "taker", "0x0000000000000000000000000000000000000000" },
                 { "tokenId", "1234" },
                 { "makerAmount", "100000000" },
                 { "takerAmount", "50000000" },
                 { "expiration", "0" },
-                { "nonce", "0" },
-                { "feeRateBps", "100" },
                 { "side", "BUY" },
                 { "signatureType", 0 },
+                { "timestamp", "1768900397000" },
+                { "metadata", "0x0000000000000000000000000000000000000000000000000000000000000000" },
+                { "builder", "0x0000000000000000000000000000000000000000000000000000000000000000" },
             };
 
             var result = authProvider.GetOrderSignature(parameters, chainId, false).ToLower();
-            Assert.That(result, Is.EqualTo("0x302cd9abd0b5fcaa202a344437ec0b6660da984e24ae9ad915a592a90facf5a51bb8a873cd8d270f070217fea1986531d5eec66f1162a81f66e026db653bf7ce1c"));
+            Assert.That(result, Is.EqualTo("0xb426c5b304df77bd5bcb888ba8600c7c1e02e7af99b3b88298f4406b053de3d70dd86371cc345a7b258309b49635b4d65333ff8fc970ee72e46ea1298fdaa00c1b"));
         }
 
         [Test]
@@ -57,19 +57,19 @@ namespace Polymarket.Net.UnitTests
                 { "salt", "1515433236867" },
                 { "maker", address },
                 { "signer", address },
-                { "taker", "0x0000000000000000000000000000000000000000" },
                 { "tokenId", "11862165566757345985240476164489718219056735011698825377388402888080786399275" },
                 { "makerAmount", "5000" },
                 { "takerAmount", "5000000" },
                 { "expiration", "0" },
-                { "nonce", "0" },
-                { "feeRateBps", "0" },
                 { "side", "BUY" },
                 { "signatureType", 1 },
+                { "timestamp", "1768900398000" },
+                { "metadata", "0x0000000000000000000000000000000000000000000000000000000000000000" },
+                { "builder", "0x0000000000000000000000000000000000000000000000000000000000000000" },
             };
 
             var result = authProvider.GetOrderSignature(parameters, chainId, true).ToLower();
-            Assert.That(result, Is.EqualTo("0x80339932dbe85fda07338f283ba084312addc59c90e7739067be748c12b4922054673e2f8365f5fd891cef19469ec29900d1889d9a674f0bf485f177b6acf14e1b"));
+            Assert.That(result, Is.EqualTo("0x2b0ebbc7a37efedff07bd93cfe0dd694aa15e9c67054eac911a2a803bea67f0e7b783e69ad9232e43abd8027d90fd7c61579b1f500177659378a3df44b2a021b1c"));
         }
 
         [Test]
