@@ -442,15 +442,11 @@ namespace Polymarket.Net.Clients.ClobApi
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketOrderHeartbeat>> PostOrderHeartbeatAsync(
-            string? heartbeatId,
-            CancellationToken ct = default)
+        public async Task<WebCallResult> PostOrderHeartbeatAsync(CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.Add("heartbeat_id", heartbeatId ?? "");
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/v1/heartbeats", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
-            var result = await _baseClient.SendAsync<PolymarketOrderHeartbeat>(request, parameters, ct).ConfigureAwait(false);
-            return result;
+            var request = _definitions.GetOrCreate(HttpMethod.Post, "/heartbeats", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
+            var result = await _baseClient.SendAsync<PolymarketOrderHeartbeat>(request, null, ct).ConfigureAwait(false);
+            return result.AsDataless();
         }
 
         private static int GetDecimalPlaces(decimal value)

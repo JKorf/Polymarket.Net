@@ -8,9 +8,9 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketOrderHeartbeat
     {
         /// <summary>
-        /// ["<c>heartbeat_id</c>"] The heart beat id, should be used for subsequent heartbeat requests
+        /// ["<c>status</c>"] Status
         /// </summary>
-        [JsonPropertyName("heartbeat_id")]
-        public string HeartbeatId { get; set; } = string.Empty;
+        [JsonPropertyName("status")]
+        public string Status { get; set; } = string.Empty;
     }
 }

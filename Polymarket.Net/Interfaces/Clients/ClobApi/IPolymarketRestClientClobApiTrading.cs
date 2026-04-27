@@ -198,11 +198,14 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
 
         /// <summary>
         /// Send order heartbeat. Should be send every 10 seconds or all open orders will be canceled
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/trade/send-heartbeat#send-heartbeat" /><br />
+        /// Endpoint:<br />
+        /// GET /heartbeats
+        /// </para>
         /// </summary>
-        /// <param name="heartbeatId">["<c>heartbeat_id</c>"] The id from the previous PostOrderHeartbeatAsync response, or null for initial request</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketOrderHeartbeat>> PostOrderHeartbeatAsync(
-            string? heartbeatId,
-            CancellationToken ct = default);
+        Task<WebCallResult> PostOrderHeartbeatAsync(CancellationToken ct = default);
     }
 }
