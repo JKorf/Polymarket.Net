@@ -24,7 +24,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// Get list of all sports teams
         /// <para>
         /// Docs:<br />
-        /// <a href="https://docs.polymarket.com/api-reference/pricing/get-market-price" /><br />
+        /// <a href="https://docs.polymarket.com/api-reference/sports/list-teams" /><br />
         /// Endpoint:<br />
         /// GET /teams
         /// </para>
