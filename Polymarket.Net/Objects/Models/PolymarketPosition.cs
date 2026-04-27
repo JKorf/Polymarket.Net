@@ -21,10 +21,10 @@ namespace Polymarket.Net.Objects.Models
         public string Asset { get; set; } = string.Empty;
 
         /// <summary>
-        /// ["<c>conditionId</c>"] ConditionId
+        /// ["<c>conditionId</c>"] Market id
         /// </summary>
         [JsonPropertyName("conditionId")]
-        public string ConditionId { get; set; } = String.Empty;
+        public string MarketId { get; set; } = string.Empty;
 
         /// <summary>
         /// ["<c>size</c>"] Size

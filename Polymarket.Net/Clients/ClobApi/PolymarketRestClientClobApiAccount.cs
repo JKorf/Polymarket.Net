@@ -136,7 +136,7 @@ namespace Polymarket.Net.Clients.ClobApi
             string? tradeId = null,
             string? takerAddress = null,
             string? makerAddress = null,
-            string? conditionId = null,
+            string? marketId = null,
             DateTime? startTime = null,
             DateTime? endTime = null,
             string? cursor = null, 
@@ -146,7 +146,7 @@ namespace Polymarket.Net.Clients.ClobApi
             parameters.AddOptional("id", tradeId);
             parameters.AddOptional("taker", takerAddress);
             parameters.AddOptional("maker", makerAddress);
-            parameters.AddOptional("market", conditionId);
+            parameters.AddOptional("market", marketId);
             parameters.AddOptionalMillisecondsString("after", startTime);
             parameters.AddOptionalMillisecondsString("before", endTime);
             parameters.AddOptional("next_cursor", cursor);

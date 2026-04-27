@@ -22,7 +22,7 @@ namespace Polymarket.Net.Objects.Models
         /// ["<c>asset_id</c>"] Asset id
         /// </summary>
         [JsonPropertyName("asset_id")]
-        public string AssetId { get; set; } = string.Empty;
+        public string TokenId { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>old_tick_size</c>"] Old tick size
         /// </summary>

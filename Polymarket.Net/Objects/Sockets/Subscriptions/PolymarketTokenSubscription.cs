@@ -81,7 +81,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
         {
             _client.UpdateTimeOffset(message.Timestamp);
 
-            var updates = message.PriceChanges.Where(x => _tokenIds.Contains(x.AssetId)).ToArray();
+            var updates = message.PriceChanges.Where(x => _tokenIds.Contains(x.TokenId)).ToArray();
             if (updates.Length == 0)
                 return CallResult.SuccessResult;
 
@@ -125,7 +125,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
         {
             foreach (var message in messages)
             {
-                if (!_tokenIds.Contains(message.AssetId))
+                if (!_tokenIds.Contains(message.TokenId))
                     continue;
 
                 _bookHandler?.Invoke(new DataEvent<PolymarketBookUpdate>(PolymarketPlatform.Metadata.Id, message, receiveTime, originalData)

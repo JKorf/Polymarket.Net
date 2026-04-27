@@ -23,11 +23,11 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </para>
         /// </summary>
         /// <param name="orderId">Filter by order id</param>
-        /// <param name="conditionId">Filter by market/condition id</param>
+        /// <param name="marketId">Filter by market/condition id</param>
         /// <param name="tokenId">Asset/token id</param>
         /// <param name="cursor">Next page cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPage<PolymarketOrder>>> GetOpenOrdersAsync(string? orderId = null, string? conditionId = null, string? tokenId = null, string? cursor = null, CancellationToken ct = default);
+        Task<WebCallResult<PolymarketPage<PolymarketOrder>>> GetOpenOrdersAsync(string? orderId = null, string? marketId = null, string? tokenId = null, string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get an order by id
@@ -153,10 +153,10 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// DELETE /orders
         /// </para>
         /// </summary>
-        /// <param name="conditionId">["<c>market</c>"] The condition/market id</param>
+        /// <param name="marketId">["<c>market</c>"] The condition/market id</param>
         /// <param name="tokenId">["<c>asset_id</c>"] Asset/token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketCancelResult>> CancelOrdersOnMarketAsync(string? conditionId = null, string? tokenId = null, CancellationToken ct = default);
+        Task<WebCallResult<PolymarketCancelResult>> CancelOrdersOnMarketAsync(string? marketId = null, string? tokenId = null, CancellationToken ct = default);
         /// <summary>
         /// Cancel all open orders
         /// <para>

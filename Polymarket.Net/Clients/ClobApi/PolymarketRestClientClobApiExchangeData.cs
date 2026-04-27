@@ -104,9 +104,9 @@ namespace Polymarket.Net.Clients.ClobApi
         #region Get Market
 
         /// <inheritdoc />
-        public async Task<WebCallResult<PolymarketMarketDetails>> GetMarketAsync(string conditionId, CancellationToken ct = default)
+        public async Task<WebCallResult<PolymarketMarketDetails>> GetMarketAsync(string marketId, CancellationToken ct = default)
         {
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "markets/" + conditionId, PolymarketPlatform.RateLimiter.ClobApi, 1, false);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, "markets/" + marketId, PolymarketPlatform.RateLimiter.ClobApi, 1, false);
             return await _baseClient.SendAsync<PolymarketMarketDetails>(request, null, ct).ConfigureAwait(false);
         }
 

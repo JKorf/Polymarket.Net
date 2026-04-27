@@ -32,10 +32,10 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketPriceChange
     {
         /// <summary>
-        /// ["<c>asset_id</c>"] Asset id
+        /// ["<c>asset_id</c>"] Token id
         /// </summary>
         [JsonPropertyName("asset_id")]
-        public string AssetId { get; set; } = string.Empty;
+        public string TokenId { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>price</c>"] Price
         /// </summary>

@@ -34,10 +34,10 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("description")]
         public string Description { get; set; } = string.Empty;
         /// <summary>
-        /// ["<c>assets_ids</c>"] Asset ids
+        /// ["<c>assets_ids</c>"] Token ids
         /// </summary>
         [JsonPropertyName("assets_ids")]
-        public string[] AssetIds { get; set; } = [];
+        public string[] TokenIds { get; set; } = [];
         /// <summary>
         /// ["<c>outcomes</c>"] Outcomes
         /// </summary>

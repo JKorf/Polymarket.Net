@@ -13,10 +13,10 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketMarket
     {
         /// <summary>
-        /// ["<c>condition_id</c>"] Condition id
+        /// ["<c>condition_id</c>"] Market id
         /// </summary>
         [JsonPropertyName("condition_id")]
-        public string ConditionId { get; set; } = string.Empty;
+        public string MarketId { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>rewards</c>"] Rewards
         /// </summary>
@@ -50,7 +50,7 @@ namespace Polymarket.Net.Objects.Models
     }
 
     /// <summary>
-    /// 
+    /// Market reward
     /// </summary>
     public record PolymarketMarketReward
     {
@@ -72,7 +72,7 @@ namespace Polymarket.Net.Objects.Models
     }
 
     /// <summary>
-    /// 
+    /// Reward rates
     /// </summary>
     public record PolymarketMarketRewardRates
     {
@@ -89,7 +89,7 @@ namespace Polymarket.Net.Objects.Models
     }
 
     /// <summary>
-    /// 
+    /// Token
     /// </summary>
     public record PolymarketMarketToken
     {

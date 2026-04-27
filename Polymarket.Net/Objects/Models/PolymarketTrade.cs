@@ -27,7 +27,7 @@ namespace Polymarket.Net.Objects.Models
         /// ["<c>market</c>"] Condition/market id
         /// </summary>
         [JsonPropertyName("market")]
-        public string ConditionId { get; set; } = string.Empty;
+        public string MarketId { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>asset_id</c>"] Asset/token id
         /// </summary>

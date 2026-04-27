@@ -24,10 +24,10 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("question")]
         public string Question { get; set; } = string.Empty;
         /// <summary>
-        /// ["<c>conditionId</c>"] Condition id
+        /// ["<c>conditionId</c>"] Market id
         /// </summary>
         [JsonPropertyName("conditionId")]
-        public string ConditionId { get; set; } = string.Empty;
+        public string MarketId { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>slug</c>"] Slug
         /// </summary>

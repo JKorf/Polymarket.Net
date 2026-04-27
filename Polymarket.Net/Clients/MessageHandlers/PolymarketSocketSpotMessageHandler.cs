@@ -14,11 +14,11 @@ namespace Polymarket.Net.Clients.MessageHandlers
 
         public PolymarketSocketSpotMessageHandler()
         {
-            AddTopicMapping<PolymarketBookUpdate>(x => x.AssetId);
-            AddTopicMapping<PolymarketBookUpdate[]>(x => x.First().AssetId);
-            AddTopicMapping<PolymarketLastTradePriceUpdate>(x => x.AssetId);
-            AddTopicMapping<PolymarketTickSizeUpdate>(x => x.AssetId);
-            AddTopicMapping<PolymarketBestBidAskUpdate>(x => x.AssetId);
+            AddTopicMapping<PolymarketBookUpdate>(x => x.TokenId);
+            AddTopicMapping<PolymarketBookUpdate[]>(x => x.First().TokenId);
+            AddTopicMapping<PolymarketLastTradePriceUpdate>(x => x.TokenId);
+            AddTopicMapping<PolymarketTickSizeUpdate>(x => x.TokenId);
+            AddTopicMapping<PolymarketBestBidAskUpdate>(x => x.TokenId);
         }
 
         protected override MessageTypeDefinition[] TypeEvaluators { get; } = [

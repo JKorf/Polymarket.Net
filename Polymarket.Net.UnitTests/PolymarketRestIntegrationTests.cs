@@ -50,7 +50,7 @@ namespace Polymarket.Net.UnitTests
         public async Task TestClobExchangeData()
         {
             var market = await CreateClient().GammaApi.GetMarketsAsync(closed: false, volumeMin: 1);
-            var marketId = market.Data.First().ConditionId;
+            var marketId = market.Data.First().MarketId;
             var tokenId = market.Data.First().ClobTokenIds.First();
 
             await RunAndCheckResult(client => client.ClobApi.ExchangeData.GetServerTimeAsync(default), false);

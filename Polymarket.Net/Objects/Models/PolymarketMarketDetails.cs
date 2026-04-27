@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Polymarket.Net.Objects.Models
 {
     /// <summary>
-    /// 
+    /// Market details
     /// </summary>
     public record PolymarketMarketDetails
     {
@@ -53,10 +53,10 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("minimum_tick_size")]
         public decimal MinimumTickQuantity { get; set; }
         /// <summary>
-        /// ["<c>condition_id</c>"] Condition id
+        /// ["<c>condition_id</c>"] Market id
         /// </summary>
         [JsonPropertyName("condition_id")]
-        public string ConditionId { get; set; } = string.Empty;
+        public string MarketId { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>question_id</c>"] Question id
         /// </summary>

@@ -49,10 +49,10 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("question")]
         public string Question { get; set; } = string.Empty;
         /// <summary>
-        /// ["<c>winning_asset_id</c>"] Winning asset id
+        /// ["<c>winning_asset_id</c>"] Winning token id
         /// </summary>
         [JsonPropertyName("winning_asset_id")]
-        public string WinningAssetId { get; set; } = string.Empty;
+        public string WinningTokenId { get; set; } = string.Empty;
         /// <summary>
         /// ["<c>winning_outcome</c>"] Winning outcome
         /// </summary>

@@ -360,7 +360,7 @@ namespace Polymarket.Net.Clients.GammaApi
             long? tagId = null,
             string[]? slugs = null,
             string[]? clobTokenIds = null,
-            string[]? conditionIds = null,
+            string[]? marketIds = null,
             string[]? marketMakerAddresses = null,
             bool? closed = null,
             bool? relatedTags = null,
@@ -390,7 +390,7 @@ namespace Polymarket.Net.Clients.GammaApi
             parameters.AddOptional("tag_id", tagId);
             parameters.AddOptional("slug", slugs);
             parameters.AddOptional("clob_token_ids", clobTokenIds);
-            parameters.AddOptional("condition_ids", conditionIds);
+            parameters.AddOptional("condition_ids", marketIds);
             parameters.AddOptional("market_maker_address", marketMakerAddresses);
             parameters.AddOptional("uma_resolution_status", umaResolutionStatus);
             parameters.AddOptional("game_id", gameId);

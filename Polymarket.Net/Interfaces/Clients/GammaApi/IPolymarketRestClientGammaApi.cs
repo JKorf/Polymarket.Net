@@ -306,7 +306,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="tagId">["<c>tag_id</c>"] Filter by tag id</param>
         /// <param name="cyom">["<c>cyom</c>"] Whether to return cyom</param>
         /// <param name="clobTokenIds">["<c>clob_token_ids</c>"] Filter by CLOB token ids</param>
-        /// <param name="conditionIds">["<c>condition_ids</c>"] Filter by condition ids</param>
+        /// <param name="marketIds">["<c>condition_ids</c>"] Filter by market/condition ids</param>
         /// <param name="marketMakerAddresses">["<c>market_maker_address</c>"] Filter by market maker addresses</param>
         /// <param name="sportMarketTypes">["<c>sports_market_types</c>"] Filter by sport market types</param>
         /// <param name="questionIds">["<c>question_ids</c>"] Filter by question ids</param>
@@ -334,7 +334,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
             long? tagId = null,
             string[]? slugs = null,
             string[]? clobTokenIds = null,
-            string[]? conditionIds = null,
+            string[]? marketIds = null,
             string[]? marketMakerAddresses = null,
             bool? closed = null,
             bool? relatedTags = null,

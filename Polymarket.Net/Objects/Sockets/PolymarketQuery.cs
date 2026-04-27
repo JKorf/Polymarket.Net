@@ -10,10 +10,10 @@ namespace Polymarket.Net.Objects.Sockets
 {
     internal class PolymarketQuery<T> : Query<T>
     {
-        public PolymarketQuery(string type, string[] assets) : base(new PolymarketSocketRequest
+        public PolymarketQuery(string type, string[] tokenIds) : base(new PolymarketSocketRequest
         {
             Type = type,
-            Assets = assets,
+            TokenIds = tokenIds,
             CustomFeatureEnabled = true
         }, false, 1)
         {
