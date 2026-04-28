@@ -41,14 +41,6 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         public bool? PostOnly { get; set; }
         /// <summary>
-        /// Fee rate BPS
-        /// </summary>
-        public long? FeeRateBps { get; set; }
-        /// <summary>
-        /// Taker address
-        /// </summary>
-        public string? TakerAddress { get; set; } = string.Empty;
-        /// <summary>
         /// Client order id
         /// </summary>
         public long? ClientOrderId { get; set; }
@@ -56,10 +48,6 @@ namespace Polymarket.Net.Objects.Models
         /// Expiration
         /// </summary>
         public DateTime? Expiration { get; set; }
-        /// <summary>
-        /// Nonce
-        /// </summary>
-        public long? Nonce { get; set; }
 
         /// <summary>
         /// Type of quantity for an order, either in shares (default) or in value (USD). Value is only available for market buy orders

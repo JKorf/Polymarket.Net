@@ -84,11 +84,8 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="quantity">Quantity of shares</param>
         /// <param name="price">Price, value between 0 and 1. For example 0.001 means 0.1c in the UI, 0.5 means 50c in UI</param>
         /// <param name="postOnly">["<c>postOnly</c>"] Post only order</param>
-        /// <param name="feeRateBps">["<c>order.feeRateBps</c>"] Fee rate basis points as required by the operator</param>
-        /// <param name="takerAddress">["<c>order.taker</c>"] Taker/operator address</param>
         /// <param name="clientOrderId">["<c>order.salt</c>"] Client order id</param>
         /// <param name="expiration">["<c>order.expiration</c>"] Expiration time</param>
-        /// <param name="nonce">["<c>order.nonce</c>"] Nonce</param>
         /// <param name="quantityType">Type of quantity for an order, either in shares (default) or in value (USD). Value is only available for market buy orders</param>
         /// <param name="ct">Cancellation token</param>
         Task<WebCallResult<PolymarketOrderResult>> PlaceOrderAsync(
@@ -99,11 +96,8 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
             decimal? price = null,
             TimeInForce? timeInForce = null,
             bool? postOnly = null,
-            long? feeRateBps = null,
-            string? takerAddress = null,
             long? clientOrderId = null,
             DateTime? expiration = null,
-            long? nonce = null,
             QuantityType? quantityType = null,
             CancellationToken ct = default);
 

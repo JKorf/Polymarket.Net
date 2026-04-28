@@ -59,11 +59,8 @@ namespace Polymarket.Net.Clients.ClobApi
             decimal? price = null,
             TimeInForce? timeInForce = null,
             bool? postOnly = null,
-            long? feeRateBps = null,
-            string? takerAddress = null,
             long? clientOrderId = null,
             DateTime? expiration = null,
-            long? nonce = null,
             QuantityType? quantityType = null,
             CancellationToken ct = default)
         {
