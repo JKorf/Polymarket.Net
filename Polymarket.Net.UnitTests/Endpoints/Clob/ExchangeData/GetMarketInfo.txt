@@ -1,7 +1,6 @@
 GET
-/clob-markets/{tokenId}
+/clob-markets/123
 false
-UriParams: {"condition_id": "123"}
 {
   "gst": "2023-11-07T05:31:56Z",
   "r": {},

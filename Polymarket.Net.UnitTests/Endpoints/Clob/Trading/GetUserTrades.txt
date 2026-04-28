@@ -1,5 +1,5 @@
 GET
-/data/trades
+/trades
 true
 {
   "limit": 100,
