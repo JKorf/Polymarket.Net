@@ -706,5 +706,20 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("eventStartTime")]
         public DateTime? EventStartTime { get; set; }
+        /// <summary>
+        /// ["<c>feesEnabled</c>"] Fee enabled
+        /// </summary>
+        [JsonPropertyName("feesEnabled")]
+        public bool FeesEnabled { get; set; }
+        /// <summary>
+        /// ["<c>feesEnabled</c>"] Fee type
+        /// </summary>
+        [JsonPropertyName("feeType")]
+        public string? FeeType { get; set; }
+        /// <summary>
+        /// ["<c>feeSchedule</c>"] Fee schedule
+        /// </summary>
+        [JsonPropertyName("feeSchedule")]
+        public PolymarketFeeSchedule? FeeSchedule { get; set; }
     }
 }
