@@ -1,0 +1,40 @@
+# Polymarket.Net
+
+> Strongly typed .NET client library for the Polymarket REST and WebSocket APIs. Supports CLOB market data, Gamma events/markets/tags/search, Data API positions, CLOB trading/account endpoints, local order books, user client management, L1/L2 authentication, and WebSocket streams. Part of the CryptoExchange.Net ecosystem.
+
+Polymarket.Net provides typed C# access to Polymarket prediction market APIs with `WebCallResult<T>` / `CallResult<T>` error handling, client-side rate limiting, automatic WebSocket reconnection, native AOT support, and dependency injection. Current repository package version: 3.1.0. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
+
+## Documentation
+
+- [README](https://github.com/JKorf/Polymarket.Net/blob/main/README.md): Overview, installation, supported features, authentication examples, supported endpoint table, release notes
+- [Documentation Site](https://cryptoexchange.jkorf.dev/Polymarket.Net/): Full documentation hub
+- [AI API Quick Map](https://github.com/JKorf/Polymarket.Net/blob/main/docs/ai-api-map.md): Table-style intent-to-method map for CLOB, Gamma, Data, WebSocket, authentication, DI, and local order book workflows
+- [Full LLM Context](https://github.com/JKorf/Polymarket.Net/blob/main/llms-full.txt): Detailed AI/LLM guide with code patterns, endpoint routing, authentication levels, and anti-hallucination rules
+- [Claude Guide](https://github.com/JKorf/Polymarket.Net/blob/main/CLAUDE.md): Claude-facing usage rules and source-of-truth pointers
+
+## Examples
+
+- [AI-friendly examples directory](https://github.com/JKorf/Polymarket.Net/tree/main/Examples/ai-friendly): Compact, compilable examples optimized for AI assistants and quick onboarding
+- [Market Data Quickstart](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/01-market-data-quickstart.cs): Client setup, Gamma search, CLOB markets, order books, price data
+- [Authentication And Trading](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/02-authentication-and-trading.cs): L1/L2 credentials, deriving L2 credentials, allowance check, limit order, open orders, cancellation
+- [WebSocket Streams](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/03-websocket.cs): Token, platform, sports, and authenticated user subscriptions with teardown
+- [Dependency Injection And Order Book](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/04-di-and-orderbook.cs): `AddPolymarket`, client injection, local order book factory, per-user client provider
+- [Error Handling](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/05-error-handling.cs): `WebCallResult` pattern, retry helper, order result checks, common Polymarket mistakes
+- [Full Examples Repository](https://github.com/JKorf/Polymarket.Net/tree/main/Examples): Console, API, tracker, and local order book examples
+
+## Critical Rules
+
+- Use `PolymarketRestClient` and `PolymarketSocketClient`; do not generate raw HTTP calls.
+- Check `.Success` before reading `.Data`.
+- Use `ClobApi`, `GammaApi`, and `DataApi`; do not invent `SpotApi`, `FuturesApi`, `GeneralApi`, or `.SharedClient`.
+- Polymarket order placement uses token ids and prices between 0 and 1, not exchange symbols.
+- Public data can be requested without credentials.
+- L1 credentials use `PolymarketCredentials.WithL1(...)` / `PolymarketL1Credential`; L2 credentials use `.WithL2(...)` / `HMACPassCredential`.
+- Create or derive L2 credentials with `GetOrCreateApiCredentialsAsync()` before private trading when only L1 credentials are configured.
+
+## Reference
+
+- [CryptoExchange.Net base library](https://github.com/JKorf/CryptoExchange.Net): Base abstractions used by Polymarket.Net and other JKorf API libraries
+- [CryptoClients.Net](https://github.com/JKorf/CryptoClients.Net): Bundle package providing unified access to exchange libraries
+- [NuGet Package](https://www.nuget.org/packages/Polymarket.Net): Latest stable release on NuGet
+- [Discord Community](https://discord.gg/MSpeEtSY8t): Maintainer-supported Discord for questions and discussion

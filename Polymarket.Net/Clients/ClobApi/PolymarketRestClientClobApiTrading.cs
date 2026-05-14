@@ -76,19 +76,27 @@ namespace Polymarket.Net.Clients.ClobApi
             var parameters = new ParameterCollection();
             var orderParameters = new ParameterCollection();
             var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
+
+            var maker = credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress();
+            var signer = credentials.L1.GetPublicAddress();
+            if (credentials.L1.SignType == SignType.Poly1271)
+            {
+                signer = credentials.L1.PolymarketFundingAddress;
+            }
+
             orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
-            orderParameters.Add("maker", credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress());
-            orderParameters.Add("signer", credentials.L1.GetPublicAddress());
+            orderParameters.Add("maker", maker);
+            orderParameters.Add("signer", signer!);
             orderParameters.Add("tokenId", tokenId);
             orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
             orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
-            orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)));
             orderParameters.AddEnum("side", side);
+            orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)));
             orderParameters.Add("signatureType", (int)credentials.L1.SignType);
             orderParameters.AddMillisecondsString("timestamp", DateTime.UtcNow);
             orderParameters.Add("metadata", "0x0000000000000000000000000000000000000000000000000000000000000000");
             orderParameters.Add("builder", builderCode!);
-            orderParameters.Add("signature", 
+            orderParameters.Add("signature",
                 _baseClient.AuthenticationProvider.GetOrderSignature(
                     orderParameters,
                     _baseClient.ClientOptions.Environment.ChainId,
@@ -118,6 +126,15 @@ namespace Polymarket.Net.Clients.ClobApi
                 return new WebCallResult<CallResult<PolymarketOrderResult>[]>(tokenResult.Error);
 
             var builderCode = _baseClient.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
+
+            var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
+
+            var maker = credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress();
+            var signer = credentials.L1.GetPublicAddress();
+            if (credentials.L1.SignType == SignType.Poly1271)
+            {
+                signer = credentials.L1.PolymarketFundingAddress;
+            }
             var parameterList = new List<ParameterCollection>();
             foreach (var request in requests)
             {
@@ -128,10 +145,9 @@ namespace Polymarket.Net.Clients.ClobApi
 
                 var parameters = new ParameterCollection();
                 var orderParameters = new ParameterCollection();
-                var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
                 orderParameters.Add("salt", (ulong)(request.ClientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
-                orderParameters.Add("maker", credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress());
-                orderParameters.Add("signer", credentials.L1.GetPublicAddress());
+                orderParameters.Add("maker", maker);
+                orderParameters.Add("signer", signer!);
                 orderParameters.Add("tokenId", request.TokenId);
                 orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
                 orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);

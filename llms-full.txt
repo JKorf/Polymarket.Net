@@ -1,0 +1,646 @@
+# Polymarket.Net Full LLM Context
+
+> Detailed AI/LLM reference for generating correct C#/.NET code with Polymarket.Net. Use this file when `llms.txt` is too brief and the task needs concrete examples, endpoint routing guidance, authentication details, or anti-hallucination rules.
+
+Polymarket.Net is a strongly typed .NET client library for the Polymarket REST and WebSocket APIs. It is part of the CryptoExchange.Net ecosystem and uses the same result, logging, rate limiting, dependency injection, and socket patterns as the other JKorf client libraries.
+
+Current package version in this repository: 3.1.0.
+CryptoExchange.Net dependency: 11.1.1.
+Target frameworks: netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
+Native AOT: supported on compatible .NET targets.
+
+Primary documentation:
+- README.md: overview, install, authentication examples, supported API table, release notes
+- docs site: https://cryptoexchange.jkorf.dev/Polymarket.Net/
+- API quick map: `docs/ai-api-map.md`
+- source interfaces: `Polymarket.Net/Interfaces/Clients/**`
+- AI examples: `Examples/ai-friendly/`
+- Claude guide: `CLAUDE.md`
+- assistant skill: `AGENTS.md`
+
+## Golden Rules For AI Code Generation
+
+- Use `PolymarketRestClient` for REST and `PolymarketSocketClient` for WebSocket.
+- Do not generate raw `HttpClient` calls to Polymarket endpoints.
+- Do not manually sign CLOB requests; use `PolymarketCredentials`.
+- Always check `.Success` before reading `.Data`.
+- REST methods return `WebCallResult<T>` or `WebCallResult`.
+- WebSocket subscriptions return `CallResult<UpdateSubscription>`.
+- Reuse clients. Do not instantiate clients per request in production code.
+- Prefer dependency injection for long-running applications.
+- Store WebSocket subscriptions and unsubscribe during shutdown.
+- Do not call `.Result` or `.Wait()` on async methods.
+- Do not invent endpoint names. If unsure, inspect `Polymarket.Net/Interfaces/Clients/**`.
+- Do not invent Binance-style surface area: there is no `SpotApi`, `FuturesApi`, `GeneralApi`, or `.SharedClient`.
+- Polymarket CLOB orders use token ids and decimal prices from 0 to 1, not symbols such as `BTCUSDT`.
+- For private trading with L1-only credentials, create or derive L2 credentials and apply them with `UpdateL2Credentials`.
+
+## Installation
+
+```bash
+dotnet add package Polymarket.Net
+```
+
+## Required Usings
+
+Typical REST and market data code:
+
+```csharp
+using Polymarket.Net.Clients;
+```
+
+Trading and authenticated code:
+
+```csharp
+using CryptoExchange.Net.Authentication;
+using Polymarket.Net;
+using Polymarket.Net.Clients;
+using Polymarket.Net.Enums;
+```
+
+Error/retry helper code may also need:
+
+```csharp
+using CryptoExchange.Net.Objects;
+```
+
+Dependency injection:
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using Polymarket.Net;
+using Polymarket.Net.Interfaces;
+using Polymarket.Net.Interfaces.Clients;
+```
+
+## Main API Surface
+
+REST:
+
+```text
+PolymarketRestClient
+  .ClobApi
+    .ExchangeData
+    .Account
+    .Trading
+  .GammaApi
+  .DataApi
+```
+
+WebSocket:
+
+```text
+PolymarketSocketClient
+  .ClobApi
+    SubscribeToPlatformUpdatesAsync(...)
+    SubscribeToTokenUpdatesAsync(...)
+    SubscribeToUserUpdatesAsync(...)
+    SubscribeToSportsUpdatesAsync(...)
+```
+
+Important: Polymarket.Net currently does not expose a `.SharedClient` property on these API clients. If the user asks for multi-exchange abstraction, explain that Polymarket.Net has CryptoExchange.Net platform integration and order book abstractions, but no shared trading/ticker client is exposed by the current interfaces.
+
+## Authentication Levels And Types
+
+Polymarket.Net models authentication in layers.
+
+Unauthenticated public access:
+
+```csharp
+var client = new PolymarketRestClient();
+var markets = await client.ClobApi.ExchangeData.GetMarketsAsync();
+```
+
+L1 credentials:
+
+```csharp
+var l1Only = new PolymarketCredentials()
+    .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_FUNDING_OR_DEPOSIT_ADDRESS");
+```
+
+L1 credentials are used for wallet/private-key signing and for creating or deriving L2 API credentials. L1 is configured by `PolymarketL1Credential` or `PolymarketCredentials.WithL1(...)`.
+
+L2 credentials:
+
+```csharp
+var fullCredentials = new PolymarketCredentials()
+    .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_FUNDING_OR_DEPOSIT_ADDRESS")
+    .WithL2("L2_API_KEY", "L2_API_SECRET", "L2_API_PASSPHRASE");
+```
+
+L2 credentials are key/secret/passphrase credentials, represented by `HMACPassCredential` internally. They are required for private trading workflows such as order placement, cancellation, user trade queries, and authenticated user WebSocket updates.
+
+Supported `SignType` values from `Polymarket.Net/Enums/SignType.cs`:
+
+```text
+EOA      Externally Owned Account signatures
+Email    Email/Magic wallet signatures
+Proxy    Browser wallet proxy signatures
+Poly1271 Poly1271 signatures with a Polymarket funding/deposit address
+```
+
+The `PolymarketL1Credential` source requires a non-empty private key. Its validation requires `PolymarketFundingAddress` when `SignType.Poly1271` is used.
+
+Create or derive L2 credentials when starting with L1 only:
+
+```csharp
+var client = new PolymarketRestClient(options =>
+{
+    options.ApiCredentials = new PolymarketCredentials()
+        .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_ADDRESS");
+});
+
+var l2 = await client.ClobApi.Account.GetOrCreateApiCredentialsAsync();
+if (!l2.Success)
+{
+    Console.WriteLine(l2.Error);
+    return;
+}
+
+client.UpdateL2Credentials(l2.Data);
+```
+
+The socket client also has `UpdateL2Credentials(PolymarketCreds credentials)`.
+
+## Client Setup
+
+Public REST:
+
+```csharp
+var client = new PolymarketRestClient();
+
+var time = await client.ClobApi.ExchangeData.GetServerTimeAsync();
+if (!time.Success)
+{
+    Console.WriteLine(time.Error);
+    return;
+}
+
+Console.WriteLine(time.Data);
+```
+
+Authenticated REST:
+
+```csharp
+var client = new PolymarketRestClient(options =>
+{
+    options.ApiCredentials = new PolymarketCredentials()
+        .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_ADDRESS")
+        .WithL2("L2_KEY", "L2_SECRET", "L2_PASS");
+});
+```
+
+Socket client:
+
+```csharp
+var socketClient = new PolymarketSocketClient();
+```
+
+Authenticated socket client:
+
+```csharp
+var socketClient = new PolymarketSocketClient(options =>
+{
+    options.ApiCredentials = new PolymarketCredentials()
+        .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_ADDRESS")
+        .WithL2("L2_KEY", "L2_SECRET", "L2_PASS");
+});
+```
+
+Environments:
+
+```csharp
+var live = new PolymarketRestClient(options => options.Environment = PolymarketEnvironment.Live);
+var testnet = new PolymarketRestClient(options => options.Environment = PolymarketEnvironment.Testnet);
+```
+
+Custom environment:
+
+```csharp
+var custom = PolymarketEnvironment.CreateCustom(
+    name: "custom",
+    chainId: 137,
+    clobRestAddress: "https://...",
+    gammaRestAddress: "https://...",
+    dataRestAddress: "https://...",
+    clobSocketStreamsAddress: "wss://...",
+    sportSocketStreamsAddress: "wss://...");
+```
+
+## Dependency Injection
+
+Current DI shape:
+
+```csharp
+services.AddPolymarket(options =>
+{
+    options.ApiCredentials = new PolymarketCredentials()
+        .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_ADDRESS")
+        .WithL2("L2_KEY", "L2_SECRET", "L2_PASS");
+});
+```
+
+Inject:
+
+```csharp
+public class MyService
+{
+    private readonly IPolymarketRestClient _restClient;
+    private readonly IPolymarketSocketClient _socketClient;
+    private readonly IPolymarketOrderBookFactory _orderBookFactory;
+
+    public MyService(
+        IPolymarketRestClient restClient,
+        IPolymarketSocketClient socketClient,
+        IPolymarketOrderBookFactory orderBookFactory)
+    {
+        _restClient = restClient;
+        _socketClient = socketClient;
+        _orderBookFactory = orderBookFactory;
+    }
+}
+```
+
+`AddPolymarket` also registers `IPolymarketUserClientProvider` for managing per-user clients and `IPolymarketOrderBookFactory` for local order books.
+
+## Result Handling Pattern
+
+Always branch on `.Success`.
+
+```csharp
+var result = await client.ClobApi.ExchangeData.GetOrderBookAsync("TOKEN_ID");
+if (!result.Success)
+{
+    Console.WriteLine($"Code: {result.Error?.Code}");
+    Console.WriteLine($"Message: {result.Error?.Message}");
+    return;
+}
+
+var bestBid = result.Data.Bids.FirstOrDefault();
+```
+
+For order placement, check the transport/API call result and the Polymarket order result:
+
+```csharp
+var order = await client.ClobApi.Trading.PlaceOrderAsync(
+    "TOKEN_ID",
+    OrderSide.Buy,
+    OrderType.Limit,
+    quantity: 10m,
+    price: 0.42m);
+
+if (!order.Success)
+{
+    Console.WriteLine(order.Error);
+    return;
+}
+
+if (!order.Data.Success)
+{
+    Console.WriteLine(order.Data.Error);
+    return;
+}
+
+Console.WriteLine(order.Data.OrderId);
+```
+
+Retry only transient failures:
+
+```csharp
+async Task<WebCallResult<T>> WithRetry<T>(Func<Task<WebCallResult<T>>> call, int maxAttempts = 3)
+{
+    WebCallResult<T> last = default!;
+
+    for (var attempt = 1; attempt <= maxAttempts; attempt++)
+    {
+        last = await call();
+        if (last.Success)
+            return last;
+
+        if (last.Error?.IsTransient != true)
+            return last;
+
+        await Task.Delay(TimeSpan.FromMilliseconds(250 * Math.Pow(2, attempt)));
+    }
+
+    return last;
+}
+```
+
+## Intent To Method Map
+
+For a broader table-style reference, see `docs/ai-api-map.md`.
+
+Common CLOB exchange data tasks:
+
+```text
+Get server time -> client.ClobApi.ExchangeData.GetServerTimeAsync()
+Get geographic restrictions -> client.ClobApi.ExchangeData.GetGeographicRestrictionsAsync()
+Get CLOB markets -> client.ClobApi.ExchangeData.GetMarketsAsync(cursor)
+Get CLOB market by id -> client.ClobApi.ExchangeData.GetMarketAsync(id)
+Get CLOB market info -> client.ClobApi.ExchangeData.GetMarketInfoAsync(marketId)
+Get token price -> client.ClobApi.ExchangeData.GetPriceAsync(tokenId, OrderSide.Buy)
+Get token midpoint -> client.ClobApi.ExchangeData.GetMidpointPriceAsync(tokenId)
+Get token price history -> client.ClobApi.ExchangeData.GetPriceHistoryAsync(market, ...)
+Get token spread -> client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(tokenId)
+Get order book -> client.ClobApi.ExchangeData.GetOrderBookAsync(tokenId)
+Get multiple order books -> client.ClobApi.ExchangeData.GetOrderBooksAsync(tokenIds)
+Get tick size -> client.ClobApi.ExchangeData.GetTickSizeAsync(tokenId)
+Get fee rate -> client.ClobApi.ExchangeData.GetFeeRateBpsAsync(tokenId)
+Get last trade price -> client.ClobApi.ExchangeData.GetLastTradePriceAsync(tokenId)
+```
+
+Common CLOB account/trading tasks:
+
+```text
+Create API credentials -> client.ClobApi.Account.CreateApiCredentialsAsync(nonce)
+Derive API credentials -> client.ClobApi.Account.GetApiCredentialsAsync(nonce)
+Get or create API credentials -> client.ClobApi.Account.GetOrCreateApiCredentialsAsync(nonce)
+Get API keys -> client.ClobApi.Account.GetApiKeysAsync()
+Get balance allowance -> client.ClobApi.Account.GetBalanceAllowanceAsync(assetType, tokenId)
+Update allowance -> client.ClobApi.Account.UpdateBalanceAllowanceAsync(assetType, tokenId)
+Get open orders -> client.ClobApi.Trading.GetOpenOrdersAsync(...)
+Get order -> client.ClobApi.Trading.GetOrderAsync(orderId)
+Place order -> client.ClobApi.Trading.PlaceOrderAsync(...)
+Cancel order -> client.ClobApi.Trading.CancelOrderAsync(orderId)
+Cancel multiple orders -> client.ClobApi.Trading.CancelOrdersAsync(orderIds)
+Cancel market orders -> client.ClobApi.Trading.CancelOrdersOnMarketAsync(marketId, tokenId)
+Cancel all orders -> client.ClobApi.Trading.CancelAllOrdersAsync()
+Get user trades -> client.ClobApi.Trading.GetUserTradesAsync(...)
+Send heartbeat -> client.ClobApi.Trading.PostOrderHeartbeatAsync()
+```
+
+Common Gamma/Data tasks:
+
+```text
+Search -> client.GammaApi.SearchAsync(query)
+Get Gamma markets -> client.GammaApi.GetMarketsAsync(...)
+Get Gamma market by id -> client.GammaApi.GetMarketByIdAsync(id)
+Get Gamma market by slug -> client.GammaApi.GetMarketBySlugAsync(slug)
+Get events -> client.GammaApi.GetEventsAsync(...)
+Get event by id -> client.GammaApi.GetEventByIdAsync(id)
+Get event by slug -> client.GammaApi.GetEventBySlugAsync(slug)
+Get tags -> client.GammaApi.GetTagsAsync(...)
+Get tag by id -> client.GammaApi.GetTagByIdAsync(id)
+Get tag by slug -> client.GammaApi.GetTagBySlugAsync(slug)
+Get series -> client.GammaApi.GetSeriesAsync(...)
+Get series by id -> client.GammaApi.GetSeriesByIdAsync(id)
+Get sports -> client.GammaApi.GetSportsAsync()
+Get sports teams -> client.GammaApi.GetSportTeamsAsync(...)
+Get positions -> client.DataApi.GetPositionsAsync(user)
+```
+
+Common WebSocket tasks:
+
+```text
+Subscribe platform updates -> socketClient.ClobApi.SubscribeToPlatformUpdatesAsync(...)
+Subscribe token updates -> socketClient.ClobApi.SubscribeToTokenUpdatesAsync(tokenIds, ...)
+Subscribe user updates -> socketClient.ClobApi.SubscribeToUserUpdatesAsync(...)
+Subscribe sports updates -> socketClient.ClobApi.SubscribeToSportsUpdatesAsync(...)
+Unsubscribe -> socketClient.UnsubscribeAsync(subscription.Data)
+```
+
+## Market Data Example
+
+```csharp
+using Polymarket.Net.Clients;
+
+var client = new PolymarketRestClient();
+
+var markets = await client.GammaApi.GetMarketsAsync(closed: false, limit: 5);
+if (!markets.Success)
+{
+    Console.WriteLine(markets.Error);
+    return;
+}
+
+foreach (var market in markets.Data)
+{
+    Console.WriteLine($"{market.Question} ({market.MarketId})");
+}
+```
+
+## Order Book Example
+
+```csharp
+var book = await client.ClobApi.ExchangeData.GetOrderBookAsync("TOKEN_ID");
+if (!book.Success)
+{
+    Console.WriteLine(book.Error);
+    return;
+}
+
+Console.WriteLine($"Bids: {book.Data.Bids.Length}");
+Console.WriteLine($"Asks: {book.Data.Asks.Length}");
+```
+
+## Trading Example
+
+```csharp
+using CryptoExchange.Net.Authentication;
+using Polymarket.Net;
+using Polymarket.Net.Clients;
+using Polymarket.Net.Enums;
+
+var client = new PolymarketRestClient(options =>
+{
+    options.ApiCredentials = new PolymarketCredentials(
+        new PolymarketL1Credential(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_ADDRESS"),
+        new HMACPassCredential("L2_KEY", "L2_SECRET", "L2_PASS"));
+});
+
+var order = await client.ClobApi.Trading.PlaceOrderAsync(
+    tokenId: "TOKEN_ID",
+    side: OrderSide.Buy,
+    orderType: OrderType.Limit,
+    quantity: 10m,
+    price: 0.42m,
+    timeInForce: TimeInForce.GoodTillCanceled);
+
+if (!order.Success)
+{
+    Console.WriteLine(order.Error);
+    return;
+}
+
+if (!order.Data.Success)
+{
+    Console.WriteLine(order.Data.Error);
+    return;
+}
+
+Console.WriteLine(order.Data.OrderId);
+```
+
+## WebSocket Subscription Example
+
+```csharp
+using Polymarket.Net.Clients;
+
+var socketClient = new PolymarketSocketClient();
+
+var subscription = await socketClient.ClobApi.SubscribeToTokenUpdatesAsync(
+    new[] { "TOKEN_ID" },
+    onPriceChangeUpdate: update => Console.WriteLine(update.Data.TokenId),
+    onBookUpdate: update => Console.WriteLine(update.Data.TokenId),
+    onLastTradePriceUpdate: update => Console.WriteLine(update.Data.TokenId),
+    onTickSizeUpdate: update => Console.WriteLine(update.Data.TokenId),
+    onBestBidAskUpdate: update => Console.WriteLine(update.Data.TokenId));
+
+if (!subscription.Success)
+{
+    Console.WriteLine(subscription.Error);
+    return;
+}
+
+Console.ReadLine();
+await socketClient.UnsubscribeAsync(subscription.Data);
+```
+
+## Local Order Book Pattern
+
+Use `PolymarketClobSymbolOrderBook` directly or `IPolymarketOrderBookFactory` via DI.
+
+```csharp
+using Polymarket.Net.SymbolOrderBooks;
+
+var orderBook = new PolymarketClobSymbolOrderBook("TOKEN_ID");
+var start = await orderBook.StartAsync();
+if (!start.Success)
+{
+    Console.WriteLine(start.Error);
+    return;
+}
+
+Console.WriteLine(orderBook.Bids.Count);
+Console.WriteLine(orderBook.Asks.Count);
+```
+
+## AI-Friendly Examples
+
+Use these examples when generating code:
+
+```text
+Examples/ai-friendly/01-market-data-quickstart.cs
+  Public REST client setup, Gamma search/markets, CLOB markets, order books, price endpoints.
+
+Examples/ai-friendly/02-authentication-and-trading.cs
+  L1/L2 credentials, deriving L2 credentials, allowance checks, limit order, open order lookup, cancellation.
+
+Examples/ai-friendly/03-websocket.cs
+  Token, platform, sports, and user WebSocket subscriptions, success checks, teardown.
+
+Examples/ai-friendly/04-di-and-orderbook.cs
+  AddPolymarket DI setup, injected clients, local order book factory, user client provider.
+
+Examples/ai-friendly/05-error-handling.cs
+  WebCallResult pattern, transient retry, order result acceptance checks, Polymarket-specific mistakes.
+```
+
+These files are intended to be copied into a console `Program.cs` after `dotnet add package Polymarket.Net`.
+
+## Anti-Hallucination Checklist
+
+Before finalizing generated code:
+
+- Does it compile with the current package?
+- Does it use `PolymarketRestClient` or `PolymarketSocketClient`?
+- Does every REST/socket result check `.Success` before `.Data`?
+- Does it use the correct branch: `ClobApi.ExchangeData`, `ClobApi.Account`, `ClobApi.Trading`, `GammaApi`, `DataApi`, or `socketClient.ClobApi`?
+- Does it avoid raw Polymarket URLs and manual signing?
+- Does it avoid nonexistent `SpotApi`, `FuturesApi`, `GeneralApi`, and `.SharedClient` members?
+- Does order placement use token ids rather than symbols?
+- Does authenticated trading configure or derive L2 credentials?
+- Does it avoid `.Result` and `.Wait()`?
+- Are WebSocket subscriptions unsubscribed on shutdown?
+- For order placement, does it check both `WebCallResult.Success` and `PolymarketOrderResult.Success`?
+- If using local order books, does it prefer `PolymarketClobSymbolOrderBook` or `IPolymarketOrderBookFactory`?
+
+## Source Of Truth For Method Names
+
+When unsure, inspect these files instead of guessing:
+
+```text
+Polymarket.Net/Interfaces/Clients/IPolymarketRestClient.cs
+Polymarket.Net/Interfaces/Clients/IPolymarketSocketClient.cs
+Polymarket.Net/Interfaces/Clients/ClobApi/IPolymarketRestClientClobApi.cs
+Polymarket.Net/Interfaces/Clients/ClobApi/IPolymarketRestClientClobApiAccount.cs
+Polymarket.Net/Interfaces/Clients/ClobApi/IPolymarketRestClientClobApiExchangeData.cs
+Polymarket.Net/Interfaces/Clients/ClobApi/IPolymarketRestClientClobApiTrading.cs
+Polymarket.Net/Interfaces/Clients/ClobApi/IPolymarketSocketClientClobApi.cs
+Polymarket.Net/Interfaces/Clients/GammaApi/IPolymarketRestClientGammaApi.cs
+Polymarket.Net/Interfaces/Clients/DataApi/IPolymarketRestClientDataApi.cs
+Polymarket.Net/PolymarketCredentials.cs
+Polymarket.Net/PolymarketL1Credential.cs
+Polymarket.Net/PolymarketEnvironment.cs
+Polymarket.Net/Enums/SignType.cs
+```
+
+Prefer the interface files over memory when generating endpoint names, parameters, callback names, and return types.
+
+## Common Wrong Patterns To Avoid
+
+Wrong:
+
+```csharp
+var client = new PolymarketClient();
+```
+
+Use:
+
+```csharp
+var client = new PolymarketRestClient();
+```
+
+Wrong:
+
+```csharp
+options.ApiCredentials = new ApiCredentials("key", "secret");
+```
+
+Use:
+
+```csharp
+options.ApiCredentials = new PolymarketCredentials()
+    .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_ADDRESS")
+    .WithL2("L2_KEY", "L2_SECRET", "L2_PASS");
+```
+
+Wrong:
+
+```csharp
+var result = await client.ClobApi.ExchangeData.GetOrderBookAsync("TOKEN_ID");
+Console.WriteLine(result.Data.Bids.Length);
+```
+
+Use:
+
+```csharp
+var result = await client.ClobApi.ExchangeData.GetOrderBookAsync("TOKEN_ID");
+if (!result.Success)
+{
+    Console.WriteLine(result.Error);
+    return;
+}
+Console.WriteLine(result.Data.Bids.Length);
+```
+
+Wrong:
+
+```csharp
+await client.SpotApi.Trading.PlaceOrderAsync("BTCUSDT", ...);
+```
+
+Use:
+
+```csharp
+await client.ClobApi.Trading.PlaceOrderAsync("TOKEN_ID", OrderSide.Buy, OrderType.Limit, 10m, price: 0.42m);
+```
+
+Wrong:
+
+```csharp
+var shared = client.ClobApi.SharedClient;
+```
+
+Use the concrete Polymarket.Net APIs shown in this file; current interfaces do not expose `.SharedClient`.

@@ -63,7 +63,11 @@ var bookInfo = await polymarketRestClient.ClobApi.ExchangeData.GetOrderBooksAsyn
 *Place order:*
 ```csharp
 var restClient = new PolymarketRestClient(opts => {
-	opts.ApiCredentials = new PolymarketCredentials(new PolymarketL1Credential("PRIVATEKEY", "PRIVATESIGNERKEY"));
+	opts.ApiCredentials = new PolymarketCredentials(new PolymarketL1Credential(
+        SignType.Poly1271,
+        "PRIVATEKEY",
+        "DEPOSITADDRESS"
+        ));
 });
 
 // Update the client with layer 2 credentials
@@ -77,8 +81,7 @@ var result = await polymarketRestClient.ClobApi.Trading.PlaceOrderAsync(
 	OrderSide.Buy,
 	OrderType.Limit, 
 	50, 
-	price: 0.1m,
-	feeRateBps: 0);
+	price: 0.1m);
 ```
 
 *WebSocket subscription:*
@@ -110,6 +113,29 @@ var subscriptionResult = await polymarketSocketClient.ClobApi.SubscribeToTokenUp
 ```
 
 ### Authentication
+Authenticate using Poly1271 signing and a deposit address, providing the private key and the deposit address. This should be used for Polymarket accounts created after 04 May 2026. This will require you to request the layer 2 credentials before orders can be placed:
+```csharp
+var credsPoly1271Layer1 = new PolymarketCredentials(
+	new PolymarketL1Credential(
+		SignType.Poly1271, // Poly1271 signing, for accounts created after 4 May 2026
+		"0x00..", // The private key for the wallet
+		"0x00..")); // The polymarket deposit address, can be found in the web interface under `Profile -> Copy Address`
+```
+
+Authenticate using Poly1271 signing and a deposit address, providing the private key and the deposit address, while also providing previously requested layer 2 credentials. Can be used to place orders directly:
+```csharp
+var credsPoly1271WithLayer2 = new PolymarketCredentials(
+    new PolymarketL1Credential(
+		SignType.Poly1271, // Poly1271 signing, for accounts created after 4 May 2026
+		"0x00..", // The private key for the wallet
+		"0x00..")); // The polymarket deposit address, can be found in the web interface under `Profile -> Copy Address`
+    new HMACPassCredential(
+        "KEY",// The L2 API key as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
+        "SEC", // The L2 API secret as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
+        "PASS" // The L2 API passphrase as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
+    ));
+```
+
 Authenticate using an email account and providing the exported private key and the funding address. This will require you to request the layer 2 credentials before orders can be placed:
 ```csharp
 var credsEmailLayer1 = new PolymarketCredentials(
@@ -178,6 +204,21 @@ services.AddPolymarket(options =>
 ```
 
 For information on the clients, dependency injection, response processing and more see the [documentation](https://cryptoexchange.jkorf.dev/client-libs/getting-started), or have a look at the examples [here](https://github.com/JKorf/Polymarket.Net/tree/main/Examples) or [here](https://github.com/JKorf/CryptoExchange.Net/tree/master/Examples).
+
+## AI / LLM documentation
+
+Polymarket.Net includes AI-oriented documentation and examples for code generation tools:
+
+|File|Purpose|
+|--|--|
+|[`AGENTS.md`](AGENTS.md)|Assistant skill with core Polymarket.Net patterns, pitfalls, and examples|
+|[`CLAUDE.md`](CLAUDE.md)|Claude-oriented guide with authentication rules and source-of-truth files|
+|[`llms.txt`](llms.txt)|Short LLM index with links to docs, examples, and critical usage rules|
+|[`llms-full.txt`](llms-full.txt)|Detailed LLM context with endpoint routing, authentication levels, code patterns, and anti-hallucination checks|
+|[`docs/ai-api-map.md`](docs/ai-api-map.md)|Table-style intent-to-method map for CLOB, Gamma, Data, WebSocket, authentication, DI, and local order book workflows|
+|[`Examples/ai-friendly`](Examples/ai-friendly)|Compilable single-file examples for common REST, authentication/trading, WebSocket, DI/order book, and error handling workflows|
+
+GitHub Copilot and Cursor instructions are also provided in `.github/copilot-instructions.md` and `.cursor/rules/polymarket-net.mdc`; both point back to the root AI context files.
 
 **NOTE**  
 Polymarket.Net uses the Builder Code mechanism for Polymarket, which means that an additional 1bps / 0.01% fee is charged on top of orders placed with the library to fund development. This is entirely optional and can be disabled in the client options by setting `BuilderCode` to `null` in the REST client options.
@@ -269,6 +310,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 3.1.0 - 09 May 2026
+    * Added support for Poly1271 signing
+
 * Version 3.0.3 - 01 May 2026
     * Fixed incorrect makerAddress parameter serialization in GetUserTradesAsync
 

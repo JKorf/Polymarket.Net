@@ -16,6 +16,10 @@
         /// <summary>
         /// Browser wallet proxy signatures (when using a proxy contract, not direct wallet connections)
         /// </summary>
-        Proxy = 2
+        Proxy = 2,
+        /// <summary>
+        /// Poly 1271 signatures, using an deposit address. For accounts created after 04 May 2026
+        /// </summary>
+        Poly1271 = 3
     }
 }

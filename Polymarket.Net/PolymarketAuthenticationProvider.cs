@@ -14,7 +14,10 @@ using Polymarket.Net.Utils;
 using Secp256k1Net;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -23,6 +26,27 @@ namespace Polymarket.Net
     internal class PolymarketAuthenticationProvider : AuthenticationProvider<PolymarketCredentials>
     {
         private const string _l1SignMessage = "This message attests that I control the given wallet";
+        private byte[]? _hmacBytes;
+
+        const string _orderTypeString = "Order(uint256 salt,address maker,address signer,uint256 tokenId,uint256 makerAmount," +
+                                        "uint256 takerAmount,uint8 side,uint8 signatureType,uint256 timestamp,bytes32 metadata,bytes32 builder)";
+
+        private static byte[] _orderTypeHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes(_orderTypeString));
+        private static byte[] _domainTypeHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"));
+
+        private static byte[] _ctfExchangeNameHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("Polymarket CTF Exchange"));
+        private static byte[] _ctfExchangeVersionHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("2"));
+
+        private static byte[] _soladyTypeHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes($"TypedDataSign(Order contents,string name,string version,uint256 chainId,"
+                                                                                                + "address verifyingContract,bytes32 salt)"
+                                                                                                + $"{_orderTypeString}"));
+        private static byte[] _depositWalletNameHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("DepositWallet"));
+        private static byte[] _depositWalletVersionHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("1"));
+        private static byte[] _depositWalletSaltHash = new byte[32];
+
+        private static byte[] _abiDomainTypeHash = CeAbiEncoder.AbiValueEncodeBytes(32, _domainTypeHash);
+        private static byte[] _abiExchangeName = CeAbiEncoder.AbiValueEncodeBytes(32, _ctfExchangeNameHash);
+        private static byte[] _abiExchangeVersion = CeAbiEncoder.AbiValueEncodeBytes(32, _ctfExchangeVersionHash);
 
         private static IStringMessageSerializer _serializer = new SystemTextJsonMessageSerializer(PolymarketPlatform._serializerContext);
 
@@ -78,8 +102,6 @@ namespace Polymarket.Net
             requestConfig.Headers.Add("POLY_NONCE", nonce?.ToString() ?? "0");
         }
 
-        private byte[]? _hmacBytes;
-
         private void SignL2(RestApiClient client, RestRequestConfiguration requestConfig)
         {
             _hmacBytes ??= Convert.FromBase64String(ApiCredentials.L2!.Secret!.Replace('-', '+').Replace('_', '/'));
@@ -105,14 +127,60 @@ namespace Polymarket.Net
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.Replace('+', '-').Replace('/', '_'));
         }
 
-        
-
         public string GetOrderSignature(ParameterCollection parameters, uint chainId, bool negativeRisk)
         {
-            var typeRaw = GetTypeDataRawCustom(parameters, chainId, negativeRisk);
-            var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(typeRaw);
-            var orderHashBytes = CeSha3Keccack.CalculateHash(msg);
-            return SignHash(orderHashBytes);
+            var signType = (int)parameters["signatureType"];
+            if (signType == (int)SignType.Poly1271)
+            {
+                var abiChainId = CeAbiEncoder.AbiValueEncodeBigInteger(false, new BigInteger(chainId));
+                var abiContractAddress = CeAbiEncoder.AbiValueEncodeAddress(GetContract(parameters, chainId, negativeRisk));
+                var domainSeparatorBytes = CombineBytes(_abiDomainTypeHash, _abiExchangeName, _abiExchangeVersion, abiChainId, abiContractAddress);
+                var appDomainSepBytes = CeSha3Keccack.CalculateHash(domainSeparatorBytes);
+                var appDomainSep = BytesToHexString(appDomainSepBytes);
+
+                var abiTypeHash = CeAbiEncoder.AbiValueEncodeBytes(32, _orderTypeHash);
+                var abiSalt = CeAbiEncoder.AbiValueEncodeBigInteger(false, new BigInteger((ulong)parameters["salt"]));
+                var abiMaker = CeAbiEncoder.AbiValueEncodeAddress((string)parameters["maker"]);
+                var abiSigner = CeAbiEncoder.AbiValueEncodeAddress((string)parameters["signer"]);
+                var abiTokenId = CeAbiEncoder.AbiValueEncodeBigInteger(false, BigInteger.Parse((string)parameters["tokenId"]));
+                var abiMakerAmount = CeAbiEncoder.AbiValueEncodeBigInteger(false, BigInteger.Parse((string)parameters["makerAmount"]));
+                var abiTakerAmount = CeAbiEncoder.AbiValueEncodeBigInteger(false, BigInteger.Parse((string)parameters["takerAmount"]));
+                var abiSide = CeAbiEncoder.AbiValueEncodeInt((byte)((string)parameters["side"] == "BUY" ? 0 : 1));
+                var abiSignType = CeAbiEncoder.AbiValueEncodeInt((int)parameters["signatureType"]);
+                var abiTimestamp = CeAbiEncoder.AbiValueEncodeBigInteger(false, BigInteger.Parse((string)parameters["timestamp"]));
+                var abiMetadata = CeAbiEncoder.AbiValueEncodeBytes(32, ((string)parameters["metadata"]).HexStringToBytes());
+                var abiBuilder = CeAbiEncoder.AbiValueEncodeBytes(32, ((string)parameters["builder"]).HexStringToBytes());
+                var allBytes = CombineBytes(abiTypeHash, abiSalt, abiMaker, abiSigner, abiTokenId, abiMakerAmount, abiTakerAmount, 
+                                            abiSide, abiSignType, abiTimestamp, abiMetadata, abiBuilder);
+                var orderDataHashBytes = CeSha3Keccack.CalculateHash(allBytes);
+                var orderDataHash = BytesToHexString(orderDataHashBytes);
+
+                var abi2TypeHash = CeAbiEncoder.AbiValueEncodeBytes(32, _soladyTypeHash);
+                var abi2Content = CeAbiEncoder.AbiValueEncodeBytes(32, orderDataHashBytes);
+                var abi2DepNameHash = CeAbiEncoder.AbiValueEncodeBytes(32, _depositWalletNameHash);
+                var abi2DepNameVersion = CeAbiEncoder.AbiValueEncodeBytes(32, _depositWalletVersionHash);
+                var abi2ChainId = CeAbiEncoder.AbiValueEncodeInt(chainId);
+                var abi2Signer = CeAbiEncoder.AbiValueEncodeAddress((string)parameters["signer"]);
+                var abi2DepSalt = CeAbiEncoder.AbiValueEncodeBytes(32, _depositWalletSaltHash);
+                var allbytes2 = CombineBytes(abi2TypeHash, abi2Content, abi2DepNameHash, abi2DepNameVersion, abi2ChainId, abi2Signer, abi2DepSalt);
+                var signedTypeDataBytes = CeSha3Keccack.CalculateHash(allbytes2);
+                var signedTypeData = BytesToHexString(signedTypeDataBytes);
+
+                var toDigest = CombineBytes(new byte[] { 0x19, 0x01 }, appDomainSepBytes, signedTypeDataBytes);
+                var digest = CeSha3Keccack.CalculateHash(toDigest);
+                var signed = SignHash(digest);
+
+                var lenHex = _orderTypeString.Length.ToString("x").PadLeft(4, '0');
+                var result = $"{signed}{appDomainSep}{orderDataHash}{BytesToHexString(Encoding.UTF8.GetBytes(_orderTypeString))}{lenHex}";
+                return result;
+            }
+            else
+            {
+                var typeRaw = GetTypeDataRawCustom(parameters, chainId, negativeRisk);
+                var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(typeRaw);
+                var orderHashBytes = CeSha3Keccack.CalculateHash(msg);
+                return SignHash(orderHashBytes);
+            }
         }
 
         private string SignHash(byte[] hash)
@@ -234,6 +302,18 @@ namespace Polymarket.Net
                     }
                 }
             };
+        }
+
+        private byte[] CombineBytes(params byte[][] byteArrays)
+        {
+            var result = new byte[byteArrays.Sum(b => b.Length)];
+            var written = 0;
+            foreach (var byteArray in byteArrays)
+            {
+                Buffer.BlockCopy(byteArray, 0, result, written, byteArray.Length);
+                written += byteArray.Length;
+            }
+            return result;
         }
     }
 }

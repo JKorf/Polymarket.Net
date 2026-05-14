@@ -24,7 +24,7 @@ namespace Polymarket.Net
         /// </summary>
         public string PrivateKey { get; set; }
         /// <summary>
-        /// The polymarket funding address when using email/magic wallets. Can be found in your account in the web interface
+        /// The polymarket funding or deposit address. Should be provided when using SignType.EOA or SignType.Poly1271. Can be found in your account in the web interface
         /// </summary>
         public string? PolymarketFundingAddress { get; set; }
 
@@ -33,7 +33,7 @@ namespace Polymarket.Net
         /// </summary>
         /// <param name="signType">Signature type</param>
         /// <param name="privateKey">Private key</param>
-        /// <param name="polymarketFundingAddress">Funding address, necessary when using Email signature type</param>
+        /// <param name="polymarketFundingAddress">Funding or deposit address, necessary when using SignType.EOA or SignType.Poly1271</param>
         public PolymarketL1Credential(SignType signType, string privateKey, string? polymarketFundingAddress = null) : base(GetPublicAddress(privateKey))
         {
             SignType = signType;
@@ -77,6 +77,10 @@ namespace Polymarket.Net
 
             if (string.IsNullOrEmpty(PrivateKey))
                 throw new ArgumentException("PrivateKey not set", nameof(PrivateKey));
+
+
+            if (SignType == SignType.Poly1271 && string.IsNullOrEmpty(PolymarketFundingAddress))
+                throw new Exception("Poly1271 signing requires the DepositAddress to be provided in the PolymarketFundingAddress");
         }
     }
 }

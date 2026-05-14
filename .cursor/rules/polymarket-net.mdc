@@ -1,0 +1,71 @@
+---
+description: Conventions for using Polymarket.Net when working with Polymarket prediction market APIs in C#/.NET. Apply when generating code that interacts with Polymarket.
+globs:
+  - "**/*.cs"
+  - "**/*.csproj"
+alwaysApply: false
+---
+
+# Polymarket.Net Conventions
+
+Use **Polymarket.Net** for Polymarket API access. Do not write raw `HttpClient` calls to Polymarket endpoints.
+
+## Client setup pattern
+
+```csharp
+using Polymarket.Net.Clients;
+
+var restClient = new PolymarketRestClient();
+var socketClient = new PolymarketSocketClient();
+```
+
+Authenticated clients use `PolymarketCredentials`:
+
+```csharp
+using Polymarket.Net;
+using Polymarket.Net.Enums;
+
+var restClient = new PolymarketRestClient(options =>
+{
+    options.ApiCredentials = new PolymarketCredentials()
+        .WithL1(SignType.Poly1271, "PRIVATE_KEY", "POLYMARKET_ADDRESS")
+        .WithL2("L2_KEY", "L2_SECRET", "L2_PASS");
+});
+```
+
+## Result pattern
+
+REST methods return `WebCallResult<T>` or `WebCallResult`; sockets return `CallResult<UpdateSubscription>`. Always check `.Success` before reading `.Data`.
+
+## API surface
+
+- `restClient.ClobApi.ExchangeData`
+- `restClient.ClobApi.Account`
+- `restClient.ClobApi.Trading`
+- `restClient.GammaApi`
+- `restClient.DataApi`
+- `socketClient.ClobApi`
+
+## Authentication levels
+
+- Public data: no credentials.
+- L1: `PolymarketL1Credential` or `.WithL1(signType, privateKey, polymarketFundingAddress)`.
+- L2: `HMACPassCredential` or `.WithL2(key, secret, passphrase)`.
+- Create/derive L2 credentials with `restClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()` and apply them with `restClient.UpdateL2Credentials(result.Data)`.
+
+## Hard rules
+
+- Never use raw Polymarket URLs or manual request signing.
+- Never invent `SpotApi`, `FuturesApi`, `GeneralApi`, or `.SharedClient`.
+- Never use ticker symbols for CLOB order placement; use token ids.
+- Never skip `WebCallResult.Success` checks.
+- Never use `.Result` or `.Wait()`.
+- Reuse clients or use dependency injection.
+- Store WebSocket subscriptions and unsubscribe with `socketClient.UnsubscribeAsync(sub.Data)`.
+
+## Reference
+
+- `AGENTS.md` in the repo root for fuller usage rules
+- `llms.txt` and `llms-full.txt` in the repo root for AI context
+- `docs/ai-api-map.md` for table-style intent routing
+- `Examples/ai-friendly/` for compilable examples

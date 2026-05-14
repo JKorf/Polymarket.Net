@@ -7,9 +7,9 @@
   <PropertyGroup>
     <PackageId>Polymarket.Net</PackageId>
     <Authors>JKorf</Authors>
-    <PackageVersion>3.0.3</PackageVersion>
-    <AssemblyVersion>3.0.3</AssemblyVersion>
-    <FileVersion>3.0.3</FileVersion>
+    <PackageVersion>3.1.0</PackageVersion>
+    <AssemblyVersion>3.1.0</AssemblyVersion>
+    <FileVersion>3.1.0</FileVersion>
     <Description>A high-performance .NET client library for the Polymarket REST and WebSocket APIs, providing strongly typed models, automatic WebSocket reconnection, client-side rate limiting, local order book support, and seamless integration with other CryptoExchange.Net based clients.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>Polymarket;Polymarket.Net;Polymarket Client;Polymarket API;CryptoCurrency;CryptoCurrency Exchange;CryptoExchange.Net</PackageTags>
