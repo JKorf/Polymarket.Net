@@ -24,7 +24,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="nonce">["<c>nonce</c>"] Nonce, different nonces can be used to create different credentials</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketCreds>> CreateApiCredentialsAsync(long? nonce = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketCreds>> CreateApiCredentialsAsync(long? nonce = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get previously created API credentials for the provided API credentials private key
@@ -37,7 +37,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="nonce">["<c>nonce</c>"] Nonce</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketCreds>> GetApiCredentialsAsync(long? nonce = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketCreds>> GetApiCredentialsAsync(long? nonce = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get previously created API credentials, or create new credentials if no credentials are created yet
@@ -51,38 +51,38 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="nonce">["<c>nonce</c>"] Nonce</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketCreds>> GetOrCreateApiCredentialsAsync(long? nonce = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketCreds>> GetOrCreateApiCredentialsAsync(long? nonce = null, CancellationToken ct = default);
 
         /// <summary>
         /// List API keys for the provided API credentials private key
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketApiKeys>> GetApiKeysAsync(CancellationToken ct = default);
+        Task<HttpResult<PolymarketApiKeys>> GetApiKeysAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Delete an API key
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult> DeleteApiKeyAsync(CancellationToken ct = default);
+        Task<HttpResult> DeleteApiKeyAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get closed only mode
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketClosedOnlyMode>> GetClosedOnlyModeAsync(CancellationToken ct = default);
+        Task<HttpResult<PolymarketClosedOnlyMode>> GetClosedOnlyModeAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get notifications
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketNotification[]>> GetNotificationsAsync(CancellationToken ct = default);
+        Task<HttpResult<PolymarketNotification[]>> GetNotificationsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Drop notifications
         /// </summary>
         /// <param name="ids">["<c>ids</c>"] Ids to drop</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketNotification[]>> DropNotificationsAsync(IEnumerable<string> ids, CancellationToken ct = default);
+        Task<HttpResult<PolymarketNotification[]>> DropNotificationsAsync(IEnumerable<string> ids, CancellationToken ct = default);
 
         /// <summary>
         /// Get balance allowance
@@ -96,7 +96,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="assetType">["<c>asset_type</c>"] Asset type</param>
         /// <param name="tokenId">["<c>token_id</c>"] Token id, required for AssetType.Conditional</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketBalanceAllowance>> GetBalanceAllowanceAsync(AssetType assetType, string? tokenId = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketBalanceAllowance>> GetBalanceAllowanceAsync(AssetType assetType, string? tokenId = null, CancellationToken ct = default);
 
         /// <summary>
         /// Update balance allowance
@@ -104,7 +104,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="assetType">["<c>asset_type</c>"] Asset type</param>
         /// <param name="tokenId">["<c>token_id</c>"] Token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult> UpdateBalanceAllowanceAsync(AssetType assetType, string? tokenId = null, CancellationToken ct = default);
+        Task<HttpResult> UpdateBalanceAllowanceAsync(AssetType assetType, string? tokenId = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get trades for builder
@@ -117,7 +117,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="endTime">["<c>before</c>"] Filter by end time</param>
         /// <param name="cursor">["<c>next_cursor</c>"] Next page cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPage<PolymarketBuilderTrade>>> GetBuilderTradesAsync(
+        Task<HttpResult<PolymarketPage<PolymarketBuilderTrade>>> GetBuilderTradesAsync(
             string builderCode,
             string? tradeId = null,
             string? marketId = null,

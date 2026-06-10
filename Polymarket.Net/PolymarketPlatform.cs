@@ -19,7 +19,21 @@ namespace Polymarket.Net
     public static class PolymarketPlatform
     {
         internal static JsonSerializerOptions _serializerContext = SerializerOptions.WithConverters(JsonSerializerContextCache.GetOrCreate<PolymarketSourceGenerationContext>());
-        
+        internal static ParameterSerializationSettings _parameterSerializationSettings = new ParameterSerializationSettings
+        {
+            Sort = false,
+            Decimal = DecimalSerialization.String,
+            DateTimes = DateTimeSerialization.MillisecondsString
+        };
+        internal static ParameterSerializationSettings _gammaParameterSerializationSettings = new ParameterSerializationSettings
+        {
+            Sort = false,
+            Decimal = DecimalSerialization.String,
+            DateTimes = DateTimeSerialization.MillisecondsString,
+            Bool = BoolSerialization.String,
+            Array = ArrayParametersSerialization.MultipleValues
+        };
+
         /// <summary>
         /// Platform metadata
         /// </summary>

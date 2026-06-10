@@ -36,13 +36,11 @@ namespace Polymarket.Net.Clients.ClobApi
         public IPolymarketRestClientClobApiExchangeData ExchangeData { get; }
         /// <inheritdoc />
         public IPolymarketRestClientClobApiTrading Trading { get; }
-        /// <inheritdoc />
-        public string ExchangeName => "Polymarket";
         #endregion
 
         #region constructor/destructor
         internal PolymarketRestClientClobApi(ILogger logger, HttpClient? httpClient, PolymarketRestOptions options)
-            : base(logger, httpClient, options.Environment.ClobRestClientAddress, options, options.ClobOptions)
+            : base(logger, PolymarketPlatform.Metadata.Id, httpClient, options.Environment.ClobRestClientAddress, options, options.ClobOptions)
         {
             Account = new PolymarketRestClientClobApiAccount(this);
             ExchangeData = new PolymarketRestClientClobApiExchangeData(logger, this);
@@ -50,8 +48,6 @@ namespace Polymarket.Net.Clients.ClobApi
 
             RequestBodyEmptyContent = "";
             ParameterPositions[HttpMethod.Delete] = HttpMethodParameterPosition.InBody;
-
-            OrderParameters = false;
         }
         #endregion
 
@@ -63,32 +59,20 @@ namespace Polymarket.Net.Clients.ClobApi
         protected override PolymarketAuthenticationProvider CreateAuthenticationProvider(PolymarketCredentials credentials)
             => new PolymarketAuthenticationProvider(credentials);
 
-        internal Task<WebCallResult> SendAsync(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)
-            => SendToAddressAsync(BaseAddress, definition, parameters, cancellationToken, weight);
-
-        internal async Task<WebCallResult> SendToAddressAsync(string baseAddress, RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)
+        internal async Task<HttpResult> SendAsync(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
         {
-            var result = await base.SendAsync(baseAddress, definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
-
-            // Optional response checking
-
+            var result = await base.SendAsync<Unit>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
             return result;
         }
 
-        internal Task<WebCallResult<T>> SendAsync<T>(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)
-            => SendToAddressAsync<T>(BaseAddress, definition, parameters, cancellationToken, weight);
-
-        internal async Task<WebCallResult<T>> SendToAddressAsync<T>(string baseAddress, RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null)
+        internal async Task<HttpResult<T>> SendAsync<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
         {
-            var result = await base.SendAsync<T>(baseAddress, definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
-
-            // Optional response checking
-
+            var result = await base.SendAsync<T>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
             return result;
         }
 
         /// <inheritdoc />
-        protected override Task<WebCallResult<DateTime>> GetServerTimestampAsync()
+        protected override Task<HttpResult<DateTime>> GetServerTimestampAsync()
             => ExchangeData.GetServerTimeAsync();
 
         /// <inheritdoc />

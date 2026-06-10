@@ -23,7 +23,7 @@ namespace Polymarket.Net.UnitTests
 
             var authProvider = new PolymarketAuthenticationProvider(new PolymarketCredentials().WithL1(Enums.SignType.EOA, privateKey, address));
 
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings)
             {
                 { "salt", "479249096354" },
                 { "maker", address },
@@ -52,7 +52,7 @@ namespace Polymarket.Net.UnitTests
 
             var authProvider = new PolymarketAuthenticationProvider(new PolymarketCredentials().WithL1(Enums.SignType.EOA, privateKey, address));
 
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings)
             {
                 { "salt", "1515433236867" },
                 { "maker", address },

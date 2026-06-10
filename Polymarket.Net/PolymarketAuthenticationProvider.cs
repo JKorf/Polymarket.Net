@@ -58,11 +58,11 @@ namespace Polymarket.Net
 
         public override void ProcessRequest(RestApiClient apiClient, RestRequestConfiguration requestConfig)
         {
-            if (!requestConfig.Authenticated)
+            if (!requestConfig.RequestDefinition.Authenticated)
                 return;
 
-            if ((requestConfig.Path.Equals("/auth/api-key") && requestConfig.Method == HttpMethod.Post)
-                || (requestConfig.Path.Equals("/auth/derive-api-key") && requestConfig.Method == HttpMethod.Get))
+            if ((requestConfig.RequestDefinition.Path.Equals("/auth/api-key") && requestConfig.RequestDefinition.Method == HttpMethod.Post)
+                || (requestConfig.RequestDefinition.Path.Equals("/auth/derive-api-key") && requestConfig.RequestDefinition.Method == HttpMethod.Get))
             {
                 // L1 authentication
                 SignL1Custom(requestConfig, ((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
@@ -112,8 +112,8 @@ namespace Polymarket.Net
             requestConfig.Headers.Add("POLY_PASSPHRASE", ApiCredentials.L2.Pass!);
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
 
-            var signData = timestamp + requestConfig.Method.ToString() + requestConfig.Path;
-            if (requestConfig.Method == HttpMethod.Post || requestConfig.Method == HttpMethod.Delete)
+            var signData = timestamp + requestConfig.RequestDefinition.Method.ToString() + requestConfig.RequestDefinition.Path;
+            if (requestConfig.RequestDefinition.Method == HttpMethod.Post || requestConfig.RequestDefinition.Method == HttpMethod.Delete)
             {
                 var body = (requestConfig.BodyParameters == null || requestConfig.BodyParameters.Count == 0) ? string.Empty : GetSerializedBody(_serializer, requestConfig.BodyParameters);
                 signData += body;
@@ -127,7 +127,7 @@ namespace Polymarket.Net
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.Replace('+', '-').Replace('/', '_'));
         }
 
-        public string GetOrderSignature(ParameterCollection parameters, uint chainId, bool negativeRisk)
+        public string GetOrderSignature(Parameters parameters, uint chainId, bool negativeRisk)
         {
             var signType = (int)parameters["signatureType"];
             if (signType == (int)SignType.Poly1271)
@@ -196,7 +196,7 @@ namespace Polymarket.Net
             return result;
         }
 
-        private string GetContract(ParameterCollection order, uint chainId, bool negativeRisk)
+        private string GetContract(Parameters order, uint chainId, bool negativeRisk)
         {
             if (chainId == 137)            
                 return negativeRisk ? PolymarketContractsConfig.PolygonNegRiskConfig.Exchange : PolymarketContractsConfig.PolygonConfig.Exchange;            
@@ -206,7 +206,7 @@ namespace Polymarket.Net
                 throw new InvalidOperationException("Unknown chainId: " + chainId);
         }
 
-        private CeTypedDataRaw GetTypeDataRawCustom(ParameterCollection order, uint chainId, bool negativeRisk)
+        private CeTypedDataRaw GetTypeDataRawCustom(Parameters order, uint chainId, bool negativeRisk)
         {
             return new CeTypedDataRaw
             {

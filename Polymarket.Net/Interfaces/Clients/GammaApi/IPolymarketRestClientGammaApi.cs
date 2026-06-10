@@ -37,7 +37,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="orderBy">["<c>order</c>"] Order by fields</param>
         /// <param name="ascending">["<c>ascending</c>"] Ascending order</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketSportsTeam[]>> GetSportTeamsAsync(
+        Task<HttpResult<PolymarketSportsTeam[]>> GetSportTeamsAsync(
             IEnumerable<string>? league = null,
             IEnumerable<string>? name = null,
             IEnumerable<string>? abbreviation = null,
@@ -57,7 +57,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketSport[]>> GetSportsAsync(CancellationToken ct = default);
+        Task<HttpResult<PolymarketSport[]>> GetSportsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get valid sport market types
@@ -69,7 +69,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<string[]>> GetSportMarketTypesAsync(CancellationToken ct = default);
+        Task<HttpResult<string[]>> GetSportMarketTypesAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get tags
@@ -87,7 +87,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="orderBy">["<c>order</c>"] Order by fields</param>
         /// <param name="ascending">["<c>ascending</c>"] Ascending order</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTag[]>> GetTagsAsync(
+        Task<HttpResult<PolymarketTag[]>> GetTagsAsync(
             bool? includeTemplate = null,
             bool? isCarousel = null,
             int? limit = null,
@@ -108,7 +108,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="id">Id</param>
         /// <param name="includeTemplate">["<c>includeTemplate</c>"] Include template</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTag>> GetTagByIdAsync(string id, bool? includeTemplate = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTag>> GetTagByIdAsync(string id, bool? includeTemplate = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get tag by slug
@@ -122,7 +122,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="slug">Slug</param>
         /// <param name="includeTemplate">["<c>includeTemplate</c>"] Include template</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTag>> GetTagBySlugAsync(string slug, bool? includeTemplate = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTag>> GetTagBySlugAsync(string slug, bool? includeTemplate = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get related tags for a tag
@@ -137,7 +137,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="omitEmpty">["<c>includeTemplate</c>"] Omit empty</param>
         /// <param name="status">["<c>status</c>"] Filter by status</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketRelatedTag[]>> GetRelatedTagsByIdAsync(string id, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketRelatedTag[]>> GetRelatedTagsByIdAsync(string id, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get related tags for a tag
@@ -152,7 +152,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="omitEmpty">["<c>includeTemplate</c>"] Omit empty</param>
         /// <param name="status">["<c>status</c>"] Filter by status</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketRelatedTag[]>> GetRelatedTagsBySlugAsync(string slug, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketRelatedTag[]>> GetRelatedTagsBySlugAsync(string slug, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get tags related to a tag by id
@@ -167,7 +167,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="omitEmpty">["<c>includeTemplate</c>"] Omit empty</param>
         /// <param name="status">["<c>status</c>"] Filter by status</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTag[]>> GetTagsRelatedToTagByIdAsync(string id, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTag[]>> GetTagsRelatedToTagByIdAsync(string id, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get tags related to a tag by slug
@@ -182,7 +182,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="omitEmpty">["<c>includeTemplate</c>"] Omit empty</param>
         /// <param name="status">["<c>status</c>"] Filter by status</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTag[]>> GetTagsRelatedToTagBySlugAsync(string slug, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTag[]>> GetTagsRelatedToTagBySlugAsync(string slug, bool? omitEmpty = null, TagStatus? status = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get events
@@ -233,7 +233,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="orderBy">["<c>order</c>"] Order by fields</param>
         /// <param name="ascending">["<c>ascending</c>"] Ascending order</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketEventPage>> GetEventsKeysetPaginationAsync(
+        Task<HttpResult<PolymarketEventPage>> GetEventsKeysetPaginationAsync(
             long[]? ids = null,
             long[]? tagIds = null,
             long[]? excludeTagIds = null,
@@ -311,7 +311,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="orderBy">["<c>order</c>"] Order by fields</param>
         /// <param name="ascending">["<c>ascending</c>"] Ascending order</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketEvent[]>> GetEventsAsync(
+        Task<HttpResult<PolymarketEvent[]>> GetEventsAsync(
             long[]? ids = null,
             long? tagId = null,
             long[]? excludeTagIds = null,
@@ -353,7 +353,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="includeChat">["<c>include_chat</c>"] Include chat</param>
         /// <param name="includeTemplate">["<c>include_template</c>"] Include template</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketEvent>> GetEventByIdAsync(string id, bool? includeChat = null, bool? includeTemplate = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketEvent>> GetEventByIdAsync(string id, bool? includeChat = null, bool? includeTemplate = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get event by slug
@@ -368,7 +368,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="includeChat">["<c>include_chat</c>"] Include chat</param>
         /// <param name="includeTemplate">["<c>include_template</c>"] Include template</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketEvent>> GetEventBySlugAsync(string slug, bool? includeChat = null, bool? includeTemplate = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketEvent>> GetEventBySlugAsync(string slug, bool? includeChat = null, bool? includeTemplate = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get event tags
@@ -381,7 +381,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTag[]>> GetEventTagsAsync(string id, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTag[]>> GetEventTagsAsync(string id, CancellationToken ct = default);
 
         /// <summary>
         /// Get events
@@ -420,7 +420,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="orderBy">["<c>order</c>"] Order by fields</param>
         /// <param name="ascending">["<c>ascending</c>"] Ascending order</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketGammaMarket[]>> GetMarketsAsync(
+        Task<HttpResult<PolymarketGammaMarket[]>> GetMarketsAsync(
             long[]? ids = null,
             long? tagId = null,
             string[]? slugs = null,
@@ -462,7 +462,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="id">Id</param>
         /// <param name="includeTag">["<c>include_tag</c>"] Include tag</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketGammaMarket>> GetMarketByIdAsync(string id, bool? includeTag = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketGammaMarket>> GetMarketByIdAsync(string id, bool? includeTag = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get market by slug
@@ -476,7 +476,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="slug">Slug</param>
         /// <param name="includeTag">["<c>include_tag</c>"] Include tag</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketGammaMarket>> GetMarketBySlugAsync(string slug, bool? includeTag = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketGammaMarket>> GetMarketBySlugAsync(string slug, bool? includeTag = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get market tags
@@ -489,7 +489,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTag[]>> GetMarketTagsAsync(string id, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTag[]>> GetMarketTagsAsync(string id, CancellationToken ct = default);
 
         /// <summary>
         /// Get series
@@ -511,7 +511,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="orderBy">["<c>order</c>"] Order by fields</param>
         /// <param name="ascending">["<c>ascending</c>"] Ascending order</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketSeries[]>> GetSeriesAsync(
+        Task<HttpResult<PolymarketSeries[]>> GetSeriesAsync(
             string[]? slugs = null,
             string[]? categoryIds = null,
             string[]? categoryLabels = null,
@@ -536,7 +536,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="id">Id</param>
         /// <param name="includeChat">["<c>include_chat</c>"] Whether to include chat</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketSeries>> GetSeriesByIdAsync(string id, bool? includeChat = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketSeries>> GetSeriesByIdAsync(string id, bool? includeChat = null, CancellationToken ct = default);
 
         /// <summary>
         /// Public search
@@ -562,7 +562,7 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
         /// <param name="excludeTagIds">["<c>exclude_tag_id</c>"] Exclude tag ids</param>
         /// <param name="optimized">["<c>optimized</c>"] Optimized</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketSearchResult>> SearchAsync(
+        Task<HttpResult<PolymarketSearchResult>> SearchAsync(
             string query,
             bool? cache = null,
             string? eventStatus = null,

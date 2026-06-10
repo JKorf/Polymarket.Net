@@ -24,6 +24,6 @@ namespace Polymarket.Net.Interfaces.Clients.DataApi
         /// <param name="user">["<c>user</c>"] By user</param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        Task<WebCallResult<PolymarketPosition[]>> GetPositionsAsync(string user, CancellationToken ct = default);
+        Task<HttpResult<PolymarketPosition[]>> GetPositionsAsync(string user, CancellationToken ct = default);
     }
 }

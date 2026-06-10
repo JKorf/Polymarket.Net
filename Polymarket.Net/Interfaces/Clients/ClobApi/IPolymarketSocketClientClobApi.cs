@@ -27,7 +27,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="onMarketResolvedUpdate">Market resolved update handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToPlatformUpdatesAsync(
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToPlatformUpdatesAsync(
             Action<DataEvent<PolymarketNewMarketUpdate>>? onNewMarketUpdate = null,
             Action<DataEvent<PolymarketMarketResolvedUpdate>>? onMarketResolvedUpdate = null,
             CancellationToken ct = default);
@@ -49,7 +49,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="onBestBidAskUpdate">Best bid/ask update handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToTokenUpdatesAsync(
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToTokenUpdatesAsync(
             IEnumerable<string> tokenIds, 
             Action<DataEvent<PolymarketPriceChangeUpdate>>? onPriceChangeUpdate = null,
             Action<DataEvent<PolymarketBookUpdate>>? onBookUpdate = null,
@@ -71,7 +71,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="onTradeUpdate">User trade update handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
             Action<DataEvent<PolymarketOrderUpdate>>? onOrderUpdate = null,
             Action<DataEvent<PolymarketTradeUpdate>>? onTradeUpdate = null,
             CancellationToken ct = default);
@@ -88,7 +88,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="onSportsUpdate">Sport match update handler</param>
         /// <param name="ct">Cancellation token for closing this subscription</param>
         /// <returns>A stream subscription. This stream subscription can be used to be notified when the socket is disconnected/reconnected</returns>
-        Task<CallResult<UpdateSubscription>> SubscribeToSportsUpdatesAsync(
+        Task<WebSocketResult<UpdateSubscription>> SubscribeToSportsUpdatesAsync(
             Action<DataEvent<PolymarketSportsUpdate>>? onSportsUpdate = null,
             CancellationToken ct = default);
     }

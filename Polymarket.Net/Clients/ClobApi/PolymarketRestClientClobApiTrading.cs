@@ -51,7 +51,7 @@ namespace Polymarket.Net.Clients.ClobApi
             _logger = logger;
         }
 
-        public async Task<WebCallResult<PolymarketOrderResult>> PlaceOrderAsync(
+        public async Task<HttpResult<PolymarketOrderResult>> PlaceOrderAsync(
             string tokenId,
             OrderSide side,
             OrderType orderType,
@@ -65,16 +65,16 @@ namespace Polymarket.Net.Clients.ClobApi
             CancellationToken ct = default)
         {
             var tokenResult = await PolymarketUtils.GetTokenInfoAsync(tokenId, _baseClient).ConfigureAwait(false);
-            if (!tokenResult)
-                return new WebCallResult<PolymarketOrderResult>(tokenResult.Error);
+            if (!tokenResult.Success)
+                return HttpResult.Fail<PolymarketOrderResult>(_baseClient.Exchange, tokenResult.Error);
 
             var makerTakerQuantities = GetMakerTakerQuantities(tokenId, side, orderType, quantity, price, timeInForce, tokenResult.Data.TickQuantity, quantityType ?? QuantityType.Shares, tokenResult.Data);
-            if (!makerTakerQuantities)
-                return new WebCallResult<PolymarketOrderResult>(makerTakerQuantities.Error);
+            if (!makerTakerQuantities.Success)
+                return HttpResult.Fail<PolymarketOrderResult>(_baseClient.Exchange, makerTakerQuantities.Error);
 
             var builderCode = _baseClient.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
-            var parameters = new ParameterCollection();
-            var orderParameters = new ParameterCollection();
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var orderParameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             var credentials = _baseClient.AuthenticationProvider!.ApiCredentials;
 
             var maker = credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress();
@@ -84,16 +84,16 @@ namespace Polymarket.Net.Clients.ClobApi
                 signer = credentials.L1.PolymarketFundingAddress;
             }
 
-            orderParameters.Add("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
+            orderParameters.AddRaw("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
             orderParameters.Add("maker", maker);
             orderParameters.Add("signer", signer!);
             orderParameters.Add("tokenId", tokenId);
-            orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
-            orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
-            orderParameters.AddEnum("side", side);
-            orderParameters.AddString("expiration", (ulong)(expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)));
+            orderParameters.Add("makerAmount", makerTakerQuantities.Data.MakerQuantity);
+            orderParameters.Add("takerAmount", makerTakerQuantities.Data.TakerQuantity);
+            orderParameters.Add("side", side);
+            orderParameters.Add("expiration", (expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)).ToString());
             orderParameters.Add("signatureType", (int)credentials.L1.SignType);
-            orderParameters.AddMillisecondsString("timestamp", DateTime.UtcNow);
+            orderParameters.Add("timestamp", DateTime.UtcNow);
             orderParameters.Add("metadata", "0x0000000000000000000000000000000000000000000000000000000000000000");
             orderParameters.Add("builder", builderCode!);
             orderParameters.Add("signature",
@@ -104,26 +104,26 @@ namespace Polymarket.Net.Clients.ClobApi
 
             parameters.Add("order", orderParameters);
             parameters.Add("owner", credentials.L2!.Key!);
-            parameters.AddEnum("orderType", timeInForce ?? (orderType == OrderType.Limit ? TimeInForce.GoodTillCanceled : TimeInForce.ImmediateOrCancel));
-            parameters.AddOptional("postOnly", postOnly);
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            parameters.Add("orderType", timeInForce ?? (orderType == OrderType.Limit ? TimeInForce.GoodTillCanceled : TimeInForce.ImmediateOrCancel));
+            parameters.Add("postOnly", postOnly);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(3500, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketOrderResult>(request, parameters, ct).ConfigureAwait(false);
 
-            if (!result)
+            if (!result.Success)
                 return result;
 
             if (!string.IsNullOrEmpty(result.Data.Error))
-                return result.AsError<PolymarketOrderResult>(new ServerError(_baseClient.GetErrorInfo(result.Data.Error!, result.Data.Error)));
+                return HttpResult.Fail<PolymarketOrderResult>(result, new ServerError(_baseClient.GetErrorInfo(result.Data.Error!, result.Data.Error)));
 
             return result;
         }
 
-        public async Task<WebCallResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
+        public async Task<HttpResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
             var tokenResult = await PolymarketUtils.GetTokenInfosAsync(requests.Select(x => x.TokenId).Distinct(), _baseClient).ConfigureAwait(false);
-            if (!tokenResult)
-                return new WebCallResult<CallResult<PolymarketOrderResult>[]>(tokenResult.Error);
+            if (!tokenResult.Success)
+                return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange, tokenResult.Error);
 
             var builderCode = _baseClient.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -135,33 +135,33 @@ namespace Polymarket.Net.Clients.ClobApi
             {
                 signer = credentials.L1.PolymarketFundingAddress;
             }
-            var parameterList = new List<ParameterCollection>();
+            var parameterList = new List<Parameters>();
             foreach (var request in requests)
             {
                 var tokenInfo = tokenResult.Data.SingleOrDefault(x => x.TokenId == request.TokenId);
                 if (tokenInfo == null)
                 {
-                    return new WebCallResult<CallResult<PolymarketOrderResult>[]>(
+                    return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange,
                         new ServerError(new ErrorInfo(ErrorType.UnknownSymbol, $"Token {request.TokenId} not found")));
                 }
 
                 var makerTakerQuantities = GetMakerTakerQuantities(request.TokenId, request.Side, request.OrderType, request.Quantity, request.Price, request.TimeInForce, tokenInfo.TickQuantity, request.QuantityType ?? QuantityType.Shares, tokenInfo);
-                if (!makerTakerQuantities)
-                    return new WebCallResult<CallResult<PolymarketOrderResult>[]>(makerTakerQuantities.Error);
+                if (!makerTakerQuantities.Success)
+                    return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange, makerTakerQuantities.Error);
 
-                var parameters = new ParameterCollection();
-                var orderParameters = new ParameterCollection();
-                orderParameters.Add("salt", (ulong)(request.ClientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
+                var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+                var orderParameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+                orderParameters.AddRaw("salt", (ulong)(request.ClientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
                 orderParameters.Add("maker", maker);
                 orderParameters.Add("signer", signer!);
                 orderParameters.Add("tokenId", request.TokenId);
-                orderParameters.AddString("makerAmount", makerTakerQuantities.Data.MakerQuantity);
-                orderParameters.AddString("takerAmount", makerTakerQuantities.Data.TakerQuantity);
-                orderParameters.AddString("expiration", (ulong)(request.Expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(request.Expiration.Value)));
-                orderParameters.AddMillisecondsString("timestamp", DateTime.UtcNow);
+                orderParameters.Add("makerAmount", makerTakerQuantities.Data.MakerQuantity);
+                orderParameters.Add("takerAmount", makerTakerQuantities.Data.TakerQuantity);
+                orderParameters.Add("expiration", (request.Expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(request.Expiration.Value)).ToString());
+                orderParameters.Add("timestamp", DateTime.UtcNow);
                 orderParameters.Add("metadata", "0x0000000000000000000000000000000000000000000000000000000000000000");
                 orderParameters.Add("builder", builderCode!);
-                orderParameters.AddEnum("side", request.Side);
+                orderParameters.Add("side", request.Side);
                 orderParameters.Add("signatureType", (int)credentials.L1.SignType);
                 orderParameters.Add("signature",
                     _baseClient.AuthenticationProvider.GetOrderSignature(
@@ -171,32 +171,31 @@ namespace Polymarket.Net.Clients.ClobApi
 
                 parameters.Add("order", orderParameters);
                 parameters.Add("owner", credentials.L2!.Key!);
-                parameters.AddEnum("orderType", request.TimeInForce ?? TimeInForce.GoodTillCanceled);
-                parameters.AddOptional("postOnly", request.PostOnly);
+                parameters.Add("orderType", request.TimeInForce ?? TimeInForce.GoodTillCanceled);
+                parameters.Add("postOnly", request.PostOnly);
                 parameterList.Add(parameters);
             }
 
-            var requestParams = new ParameterCollection();
-            requestParams.SetBody(parameterList.ToArray());
-            var requestDef = _definitions.GetOrCreate(HttpMethod.Post, "/orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var requestParams = new Parameters(parameterList.ToArray(), PolymarketPlatform._parameterSerializationSettings);
+            var requestDef = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(1000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketOrderResult[]>(requestDef, requestParams, ct).ConfigureAwait(false);
-            if (!result)
-                return result.As<CallResult<PolymarketOrderResult>[]>(default);
+            if (!result.Success)
+                return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(result);
 
             var ordersResult = new List<CallResult<PolymarketOrderResult>>();
             foreach (var item in result.Data)
             {
                 if (!string.IsNullOrEmpty(item.Error))
-                    ordersResult.Add(new CallResult<PolymarketOrderResult>(item, null, new ServerError(_baseClient.GetErrorInfo(item.Error!, item.Error))));
+                    ordersResult.Add(CallResult.Fail<PolymarketOrderResult>(new ServerError(_baseClient.GetErrorInfo(item.Error!, item.Error))));
                 else
-                    ordersResult.Add(new CallResult<PolymarketOrderResult>(item));
+                    ordersResult.Add(CallResult.Ok(item));
             }
 
             if (ordersResult.All(x => !x.Success))
-                return result.AsErrorWithData(new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All orders failed")), ordersResult.ToArray());
+                return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(result, new ServerError(new ErrorInfo(ErrorType.AllOrdersFailed, "All orders failed")), ordersResult.ToArray());
 
-            return result.As(ordersResult.ToArray());
+            return HttpResult.Ok(result, ordersResult.ToArray());
         }
 
         private CallResult<(decimal MakerQuantity, decimal TakerQuantity)> GetMakerTakerQuantities(
@@ -240,10 +239,10 @@ namespace Polymarket.Net.Clients.ClobApi
                     }
 
                     if (timeInForce == TimeInForce.FillOrKill && marketPrice == null)
-                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
+                        return CallResult.Fail<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
 
                     if (marketPrice == null && bookInfo.Asks.Length == 0)
-                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "Market order couldn't be filled due to empty order book")));
+                        return CallResult.Fail<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "Market order couldn't be filled due to empty order book")));
 
                     price = marketPrice ?? bookInfo.Asks[0].Price;
                 }
@@ -263,10 +262,10 @@ namespace Polymarket.Net.Clients.ClobApi
                     }
 
                     if (timeInForce == TimeInForce.FillOrKill && marketPrice == null)
-                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
+                        return CallResult.Fail<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "FOK order couldn't fill")));
 
                     if (marketPrice == null && bookInfo.Bids.Length == 0)
-                        return new WebCallResult<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "Market order couldn't be filled due to empty order book")));
+                        return CallResult.Fail<(decimal, decimal)>(new ServerError(new ErrorInfo(ErrorType.RejectedOrderConfiguration, "Market order couldn't be filled due to empty order book")));
 
                     price = marketPrice ?? bookInfo.Bids[0].Price;
                 }
@@ -337,7 +336,7 @@ namespace Polymarket.Net.Clients.ClobApi
             takerQuantity = takerQuantity.Normalize();
             makerQuantity = makerQuantity.Normalize();
 
-            return new CallResult<(decimal, decimal)>((makerQuantity, takerQuantity));
+            return CallResult.Ok((makerQuantity, takerQuantity));
         }
 
         private static decimal RoundUp(decimal value, int digits)
@@ -358,93 +357,91 @@ namespace Polymarket.Net.Clients.ClobApi
             return Math.Floor(value * factor) / factor;
         }
 
-        public async Task<WebCallResult<PolymarketOrder>> GetOrderAsync(string orderId, CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketOrder>> GetOrderAsync(string orderId, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/data/order/" + orderId, PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/data/order/" + orderId, PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(900, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketOrder>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketPage<PolymarketOrder>>> GetOpenOrdersAsync(
+        public async Task<HttpResult<PolymarketPage<PolymarketOrder>>> GetOpenOrdersAsync(
             string? orderId = null,
             string? marketId = null,
             string? tokenId = null,
             string? cursor = null,
             CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("id", orderId);
-            parameters.AddOptional("market", marketId);
-            parameters.AddOptional("asset_id", tokenId);
-            parameters.AddOptional("next_cursor", cursor);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/data/orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.Add("id", orderId);
+            parameters.Add("market", marketId);
+            parameters.Add("asset_id", tokenId);
+            parameters.Add("next_cursor", cursor);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/data/orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(500, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketPage<PolymarketOrder>>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketOrderScoring>> GetOrderRewardScoringAsync(string orderId, CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketOrderScoring>> GetOrderRewardScoringAsync(string orderId, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             parameters.Add("order_id", orderId);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/order-scoring", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/order-scoring", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
             var result = await _baseClient.SendAsync<PolymarketOrderScoring>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
 
-        public async Task<WebCallResult<Dictionary<string, bool>>> GetOrdersRewardScoringAsync(IEnumerable<string> orderIds, CancellationToken ct = default)
+        public async Task<HttpResult<Dictionary<string, bool>>> GetOrdersRewardScoringAsync(IEnumerable<string> orderIds, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.SetBody(orderIds.ToArray());
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/orders-scoring", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
+            var parameters = new Parameters(orderIds.ToArray(), PolymarketPlatform._parameterSerializationSettings);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/orders-scoring", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
             var result = await _baseClient.SendAsync<Dictionary<string, bool>>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketCancelResult>> CancelOrderAsync(string orderId, CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketCancelResult>> CancelOrderAsync(string orderId, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             parameters.Add("orderID", orderId);
-            var request = _definitions.GetOrCreate(HttpMethod.Delete, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var request = _definitions.GetOrCreate(HttpMethod.Delete, _baseClient.BaseAddress, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(3000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketCancelResult>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketCancelResult>> CancelOrdersAsync(IEnumerable<string> orderIds, CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketCancelResult>> CancelOrdersAsync(IEnumerable<string> orderIds, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.SetBody(orderIds.ToArray());
-            var request = _definitions.GetOrCreate(HttpMethod.Delete, "/orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var parameters = new Parameters(orderIds.ToArray(), PolymarketPlatform._parameterSerializationSettings);
+            var request = _definitions.GetOrCreate(HttpMethod.Delete, _baseClient.BaseAddress, "/orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(1000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketCancelResult>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketCancelResult>> CancelOrdersOnMarketAsync(string? market = null, string? tokenId = null, CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketCancelResult>> CancelOrdersOnMarketAsync(string? market = null, string? tokenId = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("market", market);
-            parameters.AddOptional("asset_id", tokenId);
-            var request = _definitions.GetOrCreate(HttpMethod.Delete, "/cancel-market-orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.Add("market", market);
+            parameters.Add("asset_id", tokenId);
+            var request = _definitions.GetOrCreate(HttpMethod.Delete, _baseClient.BaseAddress, "/cancel-market-orders", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(1000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketCancelResult>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketCancelResult>> CancelAllOrdersAsync(CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketCancelResult>> CancelAllOrdersAsync(CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            var request = _definitions.GetOrCreate(HttpMethod.Delete, "/cancel-all", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var request = _definitions.GetOrCreate(HttpMethod.Delete, _baseClient.BaseAddress, "/cancel-all", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(250, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketCancelResult>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult<PolymarketPage<PolymarketTrade>>> GetUserTradesAsync(
+        public async Task<HttpResult<PolymarketPage<PolymarketTrade>>> GetUserTradesAsync(
             string? tradeId = null,
             string? makerAddress = null,
             string? marketId = null,
@@ -454,25 +451,25 @@ namespace Polymarket.Net.Clients.ClobApi
             string? cursor = null,
             CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("id", tradeId);
-            parameters.AddOptional("maker_address", makerAddress);
-            parameters.AddOptional("market", marketId);
-            parameters.AddOptional("asset_id", tokenId);
-            parameters.AddOptionalMillisecondsString("after", startTime);
-            parameters.AddOptionalMillisecondsString("before", endTime);
-            parameters.AddOptional("next_cursor", cursor);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/trades", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.Add("id", tradeId);
+            parameters.Add("maker_address", makerAddress);
+            parameters.Add("market", marketId);
+            parameters.Add("asset_id", tokenId);
+            parameters.Add("after", startTime);
+            parameters.Add("before", endTime);
+            parameters.Add("next_cursor", cursor);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/trades", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(500, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _baseClient.SendAsync<PolymarketPage<PolymarketTrade>>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<WebCallResult> PostOrderHeartbeatAsync(CancellationToken ct = default)
+        public async Task<HttpResult> PostOrderHeartbeatAsync(CancellationToken ct = default)
         {
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "/heartbeats", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
+            var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/heartbeats", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
             var result = await _baseClient.SendAsync<PolymarketOrderHeartbeat>(request, null, ct).ConfigureAwait(false);
-            return result.AsDataless();
+            return result;
         }
 
         private static int GetDecimalPlaces(decimal value)

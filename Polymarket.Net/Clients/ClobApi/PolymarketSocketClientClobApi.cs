@@ -45,7 +45,7 @@ namespace Polymarket.Net.Clients.ClobApi
         /// ctor
         /// </summary>
         internal PolymarketSocketClientClobApi(ILogger logger, PolymarketSocketOptions options) :
-            base(logger, options.Environment.ClobSocketClientAddress!, options, options.ClobOptions)
+            base(logger, PolymarketPlatform.Metadata.Id, options.Environment.ClobSocketClientAddress!, options, options.ClobOptions)
         {
             AddSystemSubscription(new PolymarketGeneralSystemSubscription(_logger));
 
@@ -77,7 +77,7 @@ namespace Polymarket.Net.Clients.ClobApi
             => new PolymarketAuthenticationProvider(credentials);
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToPlatformUpdatesAsync(
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToPlatformUpdatesAsync(
             Action<DataEvent<PolymarketNewMarketUpdate>>? onNewMarketUpdate = null,
             Action<DataEvent<PolymarketMarketResolvedUpdate>>? onMarketResolvedUpdate = null,
             CancellationToken ct = default)
@@ -91,7 +91,7 @@ namespace Polymarket.Net.Clients.ClobApi
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTokenUpdatesAsync(
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTokenUpdatesAsync(
             IEnumerable<string> assetIds,
             Action<DataEvent<PolymarketPriceChangeUpdate>>? onPriceChangeUpdate = null, 
             Action<DataEvent<PolymarketBookUpdate>>? onBookUpdate = null,
@@ -113,7 +113,7 @@ namespace Polymarket.Net.Clients.ClobApi
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToUserUpdatesAsync(
             Action<DataEvent<PolymarketOrderUpdate>>? onOrderUpdate = null,
             Action<DataEvent<PolymarketTradeUpdate>>? onTradeUpdate = null,
             CancellationToken ct = default)
@@ -127,7 +127,7 @@ namespace Polymarket.Net.Clients.ClobApi
         }
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToSportsUpdatesAsync(
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToSportsUpdatesAsync(
             Action<DataEvent<PolymarketSportsUpdate>>? onSportsUpdate = null,
             CancellationToken ct = default)
         {

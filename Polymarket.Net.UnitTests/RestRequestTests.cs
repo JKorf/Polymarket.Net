@@ -50,7 +50,7 @@ namespace Polymarket.Net.UnitTests
             await tester.ValidateAsync(client => client.ClobApi.Trading.GetUserTradesAsync("123"), "GetUserTrades");
         }
 
-        private bool IsAuthenticated(WebCallResult result)
+        private bool IsAuthenticated(IHttpResult result)
         {
             return result.RequestHeaders?.Contains("POLY_SIGNATURE") == true;
         }

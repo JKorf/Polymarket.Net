@@ -34,8 +34,8 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
             _tradeUpdate = tradeUpdate;
 
             MessageRouter = MessageRouter.Create([
-                MessageRoute<PolymarketTradeUpdate>.CreateWithoutTopicFilter("trade", DoHandleMessage),
-                MessageRoute<PolymarketOrderUpdate>.CreateWithoutTopicFilter("order", DoHandleMessage)
+                MessageRoute.CreateForEvent<PolymarketTradeUpdate>("trade", DoHandleMessage),
+                MessageRoute.CreateForEvent<PolymarketOrderUpdate>("order", DoHandleMessage)
                 ]);
         }
 
@@ -55,7 +55,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
                         .WithStreamId(message.EventType)
                         //.WithSymbol(data.Symbol)
                         .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset()));
-            return new CallResult(null);
+            return CallResult.Ok();
         }
 
         /// <inheritdoc />
@@ -68,7 +68,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
                         .WithStreamId(message.EventType)
                         //.WithSymbol(data.Symbol)
                         .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset()));
-            return new CallResult(null);
+            return CallResult.Ok();
         }
     }
 }

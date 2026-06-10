@@ -24,7 +24,7 @@ namespace Polymarket.Net.Objects.Sockets
         {
             ExpectsResponse = false;
 
-            MessageRouter = MessageRouter.CreateWithoutHandler<T>("");
+            MessageRouter = MessageRouter.CreateVoid<T>("");
         }
     }
 }

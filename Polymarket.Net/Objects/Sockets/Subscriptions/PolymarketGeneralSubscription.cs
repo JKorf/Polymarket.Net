@@ -34,8 +34,8 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
             _marketResolvedUpdate = marketResolvedUpdate;
 
             MessageRouter = MessageRouter.Create([
-                MessageRoute<PolymarketNewMarketUpdate>.CreateWithoutTopicFilter("new_market", DoHandleMessage),
-                MessageRoute<PolymarketMarketResolvedUpdate>.CreateWithoutTopicFilter("market_resolved", DoHandleMessage)
+                MessageRoute.CreateForEvent<PolymarketNewMarketUpdate>("new_market", DoHandleMessage),
+                MessageRoute.CreateForEvent<PolymarketMarketResolvedUpdate>("market_resolved", DoHandleMessage)
                 ]);
         }
 
@@ -58,7 +58,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
                         .WithStreamId(message.EventType)
                         //.WithSymbol(data.Symbol)
                         .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset()));
-            return new CallResult(null);
+            return CallResult.Ok();
         }
 
         /// <inheritdoc />
@@ -71,7 +71,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
                         .WithStreamId(message.EventType)
                         //.WithSymbol(data.Symbol)
                         .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset()));
-            return new CallResult(null);
+            return CallResult.Ok();
         }
     }
 }

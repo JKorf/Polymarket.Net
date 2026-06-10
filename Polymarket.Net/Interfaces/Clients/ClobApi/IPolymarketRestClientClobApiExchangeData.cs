@@ -24,7 +24,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns></returns>
-        Task<WebCallResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default);
+        Task<HttpResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get geographical restrictions for calling client
@@ -36,7 +36,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </para>
         /// </summary>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketGeoRestriction>> GetGeographicRestrictionsAsync(CancellationToken ct = default);
+        Task<HttpResult<PolymarketGeoRestriction>> GetGeographicRestrictionsAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Get sampling simplified markets
@@ -49,7 +49,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPage<PolymarketMarket>>> GetSamplingSimplifiedMarketsAsync(string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketPage<PolymarketMarket>>> GetSamplingSimplifiedMarketsAsync(string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get sampling markets
@@ -62,7 +62,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPage<PolymarketMarketDetails>>> GetSamplingMarketsAsync(string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketPage<PolymarketMarketDetails>>> GetSamplingMarketsAsync(string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get simplified markets
@@ -75,7 +75,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPage<PolymarketMarket>>> GetSimplifiedMarketsAsync(string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketPage<PolymarketMarket>>> GetSimplifiedMarketsAsync(string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get markets
@@ -88,7 +88,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="cursor">Pagination cursor</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPage<PolymarketMarketDetails>>> GetMarketsAsync(string? cursor = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketPage<PolymarketMarketDetails>>> GetMarketsAsync(string? cursor = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get market by id
@@ -101,7 +101,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="id">Id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketMarketDetails>> GetMarketAsync(string id, CancellationToken ct = default);
+        Task<HttpResult<PolymarketMarketDetails>> GetMarketAsync(string id, CancellationToken ct = default);
 
         /// <summary>
         /// Get price for a token
@@ -115,7 +115,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="tokenId">["<c>token_id</c>"] Token id</param>
         /// <param name="side">["<c>side</c>"] Side</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPrice>> GetPriceAsync(string tokenId, OrderSide side, CancellationToken ct = default);
+        Task<HttpResult<PolymarketPrice>> GetPriceAsync(string tokenId, OrderSide side, CancellationToken ct = default);
 
         /// <summary>
         /// Get buy/sell prices for all markets
@@ -128,7 +128,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokens">Tokens to retrieve prices for</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<Dictionary<string, PolymarketBuySellPrice>>> GetPricesAsync(Dictionary<string, OrderSide> tokens, CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, PolymarketBuySellPrice>>> GetPricesAsync(Dictionary<string, OrderSide> tokens, CancellationToken ct = default);
 
         /// <summary>
         /// Get the midpoint price for a token
@@ -141,7 +141,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">["<c>token_id</c>"] The token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketMidPrice>> GetMidpointPriceAsync(string tokenId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketMidPrice>> GetMidpointPriceAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get mid point prices for tokens
@@ -154,7 +154,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenIds">["<c>token_id</c>"] Tokens to request</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<Dictionary<string, decimal>>> GetMidpointPricesAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, decimal>>> GetMidpointPricesAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
 
         /// <summary>
         /// Get price history for a token
@@ -171,7 +171,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// <param name="interval">["<c>interval</c>"] Interval</param>
         /// <param name="fidelity">["<c>fidelity</c>"] Fidelity in minutes</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketPriceHistory[]>> GetPriceHistoryAsync(string market, DateTime? startTime = null, DateTime? endTime = null, DataInterval? interval = null, int? fidelity = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketPriceHistory[]>> GetPriceHistoryAsync(string market, DateTime? startTime = null, DateTime? endTime = null, DataInterval? interval = null, int? fidelity = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get bid/ask spread for a a token
@@ -184,7 +184,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">["<c>token_id</c>"] Token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketSpread>> GetBidAskSpreadsAsync(string tokenId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketSpread>> GetBidAskSpreadsAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get bid/ask spread for specified token ids
@@ -197,7 +197,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenIds">["<c>token_id</c>"] Token ids</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<Dictionary<string, decimal>>> GetBidAskSpreadsAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
+        Task<HttpResult<Dictionary<string, decimal>>> GetBidAskSpreadsAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
 
         /// <summary>
         /// Get order book info for a token
@@ -210,7 +210,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">["<c>token_id</c>"] The token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketOrderBook>> GetOrderBookAsync(string tokenId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketOrderBook>> GetOrderBookAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get order book info for multiple tokens
@@ -223,7 +223,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenIds">["<c>token_id</c>"] The token ids</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketOrderBook[]>> GetOrderBooksAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
+        Task<HttpResult<PolymarketOrderBook[]>> GetOrderBooksAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
 
         /// <summary>
         /// Get tick size for a token
@@ -236,7 +236,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">["<c>token_id</c>"] The token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTickSize>> GetTickSizeAsync(string tokenId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTickSize>> GetTickSizeAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get negative risk for a token
@@ -247,7 +247,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">["<c>token_id</c>"] The token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketNegRisk>> GetNegativeRiskAsyncAsync(string tokenId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketNegRisk>> GetNegativeRiskAsyncAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get fee rate in basis points
@@ -260,7 +260,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">["<c>token_id</c>"] The token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketFeeRateBps>> GetFeeRateBpsAsync(string tokenId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketFeeRateBps>> GetFeeRateBpsAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get last trade price for a token
@@ -273,7 +273,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenId">["<c>token_id</c>"] The token id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTradePrice>> GetLastTradePriceAsync(string tokenId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTradePrice>> GetLastTradePriceAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get last trade price for tokens
@@ -286,7 +286,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="tokenIds">["<c>token_id</c>"] The token ids</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketTradePrice[]>> GetLastTradePricesAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
+        Task<HttpResult<PolymarketTradePrice[]>> GetLastTradePricesAsync(IEnumerable<string> tokenIds, CancellationToken ct = default);
 
         /// <summary>
         /// Get info on a market
@@ -299,7 +299,7 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
         /// </summary>
         /// <param name="marketId">["<c>condition_id</c>"] Id of the market</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PolymarketMarketInfo>> GetMarketInfoAsync(string marketId, CancellationToken ct = default);
+        Task<HttpResult<PolymarketMarketInfo>> GetMarketInfoAsync(string marketId, CancellationToken ct = default);
 
 
     }

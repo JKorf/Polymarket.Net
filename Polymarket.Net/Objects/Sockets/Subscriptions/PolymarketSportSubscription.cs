@@ -25,7 +25,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
         {
             _updateHandler = updateHandler;
 
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<PolymarketSportsUpdate>("sports", DoHandleMessage);
+            MessageRouter = MessageRouter.CreateForEvent<PolymarketSportsUpdate>("sports", DoHandleMessage);
         }
 
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
             _updateHandler?.Invoke(new DataEvent<PolymarketSportsUpdate>(PolymarketPlatform.Metadata.Id, message, receiveTime, originalData)
                         .WithUpdateType(SocketUpdateType.Update)
                         .WithStreamId("sports"));
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
 
     }
