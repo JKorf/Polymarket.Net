@@ -44,8 +44,8 @@ namespace Polymarket.Net.Clients.ClobApi
         /// <summary>
         /// ctor
         /// </summary>
-        internal PolymarketSocketClientClobApi(ILogger logger, PolymarketSocketOptions options) :
-            base(logger, PolymarketPlatform.Metadata.Id, options.Environment.ClobSocketClientAddress!, options, options.ClobOptions)
+        internal PolymarketSocketClientClobApi(ILoggerFactory? loggerFactory, PolymarketSocketOptions options) :
+            base(loggerFactory, PolymarketPlatform.Metadata.Id, options.Environment.ClobSocketClientAddress!, options, options.ClobOptions)
         {
             AddSystemSubscription(new PolymarketGeneralSystemSubscription(_logger));
 

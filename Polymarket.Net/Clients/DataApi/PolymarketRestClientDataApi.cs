@@ -35,8 +35,8 @@ namespace Polymarket.Net.Clients.DataApi
         #endregion
 
         #region constructor/destructor
-        internal PolymarketRestClientDataApi(ILogger logger, HttpClient? httpClient, PolymarketRestOptions options)
-            : base(logger, PolymarketPlatform.Metadata.Id, httpClient, options.Environment.DataRestClientAddress, options, options.DataOptions) {
+        internal PolymarketRestClientDataApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, PolymarketRestOptions options)
+            : base(loggerFactory, PolymarketPlatform.Metadata.Id, httpClient, options.Environment.DataRestClientAddress, options, options.DataOptions) {
             RequestBodyEmptyContent = "";
         }
         #endregion

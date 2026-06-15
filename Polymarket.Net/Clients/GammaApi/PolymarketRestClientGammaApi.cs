@@ -42,8 +42,8 @@ namespace Polymarket.Net.Clients.GammaApi
         #endregion
 
         #region constructor/destructor
-        internal PolymarketRestClientGammaApi(ILogger logger, HttpClient? httpClient, PolymarketRestOptions options)
-            : base(logger, PolymarketPlatform.Metadata.Id, httpClient, options.Environment.GammaRestClientAddress, options, options.GammaOptions)
+        internal PolymarketRestClientGammaApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, PolymarketRestOptions options)
+            : base(loggerFactory, PolymarketPlatform.Metadata.Id, httpClient, options.Environment.GammaRestClientAddress, options, options.GammaOptions)
         {
             RequestBodyEmptyContent = "";
             ParameterPositions[HttpMethod.Delete] = HttpMethodParameterPosition.InBody;

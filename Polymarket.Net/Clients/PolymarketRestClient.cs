@@ -54,9 +54,9 @@ namespace Polymarket.Net.Clients
         {
             Initialize(options.Value);
             
-            ClobApi = AddApiClient(new PolymarketRestClientClobApi(_logger, httpClient, options.Value));
-            GammaApi = AddApiClient(new PolymarketRestClientGammaApi(_logger, httpClient, options.Value));
-            DataApi = AddApiClient(new PolymarketRestClientDataApi(_logger, httpClient, options.Value));
+            ClobApi = AddApiClient(new PolymarketRestClientClobApi(loggerFactory, httpClient, options.Value));
+            GammaApi = AddApiClient(new PolymarketRestClientGammaApi(loggerFactory, httpClient, options.Value));
+            DataApi = AddApiClient(new PolymarketRestClientDataApi(loggerFactory, httpClient, options.Value));
         }
 
         #endregion

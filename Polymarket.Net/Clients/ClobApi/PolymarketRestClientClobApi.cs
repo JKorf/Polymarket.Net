@@ -39,12 +39,12 @@ namespace Polymarket.Net.Clients.ClobApi
         #endregion
 
         #region constructor/destructor
-        internal PolymarketRestClientClobApi(ILogger logger, HttpClient? httpClient, PolymarketRestOptions options)
-            : base(logger, PolymarketPlatform.Metadata.Id, httpClient, options.Environment.ClobRestClientAddress, options, options.ClobOptions)
+        internal PolymarketRestClientClobApi(ILoggerFactory? loggerFactory, HttpClient? httpClient, PolymarketRestOptions options)
+            : base(loggerFactory, PolymarketPlatform.Metadata.Id, httpClient, options.Environment.ClobRestClientAddress, options, options.ClobOptions)
         {
             Account = new PolymarketRestClientClobApiAccount(this);
-            ExchangeData = new PolymarketRestClientClobApiExchangeData(logger, this);
-            Trading = new PolymarketRestClientClobApiTrading(logger, this);
+            ExchangeData = new PolymarketRestClientClobApiExchangeData(_logger, this);
+            Trading = new PolymarketRestClientClobApiTrading(_logger, this);
 
             RequestBodyEmptyContent = "";
             ParameterPositions[HttpMethod.Delete] = HttpMethodParameterPosition.InBody;

@@ -47,7 +47,7 @@ namespace Polymarket.Net.Clients
         {
             Initialize(options.Value);
                         
-            ClobApi = AddApiClient(new PolymarketSocketClientClobApi(_logger, options.Value));
+            ClobApi = AddApiClient(new PolymarketSocketClientClobApi(loggerFactory, options.Value));
         }
         #endregion
 
