@@ -173,5 +173,5 @@ Use this file to route common user intents to the correct Polymarket.Net client 
 | `.SharedClient` | Not exposed by current Polymarket.Net interfaces |
 | `.Data` without `.Success` check | Check `.Success` first |
 | L1-only credentials for order placement | Add or derive L2 credentials |
-| `PolymarketOrderResult.Success` only | Check `WebCallResult.Success` first, then order result success |
+| `PolymarketOrderResult.Success` only | Check `HttpResult.Success` first, then order result success |
 | Manual socket lifecycle without storing subscription | Store `UpdateSubscription` and unsubscribe |

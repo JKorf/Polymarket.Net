@@ -50,7 +50,7 @@ if (!order.Success)
     return;
 }
 
-// A successful WebCallResult means the request completed. The order payload also
+// A successful HttpResult means the request completed. The order payload also
 // has an acceptance flag and error message from Polymarket.
 if (!order.Data.Success)
 {

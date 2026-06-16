@@ -38,7 +38,7 @@ namespace Polymarket.Net.UnitTests
                 OutputOriginalData = true
             }), logger);
 
-            var tester = new SocketSubscriptionValidator<PolymarketSocketClient>(client, "Subscriptions/Clob", "wss://ws-subscriptions-clob.polymarket.com", "data");
+            var tester = new SocketSubscriptionValidator<PolymarketSocketClient>(client, "Subscriptions/Clob", "wss://ws-subscriptions-clob.polymarket.com/ws/market", "data");
             await tester.ValidateConcurrentAsync<PolymarketPriceChangeUpdate>(
                 (client, handler) => client.ClobApi.SubscribeToTokenUpdatesAsync(["0x123"], handler),
                 (client, handler) => client.ClobApi.SubscribeToTokenUpdatesAsync(["0x456"], handler),

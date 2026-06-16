@@ -24,8 +24,8 @@ Primary documentation:
 - Do not generate raw `HttpClient` calls to Polymarket endpoints.
 - Do not manually sign CLOB requests; use `PolymarketCredentials`.
 - Always check `.Success` before reading `.Data`.
-- REST methods return `WebCallResult<T>` or `WebCallResult`.
-- WebSocket subscriptions return `CallResult<UpdateSubscription>`.
+- REST methods return `HttpResult<T>` or `HttpResult`.
+- WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`.
 - Reuse clients. Do not instantiate clients per request in production code.
 - Prefer dependency injection for long-running applications.
 - Store WebSocket subscriptions and unsubscribe during shutdown.
@@ -307,9 +307,9 @@ Console.WriteLine(order.Data.OrderId);
 Retry only transient failures:
 
 ```csharp
-async Task<WebCallResult<T>> WithRetry<T>(Func<Task<WebCallResult<T>>> call, int maxAttempts = 3)
+async Task<HttpResult<T>> WithRetry<T>(Func<Task<HttpResult<T>>> call, int maxAttempts = 3)
 {
-    WebCallResult<T> last = default!;
+    HttpResult<T> last = default!;
 
     for (var attempt = 1; attempt <= maxAttempts; attempt++)
     {
@@ -535,7 +535,7 @@ Examples/ai-friendly/04-di-and-orderbook.cs
   AddPolymarket DI setup, injected clients, local order book factory, user client provider.
 
 Examples/ai-friendly/05-error-handling.cs
-  WebCallResult pattern, transient retry, order result acceptance checks, Polymarket-specific mistakes.
+  HttpResult pattern, transient retry, order result acceptance checks, Polymarket-specific mistakes.
 ```
 
 These files are intended to be copied into a console `Program.cs` after `dotnet add package Polymarket.Net`.
@@ -554,7 +554,7 @@ Before finalizing generated code:
 - Does authenticated trading configure or derive L2 credentials?
 - Does it avoid `.Result` and `.Wait()`?
 - Are WebSocket subscriptions unsubscribed on shutdown?
-- For order placement, does it check both `WebCallResult.Success` and `PolymarketOrderResult.Success`?
+- For order placement, does it check both `HttpResult.Success` and `PolymarketOrderResult.Success`?
 - If using local order books, does it prefer `PolymarketClobSymbolOrderBook` or `IPolymarketOrderBookFactory`?
 
 ## Source Of Truth For Method Names

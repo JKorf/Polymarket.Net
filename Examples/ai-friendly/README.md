@@ -15,7 +15,7 @@ These examples are optimized for AI coding assistants and quick onboarding. Each
 | `02-authentication-and-trading.cs` | L1/L2 credentials, deriving L2 credentials, allowance checks, limit order placement, open orders and cancellation |
 | `03-websocket.cs` | Platform, token, user and sports subscriptions with success checks and teardown |
 | `04-di-and-orderbook.cs` | Dependency injection, injected clients, local order book factory and per-user client provider |
-| `05-error-handling.cs` | `WebCallResult` patterns, retry logic, order acceptance checks and common Polymarket mistakes |
+| `05-error-handling.cs` | `HttpResult` patterns, retry logic, order acceptance checks and common Polymarket mistakes |
 
 ## Running
 

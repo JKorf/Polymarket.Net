@@ -15,7 +15,7 @@ if (!book.Success)
 
 Console.WriteLine($"Loaded order book with {book.Data.Bids.Length} bids.");
 
-// Normal API failures are returned in WebCallResult.Error, not thrown.
+// Normal API failures are returned in HttpResult.Error, not thrown.
 var price = await client.ClobApi.ExchangeData.GetPriceAsync(tokenId, OrderSide.Buy);
 if (!price.Success)
 {
@@ -26,9 +26,9 @@ if (!price.Success)
 Console.WriteLine("Price request succeeded.");
 
 // Trading responses have two layers:
-// 1. WebCallResult.Success: request/transport/API call succeeded.
+// 1. HttpResult.Success: request/transport/API call succeeded.
 // 2. PolymarketOrderResult.Success: Polymarket accepted the order.
-static bool IsAcceptedOrder(WebCallResult<PolymarketOrderResult> order)
+static bool IsAcceptedOrder(HttpResult<PolymarketOrderResult> order)
 {
     if (!order.Success)
     {
@@ -45,9 +45,9 @@ static bool IsAcceptedOrder(WebCallResult<PolymarketOrderResult> order)
     return true;
 }
 
-static async Task<WebCallResult<T>> WithRetry<T>(Func<Task<WebCallResult<T>>> call, int maxAttempts = 3)
+static async Task<HttpResult<T>> WithRetry<T>(Func<Task<HttpResult<T>>> call, int maxAttempts = 3)
 {
-    WebCallResult<T> last = default!;
+    HttpResult<T> last = default!;
 
     for (var attempt = 1; attempt <= maxAttempts; attempt++)
     {
@@ -67,5 +67,5 @@ static async Task<WebCallResult<T>> WithRetry<T>(Func<Task<WebCallResult<T>>> ca
 }
 
 // Keep this helper reachable for the compiler while avoiding a live order request.
-Func<WebCallResult<PolymarketOrderResult>, bool> orderAccepted = IsAcceptedOrder;
+Func<HttpResult<PolymarketOrderResult>, bool> orderAccepted = IsAcceptedOrder;
 Console.WriteLine(orderAccepted.Method.Name);

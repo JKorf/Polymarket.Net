@@ -44,7 +44,7 @@ var restClient = new PolymarketRestClient(options =>
 
 ## Core Pattern: Result Handling
 
-Every REST method returns `WebCallResult<T>` or `WebCallResult`. WebSocket subscriptions return `CallResult<UpdateSubscription>`. Always check `.Success` before accessing `.Data`.
+Every REST method returns `HttpResult<T>` or `HttpResult`. WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`. Always check `.Success` before accessing `.Data`.
 
 ```csharp
 var markets = await restClient.ClobApi.ExchangeData.GetMarketsAsync();
@@ -197,7 +197,7 @@ For a maintained local CLOB order book use `PolymarketClobSymbolOrderBook` or `I
 - Do not instantiate clients per request in production code; reuse clients or use DI.
 - Do not place/cancel orders with L1-only credentials; create/derive L2 credentials first or configure both levels.
 - Do not document `.SharedClient`; it is not exposed by the current Polymarket.Net client interfaces.
-- Do not confuse `PolymarketOrderResult.Success` with `WebCallResult.Success`; check both if you need to know whether the API call succeeded and whether the order itself was accepted.
+- Do not confuse `PolymarketOrderResult.Success` with `HttpResult.Success`; check both if you need to know whether the API call succeeded and whether the order itself was accepted.
 
 ## Environments
 
