@@ -25,7 +25,7 @@ Primary documentation:
 - Do not manually sign CLOB requests; use `PolymarketCredentials`.
 - Always check `.Success` before reading `.Data`.
 - REST methods return `HttpResult<T>` or `HttpResult`.
-- WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`.
+- WebSocket subscription methods return `WebSocketResult<UpdateSubscription>`.
 - Reuse clients. Do not instantiate clients per request in production code.
 - Prefer dependency injection for long-running applications.
 - Store WebSocket subscriptions and unsubscribe during shutdown.
@@ -327,6 +327,8 @@ async Task<HttpResult<T>> WithRetry<T>(Func<Task<HttpResult<T>>> call, int maxAt
 }
 ```
 
+Socket subscription methods use the same `.Success` and `.Error` pattern and return `WebSocketResult<UpdateSubscription>`.
+
 ## Intent To Method Map
 
 For a broader table-style reference, see `docs/ai-api-map.md`.
@@ -529,13 +531,13 @@ Examples/ai-friendly/02-authentication-and-trading.cs
   L1/L2 credentials, deriving L2 credentials, allowance checks, limit order, open order lookup, cancellation.
 
 Examples/ai-friendly/03-websocket.cs
-  Token, platform, sports, and user WebSocket subscriptions, success checks, teardown.
+  Token, platform, sports, and user WebSocket subscriptions, WebSocketResult checks, teardown.
 
 Examples/ai-friendly/04-di-and-orderbook.cs
   AddPolymarket DI setup, injected clients, local order book factory, user client provider.
 
 Examples/ai-friendly/05-error-handling.cs
-  HttpResult pattern, transient retry, order result acceptance checks, Polymarket-specific mistakes.
+  HttpResult and WebSocketResult patterns, transient retry, order result acceptance checks, Polymarket-specific mistakes.
 ```
 
 These files are intended to be copied into a console `Program.cs` after `dotnet add package Polymarket.Net`.

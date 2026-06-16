@@ -140,6 +140,8 @@ Use this file to route common user intents to the correct Polymarket.Net client 
 | Subscribe sports updates | `socketClient.ClobApi.SubscribeToSportsUpdatesAsync(onSportsUpdate)` |
 | Unsubscribe from socket stream | `socketClient.UnsubscribeAsync(subscription.Data)` |
 
+WebSocket subscription methods return `WebSocketResult<UpdateSubscription>`.
+
 ## Local Order Book And User Client Provider
 
 | User intent | Polymarket.Net member |
@@ -155,9 +157,9 @@ Use this file to route common user intents to the correct Polymarket.Net client 
 
 | Situation | Pattern |
 |---|---|
-| REST success check | `if (!result.Success) { Console.WriteLine(result.Error); return; }` |
-| Socket subscription success check | `if (!sub.Success) { Console.WriteLine(sub.Error); return; }` |
-| Read REST data | Read `result.Data` only after `result.Success` |
+| REST success check | REST methods return `HttpResult<T>` or `HttpResult`; use `if (!result.Success) { Console.WriteLine(result.Error); return; }` |
+| Socket subscription success check | Socket subscriptions return `WebSocketResult<UpdateSubscription>`; use `if (!sub.Success) { Console.WriteLine(sub.Error); return; }` |
+| Read result data | Read `result.Data` or `sub.Data` only after `.Success` |
 | Order accepted check | Check `order.Data.Success` after `order.Success` |
 | Cancellation | Pass `ct: cancellationToken` |
 | Retry decision | Retry only when `result.Error?.IsTransient == true` |

@@ -44,7 +44,7 @@ var restClient = new PolymarketRestClient(options =>
 
 ## Core Pattern: Result Handling
 
-Every REST method returns `HttpResult<T>` or `HttpResult`. WebSocket subscriptions return `WebSocketResult<UpdateSubscription>`. Always check `.Success` before accessing `.Data`.
+Every REST method returns `HttpResult<T>` or `HttpResult`. WebSocket subscription methods return `WebSocketResult<UpdateSubscription>`. Always check `.Success` before accessing `.Data`.
 
 ```csharp
 var markets = await restClient.ClobApi.ExchangeData.GetMarketsAsync();

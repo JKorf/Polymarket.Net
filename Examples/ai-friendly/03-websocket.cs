@@ -7,6 +7,7 @@ var socketClient = new PolymarketSocketClient();
 var tokenId = "TOKEN_ID";
 
 // Public token stream. All handlers are optional; pass only the events you need.
+// Socket subscriptions return WebSocketResult<UpdateSubscription>.
 var tokenSubscription = await socketClient.ClobApi.SubscribeToTokenUpdatesAsync(
     new[] { tokenId },
     onPriceChangeUpdate: update => Console.WriteLine($"Price update: {update.Data}"),
