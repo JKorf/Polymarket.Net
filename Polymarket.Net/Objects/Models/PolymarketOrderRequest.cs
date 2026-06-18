@@ -53,5 +53,15 @@ namespace Polymarket.Net.Objects.Models
         /// Type of quantity for an order, either in shares (default) or in value (USD). Value is only available for market buy orders
         /// </summary>
         public QuantityType? QuantityType { get; set; }
+
+        /// <summary>
+        /// Tick quantity, can be provided together with negative risk to bypass token info retrieval for limit orders
+        /// </summary>
+        public decimal? TickQuantity { get; set; }
+
+        /// <summary>
+        /// If negative risk token, can be provided together with tickQuantity to bypass token info retrieval for limit orders
+        /// </summary>
+        public bool? NegativeRisk { get; set; }
     }
 }

@@ -115,7 +115,7 @@ namespace Polymarket.Net
             var signData = timestamp + requestConfig.RequestDefinition.Method.ToString() + requestConfig.RequestDefinition.Path;
             if (requestConfig.RequestDefinition.Method == HttpMethod.Post || requestConfig.RequestDefinition.Method == HttpMethod.Delete)
             {
-                var body = (requestConfig.BodyParameters == null || requestConfig.BodyParameters.Count == 0) ? string.Empty : GetSerializedBody(_serializer, requestConfig.BodyParameters);
+                var body = (requestConfig.BodyParameters == null || requestConfig.BodyParameters.Empty) ? string.Empty : GetSerializedBody(_serializer, requestConfig.BodyParameters);
                 signData += body;
                 requestConfig.SetBodyContent(body);
             }

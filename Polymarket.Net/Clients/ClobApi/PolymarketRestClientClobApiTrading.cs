@@ -62,13 +62,23 @@ namespace Polymarket.Net.Clients.ClobApi
             long? clientOrderId = null,
             DateTime? expiration = null,
             QuantityType? quantityType = null,
+            decimal? tickQuantity = null,
+            bool? negativeRisk = null,
             CancellationToken ct = default)
         {
-            var tokenResult = await PolymarketUtils.GetTokenInfoAsync(tokenId, _baseClient).ConfigureAwait(false);
-            if (!tokenResult.Success)
-                return HttpResult.Fail<PolymarketOrderResult>(_baseClient.Exchange, tokenResult.Error);
+            PolymarketOrderBook? tokenInfo = null;
+            if (orderType != OrderType.Limit || tickQuantity is null || negativeRisk is null)
+            {
+                var tokenResult = await PolymarketUtils.GetTokenInfoAsync(tokenId, _baseClient).ConfigureAwait(false);
+                if (!tokenResult.Success)
+                    return HttpResult.Fail<PolymarketOrderResult>(PolymarketPlatform.Metadata.Id, tokenResult.Error);
 
-            var makerTakerQuantities = GetMakerTakerQuantities(tokenId, side, orderType, quantity, price, timeInForce, tokenResult.Data.TickQuantity, quantityType ?? QuantityType.Shares, tokenResult.Data);
+                tokenInfo = tokenResult.Data;
+                tickQuantity ??= tokenInfo.TickQuantity;
+                negativeRisk ??= tokenInfo.NegativeRisk;
+            }
+
+            var makerTakerQuantities = GetMakerTakerQuantities(tokenId, side, orderType, quantity, price, timeInForce, tickQuantity.Value, quantityType ?? QuantityType.Shares, tokenInfo);
             if (!makerTakerQuantities.Success)
                 return HttpResult.Fail<PolymarketOrderResult>(_baseClient.Exchange, makerTakerQuantities.Error);
 
@@ -100,7 +110,7 @@ namespace Polymarket.Net.Clients.ClobApi
                 _baseClient.AuthenticationProvider.GetOrderSignature(
                     orderParameters,
                     _baseClient.ClientOptions.Environment.ChainId,
-                    tokenResult.Data.NegativeRisk).ToLowerInvariant());
+                    negativeRisk.Value).ToLowerInvariant());
 
             parameters.Add("order", orderParameters);
             parameters.Add("owner", credentials.L2!.Key!);
@@ -121,9 +131,20 @@ namespace Polymarket.Net.Clients.ClobApi
 
         public async Task<HttpResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
-            var tokenResult = await PolymarketUtils.GetTokenInfosAsync(requests.Select(x => x.TokenId).Distinct(), _baseClient).ConfigureAwait(false);
-            if (!tokenResult.Success)
-                return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange, tokenResult.Error);
+            var tokensToRequest = requests
+                .Where(x => x.OrderType != OrderType.Limit || x.TickQuantity is null || x.NegativeRisk is null)
+                .Select(x => x.TokenId)
+                .Distinct().ToList();
+
+            var orderBookInfos = new PolymarketOrderBook[0];
+            if (tokensToRequest.Count > 0)
+            {
+                var tokenResult = await PolymarketUtils.GetTokenInfosAsync(tokensToRequest, _baseClient).ConfigureAwait(false);
+                if (!tokenResult.Success)
+                    return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange, tokenResult.Error);
+
+                orderBookInfos = tokenResult.Data;
+            }
 
             var builderCode = _baseClient.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -138,14 +159,23 @@ namespace Polymarket.Net.Clients.ClobApi
             var parameterList = new List<Parameters>();
             foreach (var request in requests)
             {
-                var tokenInfo = tokenResult.Data.SingleOrDefault(x => x.TokenId == request.TokenId);
-                if (tokenInfo == null)
+                PolymarketOrderBook? tokenInfo = null;
+                decimal? tickQuantity = request.TickQuantity;
+                bool? negativeRisk = request.NegativeRisk;
+                if (request.OrderType != OrderType.Limit || request.TickQuantity is null || request.NegativeRisk is null)
                 {
-                    return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange,
-                        new ServerError(new ErrorInfo(ErrorType.UnknownSymbol, $"Token {request.TokenId} not found")));
+                    tokenInfo = orderBookInfos.SingleOrDefault(x => x.TokenId == request.TokenId);
+                    if (tokenInfo == null)
+                    {
+                        return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange,
+                            new ServerError(new ErrorInfo(ErrorType.UnknownSymbol, $"Token {request.TokenId} not found")));
+                    }
+
+                    tickQuantity ??= tokenInfo.TickQuantity;
+                    negativeRisk ??= tokenInfo.NegativeRisk;
                 }
 
-                var makerTakerQuantities = GetMakerTakerQuantities(request.TokenId, request.Side, request.OrderType, request.Quantity, request.Price, request.TimeInForce, tokenInfo.TickQuantity, request.QuantityType ?? QuantityType.Shares, tokenInfo);
+                var makerTakerQuantities = GetMakerTakerQuantities(request.TokenId, request.Side, request.OrderType, request.Quantity, request.Price, request.TimeInForce, tickQuantity!.Value, request.QuantityType ?? QuantityType.Shares, tokenInfo);
                 if (!makerTakerQuantities.Success)
                     return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_baseClient.Exchange, makerTakerQuantities.Error);
 
@@ -167,7 +197,7 @@ namespace Polymarket.Net.Clients.ClobApi
                     _baseClient.AuthenticationProvider.GetOrderSignature(
                         orderParameters,
                         _baseClient.ClientOptions.Environment.ChainId,
-                        tokenInfo.NegativeRisk).ToLowerInvariant());
+                        negativeRisk!.Value).ToLowerInvariant());
 
                 parameters.Add("order", orderParameters);
                 parameters.Add("owner", credentials.L2!.Key!);
@@ -207,10 +237,13 @@ namespace Polymarket.Net.Clients.ClobApi
             TimeInForce? timeInForce, 
             decimal tickSize,
             QuantityType quantityType,
-            PolymarketOrderBook bookInfo)
+            PolymarketOrderBook? bookInfo)
         {
             if (quantityType == QuantityType.Value && !(orderType == OrderType.Market && side == OrderSide.Buy))
                 throw new ArgumentException("QuantityType.Value can only be set for buy market orders", nameof(quantityType));
+
+            if (bookInfo == null && orderType != OrderType.Limit)
+                throw new ArgumentException("Order book info is required for non-limit orders to calculate maker/taker quantities", nameof(bookInfo));
 
             var rounding = _roundingConfig.TryGetValue(tickSize, out var config) ? config : throw new ArgumentException($"Tick size {tickSize} not mapped to rounding config");
 
@@ -227,7 +260,7 @@ namespace Polymarket.Net.Clients.ClobApi
                 {
                     decimal? marketPrice = null;
                     var sum = 0m;
-                    for (var i = bookInfo.Asks.Length - 1; i >= 0; i--)
+                    for (var i = bookInfo!.Asks.Length - 1; i >= 0; i--)
                     {
                         var ask = bookInfo.Asks[i];
                         sum += ask.Quantity;
@@ -250,7 +283,7 @@ namespace Polymarket.Net.Clients.ClobApi
                 {
                     decimal? marketPrice = null;
                     var sum = 0m;
-                    for (var i = bookInfo.Bids.Length - 1; i >= 0; i--)
+                    for (var i = bookInfo!.Bids.Length - 1; i >= 0; i--)
                     {
                         var bid = bookInfo.Bids[i];
                         sum += bid.Quantity;

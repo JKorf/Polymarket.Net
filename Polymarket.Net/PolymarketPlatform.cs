@@ -50,7 +50,7 @@ namespace Polymarket.Net
         /// <summary>
         /// Rate limiter configuration for the Polymarket API
         /// </summary>
-        public static PolymarketRateLimiters RateLimiter { get; } = new PolymarketRateLimiters();
+        public static PolymarketRateLimiters RateLimiter { get; set; } = new PolymarketRateLimiters();
     }
 
     /// <summary>
@@ -68,13 +68,19 @@ namespace Polymarket.Net
         public event Action<RateLimitUpdateEvent> RateLimitUpdated;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        internal PolymarketRateLimiters()
+        /// <summary>
+        /// ctor
+        /// </summary>
+        public PolymarketRateLimiters()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             Initialize();
         }
 
-        private void Initialize()
+        /// <summary>
+        /// Initialize the rate limits
+        /// </summary>
+        protected virtual void Initialize()
         {
             ClobApi = new RateLimitGate("Clob")
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Request), 9000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding)); // 9000 requests per 10 seconds
