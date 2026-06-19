@@ -44,7 +44,8 @@ namespace Polymarket.Net
                 "https://www.polymarket.com",
                 ["https://docs.polymarket.com/api-reference"],
                 PlatformType.PredictionMarket,
-                CentralizationType.Decentralized
+                CentralizationType.Decentralized,
+                PolymarketEnvironment.All
                 );
 
         /// <summary>
