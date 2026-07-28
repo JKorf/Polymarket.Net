@@ -83,7 +83,8 @@ namespace Polymarket.Net.UnitTests
         public async Task TestDataApi() {
             var user = "0x0000000000000000000000000000000000000000";
 
-            await RunAndCheckResult(client => client.DataApi.GetPositionsAsync(user, default), false);
+            await RunAndCheckResult(client => client.DataApi.GetPositionsAsync(user, null, null, 0, false, false, 100, 0, PositionSortBy.Tokens, SortDirection.Desc, null, default), false);
+            await RunAndCheckResult(client => client.DataApi.GetClosedPositionsAsync(user, null, null, 0, 0, ClosedPositionSortBy.RealizedPnl, SortDirection.Desc, null, default), false);
         }
     }
 }
