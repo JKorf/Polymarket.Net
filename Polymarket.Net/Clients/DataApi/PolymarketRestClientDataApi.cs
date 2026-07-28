@@ -11,6 +11,7 @@ using Polymarket.Net.Clients.MessageHandlers;
 using Polymarket.Net.Interfaces.Clients.DataApi;
 using Polymarket.Net.Objects.Models;
 using Polymarket.Net.Objects.Options;
+using Polymarket.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,12 +63,57 @@ namespace Polymarket.Net.Clients.DataApi
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)
             => throw new NotImplementedException();
 
-        public async Task<HttpResult<PolymarketPosition[]>> GetPositionsAsync(string user, CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketPosition[]>> GetPositionsAsync(
+			string user,
+			string? market = null,
+			string? eventId = null,
+			decimal? sizeThreshold = null,
+			bool? redeemable = null,
+			bool? mergeable = null,
+			int? limit = null,
+			int? offset = null,
+			PositionSortBy? sortBy = null,
+			SortDirection? sortDirection = null,
+			string? title = null,
+			CancellationToken ct = default)
         {
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             parameters.Add("user", user);
+            parameters.Add("market", market);
+            parameters.Add("eventId", eventId);
+            parameters.Add("sizeThreshold", sizeThreshold);
+            parameters.Add("redeemable", redeemable);
+            parameters.Add("mergeable", mergeable);
+            parameters.Add("limit", limit);
+            parameters.Add("offset", offset);
+            parameters.Add("sortBy", sortBy);
+			parameters.Add("sortDirection", sortDirection);
+			parameters.Add("title", title);
             var request = _definitions.GetOrCreate(HttpMethod.Get, BaseAddress, "positions", PolymarketPlatform.RateLimiter.DataApi, 1, false);
             return await SendAsync<PolymarketPosition[]>(request, parameters, ct).ConfigureAwait(false);
         }
-    }
+
+		public async Task<HttpResult<PolymarketClosedPosition[]>> GetClosedPositionsAsync(
+			string user,
+			string? market = null,
+			string? eventId = null,
+			int? limit = null,
+			int? offset = null,
+			ClosedPositionSortBy? sortBy = null,
+			SortDirection? sortDirection = null,
+			string? title = null,
+			CancellationToken ct = default) {
+			var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+			parameters.Add("user", user);
+			parameters.Add("market", market);
+			parameters.Add("eventId", eventId);
+			parameters.Add("limit", limit);
+			parameters.Add("offset", offset);
+			parameters.Add("sortBy", sortBy);
+			parameters.Add("sortDirection", sortDirection);
+			parameters.Add("title", title);
+			var request = _definitions.GetOrCreate(HttpMethod.Get, BaseAddress, "closed-positions", PolymarketPlatform.RateLimiter.DataApi, 1, false);
+			return await SendAsync<PolymarketClosedPosition[]>(request, parameters, ct).ConfigureAwait(false);
+		}
+	}
 }

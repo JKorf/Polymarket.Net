@@ -89,6 +89,7 @@ namespace Polymarket.Net.Converters
     [JsonSerializable(typeof(DateTime?))]
 
     [JsonSerializable(typeof(PolymarketPosition[]))]
+    [JsonSerializable(typeof(PolymarketClosedPosition[]))]
 
     internal partial class PolymarketSourceGenerationContext : JsonSerializerContext
     {
