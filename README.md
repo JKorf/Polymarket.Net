@@ -313,6 +313,12 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 4.3.0 - 29 Jul 2026
+    * Updated CryptoExchange.Net to version 12.4.0
+    * Added DataApi.GetClosedPositionsAsync endpoint
+    * Updated DataApi.GetPositionsAsync endpoint parameters
+    * Fixed deserialization issue PolymarketEvent when GameId is set
+
 * Version 4.2.1 - 23 Jul 2026
     * Added GameId to PolymarketEvent model
     * Added Unmatched, Delayed values to OrderStatus Enum
