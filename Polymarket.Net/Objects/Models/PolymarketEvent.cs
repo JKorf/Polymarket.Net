@@ -465,6 +465,7 @@ namespace Polymarket.Net.Objects.Models
         /// ["<c>gameId</c>"] Game ID
         /// </summary>
         [JsonPropertyName("gameId")]
+        [JsonConverter(typeof(NumberStringConverter))]
         public string GameId { get; set; } = string.Empty;
     }
 }
