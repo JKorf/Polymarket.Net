@@ -304,10 +304,8 @@ A Discord server is available [here](https://discord.gg/MSpeEtSY8t). For discuss
 Any support is greatly appreciated.
 
 ### Donate
-Make a one time donation in a crypto currency of your choice. If you prefer to donate a currency not listed here please contact me.
-
-**Btc**:  bc1q277a5n54s2l2mzlu778ef7lpkwhjhyvghuv8qf  
-**Eth**:  0xcb1b63aCF9fef2755eBf4a0506250074496Ad5b7   
+Make a one time donation in a crypto currency of your choice. If you prefer to donate in a different currency or network send me a message.
+   
 **USDT (TRX)**  TKigKeJPXZYyMVDgMyXxMf17MWYia92Rjd 
 
 ### Sponsor
