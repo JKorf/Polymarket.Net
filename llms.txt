@@ -2,7 +2,7 @@
 
 > Strongly typed .NET client library for the Polymarket REST and WebSocket APIs. Supports CLOB market data, Gamma events/markets/tags/search, Data API positions, CLOB trading/account endpoints, local order books, user client management, L1/L2 authentication, and WebSocket streams. Part of the CryptoExchange.Net ecosystem.
 
-Polymarket.Net provides typed C# access to Polymarket prediction market APIs with `HttpResult<T>` / `HttpResult` REST handling and `WebSocketResult<UpdateSubscription>` subscription handling, client-side rate limiting, automatic WebSocket reconnection, native AOT support, and dependency injection. Current repository package version: 4.1.0. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
+Polymarket.Net provides typed C# access to Polymarket prediction market APIs with `HttpResult<T>` / `HttpResult` REST handling and `WebSocketResult<UpdateSubscription>` subscription handling, client-side rate limiting, automatic WebSocket reconnection, native AOT support, and dependency injection. Current repository package version: 4.4.0. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
 
 ## Documentation
 
