@@ -70,7 +70,7 @@ restClient.DataApi              // user positions
 socketClient.ClobApi            // platform, token, user, and sports subscriptions
 ```
 
-There is no `SpotApi`, `FuturesApi`, `SharedClient`, or `GeneralApi` branch in Polymarket.Net.
+There is no `SpotApi`, `FuturesApi`, `SharedApi`, or `GeneralApi` branch in Polymarket.Net.
 
 ## Authentication Levels And Types
 
@@ -196,7 +196,7 @@ For a maintained local CLOB order book use `PolymarketClobSymbolOrderBook` or `I
 - Do not call `.Result` or `.Wait()` on async methods.
 - Do not instantiate clients per request in production code; reuse clients or use DI.
 - Do not place/cancel orders with L1-only credentials; create/derive L2 credentials first or configure both levels.
-- Do not document `.SharedClient`; it is not exposed by the current Polymarket.Net client interfaces.
+- Do not document `.SharedApi`; it is not exposed by the current Polymarket.Net client interfaces.
 - Do not confuse `PolymarketOrderResult.Success` with `HttpResult.Success`; check both if you need to know whether the API call succeeded and whether the order itself was accepted.
 
 ## Environments

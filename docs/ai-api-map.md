@@ -172,7 +172,7 @@ WebSocket subscription methods return `WebSocketResult<UpdateSubscription>`.
 | `ApiCredentials` directly | `PolymarketCredentials` |
 | `SpotApi`, `FuturesApi`, `GeneralApi` | `ClobApi`, `GammaApi`, `DataApi` |
 | Symbol pairs such as `BTCUSDT` for orders | Polymarket token ids |
-| `.SharedClient` | Not exposed by current Polymarket.Net interfaces |
+| `.SharedApi` | Not exposed by current Polymarket.Net interfaces |
 | `.Data` without `.Success` check | Check `.Success` first |
 | L1-only credentials for order placement | Add or derive L2 credentials |
 | `PolymarketOrderResult.Success` only | Check `HttpResult.Success` first, then order result success |

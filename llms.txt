@@ -26,7 +26,7 @@ Polymarket.Net provides typed C# access to Polymarket prediction market APIs wit
 
 - Use `PolymarketRestClient` and `PolymarketSocketClient`; do not generate raw HTTP calls.
 - Check `.Success` before reading `.Data`.
-- Use `ClobApi`, `GammaApi`, and `DataApi`; do not invent `SpotApi`, `FuturesApi`, `GeneralApi`, or `.SharedClient`.
+- Use `ClobApi`, `GammaApi`, and `DataApi`; do not invent `SpotApi`, `FuturesApi`, `GeneralApi`, or `.SharedApi`.
 - Polymarket order placement uses token ids and prices between 0 and 1, not exchange symbols.
 - Public data can be requested without credentials.
 - L1 credentials use `PolymarketCredentials.WithL1(...)` / `PolymarketL1Credential`; L2 credentials use `.WithL2(...)` / `HMACPassCredential`.
