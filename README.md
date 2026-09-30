@@ -313,6 +313,9 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 4.6.0 - 30 Sep 2026
+    * Updated CryptoExchange.Net to V13.1.0
+
 * Version 4.5.0 - 24 Sep 2026
     * Rate limiting
       * Added rate limit admission callback to client options to allow rate limit admission ruling on request definition
