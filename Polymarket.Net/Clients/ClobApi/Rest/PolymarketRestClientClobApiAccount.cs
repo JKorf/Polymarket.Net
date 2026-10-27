@@ -57,6 +57,14 @@ namespace Polymarket.Net.Clients.ClobApi
             return result;
         }
 
+        public async Task<HttpResult<PolymarketRateLimit>> GetRateLimitTierAsync(CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "v1/user/rate-limit-tier", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
+            var result = await _baseClient.SendAsync<PolymarketRateLimit>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
         public async Task<HttpResult<PolymarketClosedOnlyMode>> GetClosedOnlyModeAsync(CancellationToken ct = default)
         {
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);

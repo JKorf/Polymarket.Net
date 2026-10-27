@@ -126,5 +126,17 @@ namespace Polymarket.Net.Interfaces.Clients.ClobApi
             DateTime? endTime = null,
             string? cursor = null, 
             CancellationToken ct = default);
+
+        /// <summary>
+        /// Get the current ratelimit for the account
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/account/get-rate-limit-tier" /><br />
+        /// Endpoint:<br />
+        /// GET /rate-limit-tier
+        /// </para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketRateLimit>> GetRateLimitTierAsync(CancellationToken ct = default);
     }
 }

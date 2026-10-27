@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Converters
 {
+    [JsonSerializable(typeof(PolymarketRateLimit))]
     [JsonSerializable(typeof(PolymarketPage<PolymarketBuilderTrade>))]
     [JsonSerializable(typeof(PolymarketMarketInfo))]
     [JsonSerializable(typeof(PolymarketOrderHeartbeat))]
