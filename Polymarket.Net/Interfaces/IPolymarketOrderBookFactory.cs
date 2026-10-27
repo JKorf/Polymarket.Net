@@ -1,5 +1,4 @@
 using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.SharedApis;
 using System;
 using Polymarket.Net.Objects.Options;
 

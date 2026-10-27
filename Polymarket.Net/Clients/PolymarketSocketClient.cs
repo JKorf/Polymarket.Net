@@ -1,16 +1,12 @@
 using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.Objects.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
+using Polymarket.Net.Clients.PredictionApi;
 using Polymarket.Net.Interfaces.Clients;
-using Polymarket.Net.Objects.Options;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
-using Polymarket.Net.Clients.ClobApi;
-using Polymarket.Net.Clients.GammaApi;
-using Polymarket.Net.Interfaces.Clients.GammaApi;
+using Polymarket.Net.Interfaces.Clients.PredictionApi;
 using Polymarket.Net.Objects.Models;
-using CryptoExchange.Net.Authentication;
+using Polymarket.Net.Objects.Options;
+using System;
 
 namespace Polymarket.Net.Clients
 {
@@ -23,10 +19,7 @@ namespace Polymarket.Net.Clients
         #region Api clients
         
          /// <inheritdoc />
-        public IPolymarketSocketClientClobApi ClobApi { get; }
-
-        /// <inheritdoc />
-        public IPolymarketSocketClientDataApi DataApi { get; }
+        public IPolymarketSocketClientPredictionApi PredictionApi { get; }
 
         #endregion
 
@@ -49,9 +42,8 @@ namespace Polymarket.Net.Clients
         public PolymarketSocketClient(IOptions<PolymarketSocketOptions> options, ILoggerFactory? loggerFactory = null) : base(loggerFactory, "Polymarket")
         {
             Initialize(options.Value);
-                        
-            ClobApi = AddApiClient(new PolymarketSocketClientClobApi(loggerFactory, options.Value));
-            DataApi = AddApiClient(new PolymarketSocketClientDataApi(loggerFactory, options.Value));
+
+            PredictionApi = AddApiClient(new PolymarketSocketClientPredictionApi(loggerFactory, options.Value));
         }
         #endregion
 
@@ -70,7 +62,7 @@ namespace Polymarket.Net.Clients
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
 
-            var existingCreds = ((PolymarketSocketClientClobApi)ClobApi).ApiCredentials
+            var existingCreds = ((PolymarketSocketClientPredictionApi)PredictionApi).ApiCredentials
                 ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
 
             SetApiCredentials(

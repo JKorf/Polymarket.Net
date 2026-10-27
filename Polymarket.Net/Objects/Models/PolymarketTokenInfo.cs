@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text.Json.Serialization;
-using Polymarket.Net.Enums;
+﻿using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Objects.Models;
 

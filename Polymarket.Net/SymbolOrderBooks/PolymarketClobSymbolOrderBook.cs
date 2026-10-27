@@ -61,7 +61,7 @@ namespace Polymarket.Net.SymbolOrderBooks
         /// <inheritdoc />
         protected override async Task<CallResult<UpdateSubscription>> DoStartAsync(CancellationToken ct)
         {
-            var result = await _socketClient.ClobApi.SubscribeToTokenUpdatesAsync([Symbol], onBookUpdate: ProcessUpdate).ConfigureAwait(false);
+            var result = await _socketClient.PredictionApi.SubscribeToTokenUpdatesAsync([Symbol], onBookUpdate: ProcessUpdate).ConfigureAwait(false);
             if (!result.Success)
                 return CallResult.Fail<UpdateSubscription>(result.Error);
 

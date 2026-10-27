@@ -1,5 +1,4 @@
 using CryptoExchange.Net.Objects;
-using Polymarket.Net.Enums;
 using Polymarket.Net.Objects.Internal;
 using Polymarket.Net.Objects.Models;
 using System;
@@ -8,6 +7,19 @@ using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Converters
 {
+    [JsonSerializable(typeof(PolymarketSymbol[]))]
+    [JsonSerializable(typeof(PolymarketExchangeInfo))]
+    [JsonSerializable(typeof(PolymarketCollateralAsset[]))]
+    [JsonSerializable(typeof(PolymarketTicker[]))]
+    [JsonSerializable(typeof(PolymarketStatistics[]))]
+    [JsonSerializable(typeof(PolymarketExchangeStatistics))]
+    [JsonSerializable(typeof(PolymarketPaged<PolymarketKline>))]
+    [JsonSerializable(typeof(PolymarketPaged<PolymarketMarkPriceHistory>))]
+    [JsonSerializable(typeof(PolymarketBookTicker[]))]
+    [JsonSerializable(typeof(PolymarketPerpOrderBook))]
+    [JsonSerializable(typeof(PolymarketIndex))]
+    [JsonSerializable(typeof(PolymarketPaged<PolymarketPerpTrade>))]
+
     [JsonSerializable(typeof(PolymarketBoltSubscribeRequest))]
     [JsonSerializable(typeof(PolymarketBoltAuthRequest))]
     [JsonSerializable(typeof(PolymarketBoltMessage))]

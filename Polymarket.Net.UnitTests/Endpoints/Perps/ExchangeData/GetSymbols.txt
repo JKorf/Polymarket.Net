@@ -1,0 +1,40 @@
+GET
+/v1/info/instruments
+false
+UriParams: {}
+[
+  {
+    "instrument_id": 123,
+    "instrument_type": "perpetual",
+    "category": "equity",
+    "isolated_only": true,
+    "symbol": "NVDA-USDC",
+    "base_asset": "NVDA",
+    "quote_asset": "USDC",
+    "funding_interval": "1h",
+    "quantity_decimals": 2,
+    "price_decimals": 2,
+    "price_bounds": "0.05",
+    "liquidation_fee": "0.025",
+    "max_order_count": 200,
+    "min_notional": "1.00",
+    "max_market_notional": "1000000.00",
+    "max_limit_notional": "10000000.00",
+    "max_leverage": 20,
+    "risk_tiers": [
+      {
+        "lower_bound": "0",
+        "max_leverage": 20
+      }
+    ],
+    "ui_live_time": 1786032000000,
+    "close_only": true,
+    "display_symbol": "USA500-USD",
+    "settlement": {
+      "sequence": 1,
+      "timestamp": 1,
+      "price": "<string>",
+      "insurance_debit": "<string>"
+    }
+  }
+]

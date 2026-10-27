@@ -1,9 +1,7 @@
 using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.SharedApis;
 using System;
 using Polymarket.Net.Interfaces;
 using Polymarket.Net.Objects.Options;
-using CryptoExchange.Net.OrderBook;
 using Microsoft.Extensions.DependencyInjection;
 using Polymarket.Net.Interfaces.Clients;
 using Microsoft.Extensions.Logging;

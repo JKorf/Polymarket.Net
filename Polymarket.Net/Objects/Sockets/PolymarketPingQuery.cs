@@ -1,8 +1,6 @@
 ﻿using CryptoExchange.Net.Sockets;
-using CryptoExchange.Net.Sockets.Interfaces;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using System;
-using System.Collections.Generic;
 
 namespace Polymarket.Net.Objects.Sockets
 {

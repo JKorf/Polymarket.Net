@@ -1,6 +1,6 @@
 ﻿using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
+using Polymarket.Net.Interfaces.Clients.PredictionApi;
 using Polymarket.Net.Objects.Models;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace Polymarket.Net.Utils
         /// <summary>
         /// Get token info either from cache or from the API if the cache is outdated or not present
         /// </summary>
-        public static async Task<CallResult<PolymarketOrderBook>> GetTokenInfoAsync(string tokenId, IPolymarketRestClientClobApi client)
+        public static async Task<CallResult<PolymarketOrderBook>> GetTokenInfoAsync(string tokenId, IPolymarketRestClientPredictionApi client)
         {
             await _semaphoreSpot.WaitAsync().ConfigureAwait(false);
             try
@@ -59,7 +59,7 @@ namespace Polymarket.Net.Utils
         /// <summary>
         /// Get token info either from cache or from the API if the cache is outdated or not present
         /// </summary>
-        public static async Task<CallResult<PolymarketOrderBook[]>> GetTokenInfosAsync(IEnumerable<string> tokenIds, IPolymarketRestClientClobApi client)
+        public static async Task<CallResult<PolymarketOrderBook[]>> GetTokenInfosAsync(IEnumerable<string> tokenIds, IPolymarketRestClientPredictionApi client)
         {
             await _semaphoreSpot.WaitAsync().ConfigureAwait(false);
             try
@@ -93,7 +93,7 @@ namespace Polymarket.Net.Utils
             }
         }
 
-        private static async Task<CallResult<PolymarketOrderBook[]>> UpdateTokenInfoAsync(string envName, IEnumerable<string> tokenIds, IPolymarketRestClientClobApi client)
+        private static async Task<CallResult<PolymarketOrderBook[]>> UpdateTokenInfoAsync(string envName, IEnumerable<string> tokenIds, IPolymarketRestClientPredictionApi client)
         {
             var tokenInfo = await client.ExchangeData.GetOrderBooksAsync(tokenIds).ConfigureAwait(false);
             if (!tokenInfo.Success)

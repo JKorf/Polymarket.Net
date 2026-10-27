@@ -1,7 +1,6 @@
 ﻿using CryptoExchange.Net.Authentication;
 using Polymarket.Net.Enums;
 using System;
-using System.Net;
 
 namespace Polymarket.Net
 {

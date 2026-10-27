@@ -1,13 +1,9 @@
 using CryptoExchange.Net;
-using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.Interfaces.Clients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
-using Polymarket.Net;
 using Polymarket.Net.Clients;
 using Polymarket.Net.Interfaces;
 using Polymarket.Net.Interfaces.Clients;

@@ -2,7 +2,6 @@ using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
 using System.Text.Json;
 using CryptoExchange.Net.Converters.SystemTextJson.MessageHandlers;
 using Polymarket.Net.Objects.Models;
-using System.Linq;
 using System;
 using System.Net.WebSockets;
 using Polymarket.Net.Objects.Internal;

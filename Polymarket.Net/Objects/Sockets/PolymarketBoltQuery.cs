@@ -5,10 +5,6 @@ using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using Polymarket.Net.Objects.Internal;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polymarket.Net.Objects.Sockets.Subscriptions
 {

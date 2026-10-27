@@ -1,0 +1,12 @@
+GET
+/v1/info/exchange
+false
+UriParams: {}
+{
+  "name": "Polymarket",
+  "version": "1",
+  "chain_id": 137,
+  "contract": "0x1234567890abcdef1234567890abcdef12345678",
+  "cancel_only": false,
+  "engine_version": "0.0.61"
+}

@@ -25,19 +25,14 @@ namespace Polymarket.Net.Objects.Options
         }
                 
          /// <summary>
-        /// Clob API options
+        /// Prediction API options
         /// </summary>
-        public RestApiOptions ClobOptions { get; private set; } = new RestApiOptions();
+        public RestApiOptions PredictionOptions { get; private set; } = new RestApiOptions();
 
         /// <summary>
-        /// Gamma API options
+        /// Perps API options
         /// </summary>
-        public RestApiOptions GammaOptions { get; private set; } = new RestApiOptions();
-
-        /// <summary>
-        /// Data API options
-        /// </summary>
-        public RestApiOptions DataOptions { get; private set; } = new RestApiOptions();
+        public RestApiOptions PerpsOptions { get; private set; } = new RestApiOptions();
 
         /// <summary>
         /// Builder code
@@ -48,8 +43,8 @@ namespace Polymarket.Net.Objects.Options
         {
             targetOptions = base.Set<PolymarketRestOptions>(targetOptions);
             targetOptions.BuilderCode = BuilderCode;
-            targetOptions.ClobOptions = ClobOptions.Set(targetOptions.ClobOptions);
-            targetOptions.GammaOptions = GammaOptions.Set(targetOptions.ClobOptions);
+            targetOptions.PredictionOptions = PredictionOptions.Set(targetOptions.PredictionOptions);
+            targetOptions.PerpsOptions = PerpsOptions.Set(targetOptions.PerpsOptions);
             return targetOptions;
         }
     }

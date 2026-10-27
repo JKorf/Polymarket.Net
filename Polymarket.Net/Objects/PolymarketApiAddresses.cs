@@ -36,6 +36,11 @@ namespace Polymarket.Net.Objects
         public string PolyBoltSocketClientAddress { get; set; } = "";
 
         /// <summary>
+        /// The address used by the PolymarketRestClient for the Perps API
+        /// </summary>
+        public string PerpsRestClientAddress { get; set; } = "";
+
+        /// <summary>
         /// The default addresses to connect to the Polymarket API
         /// </summary>
         public static PolymarketApiAddresses Default = new PolymarketApiAddresses
@@ -45,7 +50,8 @@ namespace Polymarket.Net.Objects
             DataRestClientAddress = "https://data-api.polymarket.com",
             ClobSocketClientAddress = "wss://ws-subscriptions-clob.polymarket.com",
             SportsSocketClientAddress = "wss://sports-api.polymarket.com",
-            PolyBoltSocketClientAddress = "wss://ws-live-v2.polymarket.com"
+            PolyBoltSocketClientAddress = "wss://ws-live-v2.polymarket.com",
+            PerpsRestClientAddress = "https://api.perpetuals.polymarket.com"
         };
     }
 }

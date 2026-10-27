@@ -1,0 +1,18 @@
+GET
+/v1/info/tickers
+false
+UriParams: {}
+[
+  {
+    "instrument_id": 123,
+    "symbol": "NVDA-USDC",
+    "index_price": "100.00",
+    "mark_price": "100.00",
+    "last_price": "100.00",
+    "mid_price": "100.00",
+    "open_interest": "10.00",
+    "funding_rate": "0.0001",
+    "next_funding": 1767225600000,
+    "timestamp": 1767225600000
+  }
+]

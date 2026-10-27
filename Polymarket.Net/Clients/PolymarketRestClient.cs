@@ -1,19 +1,15 @@
-using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.Objects.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Polymarket.Net.Clients.ClobApi;
-using Polymarket.Net.Clients.GammaApi;
+using Polymarket.Net.Clients.PerpsApi;
+using Polymarket.Net.Clients.PredictionApi;
 using Polymarket.Net.Interfaces.Clients;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
-using Polymarket.Net.Interfaces.Clients.GammaApi;
+using Polymarket.Net.Interfaces.Clients.PerpsApi;
+using Polymarket.Net.Interfaces.Clients.PredictionApi;
 using Polymarket.Net.Objects.Models;
 using Polymarket.Net.Objects.Options;
 using System;
 using System.Net.Http;
-using Polymarket.Net.Interfaces.Clients.DataApi;
-using Polymarket.Net.Clients.DataApi;
 
 namespace Polymarket.Net.Clients
 {
@@ -23,13 +19,9 @@ namespace Polymarket.Net.Clients
         #region Api clients
                 
          /// <inheritdoc />
-        public IPolymarketRestClientClobApi ClobApi { get; }
-
+        public IPolymarketRestClientPredictionApi PredictionApi { get; }
         /// <inheritdoc />
-        public IPolymarketRestClientGammaApi GammaApi { get; }
-
-        /// <inheritdoc />
-        public IPolymarketRestClientDataApi DataApi { get; }
+        public IPolymarketRestClientPerpsApi PerpsApi { get; }
 
         #endregion
 
@@ -54,9 +46,8 @@ namespace Polymarket.Net.Clients
         {
             Initialize(options.Value);
             
-            ClobApi = AddApiClient(new PolymarketRestClientClobApi(loggerFactory, httpClient, options.Value));
-            GammaApi = AddApiClient(new PolymarketRestClientGammaApi(loggerFactory, httpClient, options.Value));
-            DataApi = AddApiClient(new PolymarketRestClientDataApi(loggerFactory, httpClient, options.Value));
+            PredictionApi = AddApiClient(new PolymarketRestClientPredictionApi(loggerFactory, httpClient, options.Value));
+            PerpsApi = AddApiClient(new PolymarketRestClientPerpsApi(loggerFactory, httpClient, options.Value));
         }
 
         #endregion
@@ -76,7 +67,7 @@ namespace Polymarket.Net.Clients
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
 
-            var existingCreds = ((PolymarketRestClientClobApi)ClobApi).ApiCredentials
+            var existingCreds = ((PolymarketRestClientPredictionApi)PredictionApi).ApiCredentials
                 ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
 
             SetApiCredentials(

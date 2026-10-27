@@ -1,6 +1,4 @@
-﻿using CryptoExchange.Net.Converters.SystemTextJson;
-using Polymarket.Net.Enums;
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Objects.Models;

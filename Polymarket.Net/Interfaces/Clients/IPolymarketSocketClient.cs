@@ -1,7 +1,5 @@
-using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Interfaces.Clients;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
-using Polymarket.Net.Interfaces.Clients.GammaApi;
+using Polymarket.Net.Interfaces.Clients.PredictionApi;
 using Polymarket.Net.Objects.Models;
 
 namespace Polymarket.Net.Interfaces.Clients
@@ -12,15 +10,10 @@ namespace Polymarket.Net.Interfaces.Clients
     public interface IPolymarketSocketClient : ISocketClient<PolymarketCredentials>
     {
         /// <summary>
-        /// Clob API endpoints
+        /// Prediction API endpoints
         /// </summary>
-        /// <see cref="IPolymarketSocketClientClobApi"/>
-        public IPolymarketSocketClientClobApi ClobApi { get; }
-        /// <summary>
-        /// Data API endpoints
-        /// </summary>
-        /// <see cref="IPolymarketSocketClientDataApi"/>
-        public IPolymarketSocketClientDataApi DataApi { get; }
+        /// <see cref="IPolymarketSocketClientPredictionApi"/>
+        public IPolymarketSocketClientPredictionApi PredictionApi { get; }
 
         /// <summary>
         /// Update existing credentials which specify L1 credentials (PolymarketAddress, L1PrivateKey) with L2 credentials

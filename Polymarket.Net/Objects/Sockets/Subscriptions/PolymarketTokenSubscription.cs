@@ -1,11 +1,10 @@
-using CryptoExchange.Net;
 using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Sockets;
 using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using Microsoft.Extensions.Logging;
-using Polymarket.Net.Clients.ClobApi;
+using Polymarket.Net.Clients.PredictionApi;
 using Polymarket.Net.Objects.Models;
 using System;
 using System.Collections.Generic;
@@ -23,14 +22,14 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
         private readonly Action<DataEvent<PolymarketBestBidAskUpdate>>? _bidAskUpdateHandler;
         private readonly HashSet<string> _tokenIds;
 
-        private PolymarketSocketClientClobApi _client;
+        private PolymarketSocketClientPredictionApi _client;
 
         /// <summary>
         /// ctor
         /// </summary>
         public PolymarketTokenSubscription(
             ILogger logger,
-            PolymarketSocketClientClobApi client,
+            PolymarketSocketClientPredictionApi client,
             string[] tokenIds,
             Action<DataEvent<PolymarketPriceChangeUpdate>>? priceChangeHandler,
             Action<DataEvent<PolymarketBookUpdate>>? bookHandler,

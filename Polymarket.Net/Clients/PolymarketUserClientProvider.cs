@@ -1,10 +1,8 @@
 using Polymarket.Net.Interfaces.Clients;
 using Polymarket.Net.Objects.Options;
-using CryptoExchange.Net.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Concurrent;
 using System.Net.Http;
 using CryptoExchange.Net.Clients;
 

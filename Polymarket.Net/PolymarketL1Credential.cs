@@ -4,7 +4,6 @@ using CryptoExchange.Net.Authentication.Signing;
 using Polymarket.Net.Enums;
 using Secp256k1Net;
 using System;
-using System.Net;
 
 namespace Polymarket.Net
 {

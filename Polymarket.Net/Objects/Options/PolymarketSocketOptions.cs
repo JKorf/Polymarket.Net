@@ -1,4 +1,3 @@
-using CryptoExchange.Net.Authentication;
 using CryptoExchange.Net.Objects.Options;
 
 namespace Polymarket.Net.Objects.Options
@@ -25,21 +24,21 @@ namespace Polymarket.Net.Objects.Options
             Default?.Set(this);
         }
         
-         /// <summary>
-        /// Clob API options
+        /// <summary>
+        /// Prediction API options
         /// </summary>
-        public SocketApiOptions ClobOptions { get; private set; } = new SocketApiOptions();
+        public SocketApiOptions PredictionOptions { get; private set; } = new SocketApiOptions();
 
         /// <summary>
-        /// Gamma API options
+        /// Perps API options
         /// </summary>
-        public SocketApiOptions GammaOptions { get; private set; } = new SocketApiOptions();
+        public SocketApiOptions PerpsOptions { get; private set; } = new SocketApiOptions();
 
         internal PolymarketSocketOptions Set(PolymarketSocketOptions targetOptions)
         {
             targetOptions = base.Set<PolymarketSocketOptions>(targetOptions);            
-            targetOptions.ClobOptions = ClobOptions.Set(targetOptions.ClobOptions);
-            targetOptions.GammaOptions = ClobOptions.Set(targetOptions.GammaOptions);
+            targetOptions.PredictionOptions = PredictionOptions.Set(targetOptions.PredictionOptions);
+            targetOptions.PerpsOptions = PerpsOptions.Set(targetOptions.PerpsOptions);
             return targetOptions;
         }
     }
