@@ -578,5 +578,6 @@ namespace Polymarket.Net.Interfaces.Clients.GammaApi
             long[]? excludeTagIds = null,
             bool? optimized = null,
             CancellationToken ct = default);
+
     }
 }

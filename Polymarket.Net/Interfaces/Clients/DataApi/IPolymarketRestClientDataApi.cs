@@ -79,5 +79,49 @@ namespace Polymarket.Net.Interfaces.Clients.DataApi
 			SortDirection? sortDirection = null,
 			string? title = null,
 			CancellationToken ct = default);
-	}
+
+        /// <summary>
+        /// Get open interest for the platform or for specific markets
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/get-open-interest" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/oi<br />
+        /// </para>
+        /// </summary>
+        /// <param name="marketIds">["<c>marketIds</c>"] Market ids to get open interest for. If not provided retrieves global open interest</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketOpenInterest[]>> GetOpenInterestAsync(IEnumerable<string>? marketIds = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get volumes for events
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/get-live-volume-for-an-event" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/live-volume<br />
+        /// </para>
+        /// </summary>
+        /// <param name="eventIds">["<c>event_id</c>"] Event ids</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketEventVolume>> GetEventVolumeAsync(IEnumerable<string> eventIds, CancellationToken ct = default);
+
+        /// <summary>
+        /// Look up tokens by token ids or market ids
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/look-up-tokens" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/tokens<br />
+        /// </para>
+        /// </summary>
+        /// <param name="tokenIds">["<c>tokenId</c>"] Token ids</param>
+        /// <param name="marketIds">["<c>condition</c>"] Market ids</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketTokenInfo[]>> LookupTokensAsync(
+            IEnumerable<string>? tokenIds = null,
+            IEnumerable<string>? marketIds = null,
+            CancellationToken ct = default);
+
+    }
 }

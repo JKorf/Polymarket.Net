@@ -1,0 +1,15 @@
+GET
+/v2/live-volume
+false
+UriParams: {"event_id": "123"}
+{
+  "data": {
+    "conditions": [
+      {
+        "condition_id": "<string>",
+        "taker_volume": 123
+      }
+    ],
+    "taker_volume_total": 123
+  }
+}

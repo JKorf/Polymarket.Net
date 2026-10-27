@@ -50,6 +50,19 @@ namespace Polymarket.Net.UnitTests
             await tester.ValidateAsync(client => client.ClobApi.Trading.GetUserTradesAsync("123"), "GetUserTrades");
         }
 
+        [Test]
+        public async Task ValidateGammaCalls()
+        {
+            var client = new PolymarketRestClient(opts =>
+            {
+                opts.AutoTimestamp = false;
+            });
+            var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Data", "https://data-api.polymarket.com", IsAuthenticated);
+            await tester.ValidateAsync(client => client.DataApi.GetOpenInterestAsync(), "GetOpenInterest");
+            await tester.ValidateAsync(client => client.DataApi.GetEventVolumeAsync(["123"]), "GetEventVolume", nestedJsonProperty: "data");
+            await tester.ValidateAsync(client => client.DataApi.LookupTokensAsync(["123"]), "LookupTokens", nestedJsonProperty: "data");
+        }
+
         private bool IsAuthenticated(IHttpResult result)
         {
             return result.RequestHeaders?.Contains("POLY_SIGNATURE") == true;

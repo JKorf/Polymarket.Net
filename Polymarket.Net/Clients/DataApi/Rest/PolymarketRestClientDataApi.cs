@@ -59,6 +59,16 @@ namespace Polymarket.Net.Clients.DataApi
             return result;
         }
 
+        internal async Task<HttpResult<T>> SendV2Async<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
+        {
+            var result = await base.SendAsync<PolymarketResponse<T>>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail<T>(result);
+
+            return HttpResult.Ok(result, result.Data.Data);
+        }
+
+
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)
             => throw new NotImplementedException();
@@ -115,5 +125,53 @@ namespace Polymarket.Net.Clients.DataApi
 			var request = _definitions.GetOrCreate(HttpMethod.Get, BaseAddress, "closed-positions", PolymarketPlatform.RateLimiter.DataApi, 1, false);
 			return await SendAsync<PolymarketClosedPosition[]>(request, parameters, ct).ConfigureAwait(false);
 		}
-	}
+
+
+        #region Get Open Interest
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketOpenInterest[]>> GetOpenInterestAsync(IEnumerable<string>? marketIds = null, CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.AddCommaSeparated("marketIds", marketIds);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, BaseAddress, "/v2/oi", PolymarketPlatform.RateLimiter.GammaApi, 1, false);
+            var result = await SendV2Async<PolymarketOpenInterest[]>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+        #region Get Event Volume
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketEventVolume>> GetEventVolumeAsync(IEnumerable<string> eventIds, CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.AddCommaSeparated("event_id", eventIds);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, BaseAddress, "/v2/live-volume", PolymarketPlatform.RateLimiter.GammaApi, 1, false);
+            var result = await SendV2Async<PolymarketEventVolume>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+        #region Lookup Tokens
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketTokenInfo[]>> LookupTokensAsync(
+            IEnumerable<string>? tokenIds = null,
+            IEnumerable<string>? marketIds = null,
+            CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.AddCommaSeparated("tokenId", tokenIds);
+            parameters.AddCommaSeparated("condition", marketIds);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, BaseAddress, "/v2/tokens", PolymarketPlatform.RateLimiter.GammaApi, 1, false);
+            var result = await SendV2Async<PolymarketTokenInfo[]>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+    }
 }

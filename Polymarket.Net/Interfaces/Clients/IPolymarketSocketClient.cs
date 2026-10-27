@@ -16,6 +16,11 @@ namespace Polymarket.Net.Interfaces.Clients
         /// </summary>
         /// <see cref="IPolymarketSocketClientClobApi"/>
         public IPolymarketSocketClientClobApi ClobApi { get; }
+        /// <summary>
+        /// Data API endpoints
+        /// </summary>
+        /// <see cref="IPolymarketSocketClientDataApi"/>
+        public IPolymarketSocketClientDataApi DataApi { get; }
 
         /// <summary>
         /// Update existing credentials which specify L1 credentials (PolymarketAddress, L1PrivateKey) with L2 credentials

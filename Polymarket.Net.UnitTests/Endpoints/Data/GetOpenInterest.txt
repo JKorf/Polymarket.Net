@@ -1,0 +1,12 @@
+GET
+/v2/oi
+false
+UriParams: {}
+{
+  "data": [
+    {
+      "condition_id": "<string>",
+      "value": 123
+    }
+  ]
+}

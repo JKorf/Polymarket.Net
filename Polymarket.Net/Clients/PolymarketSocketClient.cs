@@ -25,6 +25,9 @@ namespace Polymarket.Net.Clients
          /// <inheritdoc />
         public IPolymarketSocketClientClobApi ClobApi { get; }
 
+        /// <inheritdoc />
+        public IPolymarketSocketClientDataApi DataApi { get; }
+
         #endregion
 
         #region constructor/destructor
@@ -48,6 +51,7 @@ namespace Polymarket.Net.Clients
             Initialize(options.Value);
                         
             ClobApi = AddApiClient(new PolymarketSocketClientClobApi(loggerFactory, options.Value));
+            DataApi = AddApiClient(new PolymarketSocketClientDataApi(loggerFactory, options.Value));
         }
         #endregion
 
