@@ -23,6 +23,12 @@ namespace Polymarket.Net
             Decimal = DecimalSerialization.String,
             DateTimes = DateTimeSerialization.MillisecondsString
         };
+        internal static ParameterSerializationSettings _perpsParameterSerializationSettings = new ParameterSerializationSettings
+        {
+            Sort = false,
+            Decimal = DecimalSerialization.String,
+            DateTimes = DateTimeSerialization.MillisecondsNumber
+        };
         internal static ParameterSerializationSettings _gammaParameterSerializationSettings = new ParameterSerializationSettings
         {
             Sort = false,

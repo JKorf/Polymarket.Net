@@ -19,17 +19,14 @@ using Polymarket.Net.Interfaces.Clients.PerpsApi;
 namespace Polymarket.Net.Clients.PerpsApi
 {
     /// <inheritdoc cref="IPolymarketRestClientPerpsApi" />
-    internal partial class PolymarketRestClientPerpsApi : RestApiClient<PolymarketEnvironment, PolymarketAuthenticationProvider, PolymarketCredentials>, IPolymarketRestClientPerpsApi
+    internal partial class PolymarketRestClientPerpsApi : RestApiClient<PolymarketEnvironment, PolymarketPerpsAuthenticationProvider, PolymarketCredentials>, IPolymarketRestClientPerpsApi
     {
         #region fields 
-        private static readonly RequestDefinitionCache _definitions = new RequestDefinitionCache();
-
         protected override ErrorMapping ErrorMapping => PolymarketErrors.Errors;
-
         public new PolymarketRestOptions ClientOptions => (PolymarketRestOptions)base.ClientOptions;
 
         /// <inheritdoc />
-        protected override IRestMessageHandler MessageHandler { get; } = new PolymarketRestMessageHandler(PolymarketErrors.Errors);
+        protected override IRestMessageHandler MessageHandler { get; } = new PolymarketRestPerpsMessageHandler(PolymarketErrors.Errors);
 
         public IPolymarketRestClientPerpsApiAccount Account { get; set; }
         public IPolymarketRestClientPerpsApiExchangeData ExchangeData { get; set; }
@@ -55,10 +52,9 @@ namespace Polymarket.Net.Clients.PerpsApi
         /// <inheritdoc />
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(PolymarketPlatform._serializerContext);
 
-
         /// <inheritdoc />
-        protected override PolymarketAuthenticationProvider CreateAuthenticationProvider(PolymarketCredentials credentials)
-            => new PolymarketAuthenticationProvider(credentials);
+        protected override PolymarketPerpsAuthenticationProvider CreateAuthenticationProvider(PolymarketCredentials credentials)
+            => new PolymarketPerpsAuthenticationProvider(credentials);
 
         internal async Task<HttpResult> SendAsync(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
         {

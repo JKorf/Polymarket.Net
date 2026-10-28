@@ -64,6 +64,23 @@ namespace Polymarket.Net.UnitTests
         }
 
         [Test]
+        public async Task ValidatePerpsAccountCalls()
+        {
+            var client = new PolymarketRestClient(opts =>
+            {
+                opts.AutoTimestamp = false;
+            });
+            var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Perps/Account", "https://data-api.polymarket.com", IsAuthenticated);
+            await tester.ValidateAsync(client => client.PerpsApi.Account.ApproveBuilderAsync("123", "123", 0.1m), "ApproveBuilder");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetBuilderApprovalsAsync("123"), "GetBuilderApprovals");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetBalancesAsync(), "GetBalances");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetPortfolioAsync(), "GetPortfolio");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetEquityHistoryAsync(KlineInterval.OneMinute, DateTime.UtcNow), "GetEquityHistory");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetPnlHistoryAsync(KlineInterval.OneMinute, DateTime.UtcNow), "GetPnlHistory");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetFundingHistoryAsync(), "GetFundingHistory");
+        }
+
+        [Test]
         public async Task ValidatePerpsExchangeDataCalls()
         {
             var client = new PolymarketRestClient(opts =>
@@ -83,6 +100,26 @@ namespace Polymarket.Net.UnitTests
             await tester.ValidateAsync(client => client.PerpsApi.ExchangeData.GetOrderBookAsync(123), "GetOrderBook");
             await tester.ValidateAsync(client => client.PerpsApi.ExchangeData.GetIndexAsync("123"), "GetIndex");
             await tester.ValidateAsync(client => client.PerpsApi.ExchangeData.GetRecentTradesAsync(123), "GetRecentTrades");
+            await tester.ValidateAsync(client => client.PerpsApi.ExchangeData.GetPortfolioAsync(), "GetPortfolio");
+            await tester.ValidateAsync(client => client.PerpsApi.ExchangeData.GetFundingRateHistoryAsync(123), "GetFundingRateHistory", nestedJsonProperty: "data");
+            await tester.ValidateAsync(client => client.PerpsApi.ExchangeData.GetFeesAsync(), "GetFees");
+            await tester.ValidateAsync(client => client.PerpsApi.ExchangeData.GetLimitTiersAsync(), "GetLimitTiers");
+        }
+
+        [Test]
+        public async Task ValidatePerpsTradingCalls()
+        {
+            var client = new PolymarketRestClient(opts =>
+            {
+                opts.AutoTimestamp = false;
+            });
+            var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Perps/Account", "https://data-api.polymarket.com", IsAuthenticated);
+            await tester.ValidateAsync(client => client.PerpsApi.Trading.PlaceOrderAsync(123, OrderSide.Buy, 0.1m), "PlaceOrder");
+            await tester.ValidateAsync(client => client.PerpsApi.Trading.EditOrderAsync(123, 0.1m, 0.1m), "EditOrder");
+            await tester.ValidateAsync(client => client.PerpsApi.Trading.CancelOrderAsync(123), "CancelOrder");
+            await tester.ValidateAsync(client => client.PerpsApi.Trading.GetOrdersAsync(), "GetOrders");
+            await tester.ValidateAsync(client => client.PerpsApi.Trading.GetOpenOrdersAsync(), "GetOpenOrders");
+            await tester.ValidateAsync(client => client.PerpsApi.Trading.GetUserTradesAsync(), "GetUserTrades", nestedJsonProperty: "data");
         }
 
         private bool IsAuthenticated(IHttpResult result)

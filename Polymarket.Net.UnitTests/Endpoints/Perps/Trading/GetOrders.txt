@@ -1,0 +1,34 @@
+GET
+/v1/account/orders
+true
+UriParams: {}
+[
+  {
+    "order_id": 1234567890,
+    "instrument_id": 1,
+    "buy": true,
+    "price": "100.00",
+    "quantity": "10.00",
+    "tif": "gtc",
+    "post_only": false,
+    "ro": false,
+    "resting_quantity": "9.00",
+    "filled_quantity": "1.00",
+    "status": "open",
+    "created_timestamp": 1767225600000,
+    "updated_timestamp": 1767225600000,
+    "client_order_id": "550e8400e29b41d4a716446655440000",
+    "tpsl": {
+      "kind": "tp",
+      "scope": "order",
+      "trp": "110.00",
+      "parent_oid": 1234567890,
+      "armed_qty": "10.00",
+      "slip_bps": 1000
+    },
+    "builder": {
+      "address": "0x1234567890abcdef1234567890abcdef12345678",
+      "fee_rate": "0.001"
+    }
+  }
+]

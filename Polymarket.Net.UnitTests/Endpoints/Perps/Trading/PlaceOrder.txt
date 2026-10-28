@@ -1,0 +1,15 @@
+POST
+/v1/trade/orders
+true
+BodyParams: {"iid": 123,"buy": OrderSide.Buy,"qty": 0.1}
+[
+  {
+    "status": "ok",
+    "oid": 1234567890,
+    "coid": "550e8400e29b41d4a716446655440000",
+    "builder": {
+      "address": "0x1234567890abcdef1234567890abcdef12345678",
+      "fee_rate": "0.001"
+    }
+  }
+]

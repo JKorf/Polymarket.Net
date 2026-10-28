@@ -1,0 +1,18 @@
+GET
+/v1/info/portfolio
+false
+UriParams: {}
+{
+  "positions": [
+    {
+      "instrument_id": 123,
+      "symbol": "NVDA-USDC",
+      "size": "10.00",
+      "entry_price": "2986.30",
+      "unrealized_pnl": "-0.01",
+      "return_on_equity": "-0.0027"
+    }
+  ],
+  "equity": "10000.00",
+  "timestamp": 1767225600000
+}

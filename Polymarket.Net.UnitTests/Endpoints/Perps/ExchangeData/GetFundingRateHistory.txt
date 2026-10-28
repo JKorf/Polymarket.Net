@@ -1,0 +1,13 @@
+GET
+/v1/info/funding
+false
+UriParams: {"instrument_id": 123}
+{
+  "data": [
+    {
+      "funding_rate": "0.0001",
+      "timestamp": 1767225600000
+    }
+  ],
+  "more": true
+}

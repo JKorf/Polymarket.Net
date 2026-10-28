@@ -1,0 +1,5 @@
+DELETE
+/v1/trade/orders
+true
+BodyParams: {"op":{"type":"cancelOrders","args":[123]},"sig":"0x123","salt":123,"ts":1793192945377}
+[{"status":"ok","oid":123,"ts":1793192947979}]

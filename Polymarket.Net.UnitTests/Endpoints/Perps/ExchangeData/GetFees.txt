@@ -1,0 +1,21 @@
+GET
+/v1/info/fees
+false
+UriParams: {}
+{
+  "fee_schedule": [
+    {
+      "instrument_type": "perpetual",
+      "category": "equity",
+      "taker_fee_rate": "0.0002",
+      "maker_fee_rate": "-0.00005",
+      "tiers": [
+        {
+          "min_volume_30d": "5000000",
+          "taker_fee_rate": "0.0002",
+          "maker_fee_rate": "-0.00005"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+GET
+/v1/trade/orders
+true
+UriParams: {"oid": 123,"p": 0.1,"qty": 0.1}
+[
+  {
+    "status": "ok",
+    "order": {
+      "oid": 1234567890,
+      "iid": 1,
+      "buy": true,
+      "p": "100.00",
+      "qty": "10.00",
+      "tif": "gtc",
+      "po": false,
+      "ro": false,
+      "rest": "9.00",
+      "fill": "1.00",
+      "cts": 1767225600000,
+      "uts": 1767225600000,
+      "status": "open",
+      "coid": "550e8400e29b41d4a716446655440000"
+    }
+  }
+]

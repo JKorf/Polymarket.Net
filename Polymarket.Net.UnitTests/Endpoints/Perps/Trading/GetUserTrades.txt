@@ -1,0 +1,35 @@
+GET
+/v1/account/fills
+false
+UriParams: {}
+{
+  "data": [
+    {
+      "trade_id": 1,
+      "order_id": 1234567890,
+      "instrument_id": 1,
+      "side": "long",
+      "price": "100.00",
+      "quantity": "10.00",
+      "taker": true,
+      "fee": "1.25",
+      "fee_asset": "USDC",
+      "previous_size": "26.86",
+      "previous_entry_price": "100.00",
+      "pnl": "100.00",
+      "liquidation": true,
+      "adl": true,
+      "timestamp": 1767225600000,
+      "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      "builder_fee": "20.00",
+      "total_fee": "24.00",
+      "settlement": true,
+      "builder": {
+        "address": "0x1234567890abcdef1234567890abcdef12345678",
+        "fee_rate": "0.001"
+      }
+    }
+  ],
+  "more": true,
+  "cursor": "eyJ0cyI6MTc2NzIyNTYwMDAwMDAwMDAwMCwiaWQiOjF9"
+}

@@ -203,5 +203,74 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
             DateTime? endTime = null,
             CancellationToken ct = default);
 
+        /// <summary>
+        /// Get the portfolio overview for an address
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/get-public-portfolio" /><br />
+        /// Endpoint:<br />
+        /// GET /v1/info/portfolio<br />
+        /// </para>
+        /// </summary>
+        /// <param name="address">["<c>address</c>"] The address to get info for. If not provided uses authentication address</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPortfolio>> GetPortfolioAsync(string? address = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get funding rate history for a symbol
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/get-historical-funding" /><br />
+        /// Endpoint:<br />
+        /// GET /v1/info/funding<br />
+        /// </para>
+        /// </summary>
+        /// <param name="symbolId">["<c>instrument_id</c>"] Symbol id</param>
+        /// <param name="startTime">["<c>start_timestamp</c>"] Filter by start time</param>
+        /// <param name="endTime">["<c>end_timestamp</c>"] Filter by end time</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPaged<PolymarketFundingRate>>> GetFundingRateHistoryAsync(
+            long symbolId,
+            DateTime? startTime = null,
+            DateTime? endTime = null,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Get trading fee schedules
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/get-fees" /><br />
+        /// Endpoint:<br />
+        /// GET /v1/info/fees<br />
+        /// </para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketFeeRate[]>> GetFeesAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get limit tiers
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/get-limit-tiers" /><br />
+        /// Endpoint:<br />
+        /// POST /v1/info/limit-tiers<br />
+        /// </para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketLimitTier[]>> GetLimitTiersAsync(CancellationToken ct = default);
+
+        /// <summary>
+        /// Get if the address is registered for perps
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/get-registration" /><br />
+        /// Endpoint:<br />
+        /// GET /v1/info/registered<br />
+        /// </para>
+        /// </summary>
+        /// <param name="address">["<c>address</c>"] The address to check</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketRegistered>> GetIsRegisteredAsync(string address, CancellationToken ct = default);
+
     }
 }

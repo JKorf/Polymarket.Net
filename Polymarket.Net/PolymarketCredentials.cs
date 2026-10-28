@@ -1,4 +1,5 @@
 ﻿using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Web3;
 using Polymarket.Net.Enums;
 using System;
 
@@ -12,12 +13,17 @@ namespace Polymarket.Net
         /// <summary>
         /// Layer 1 credentials
         /// </summary>
-        public PolymarketL1Credential L1 { get; set; }
+        public PolymarketL1Credential? L1 { get; set; }
 
         /// <summary>
         /// Layer 2 credentials
         /// </summary>
         public HMACPassCredential? L2 { get; set; }
+
+        /// <summary>
+        /// Perps credentials
+        /// </summary>
+        public PolymarketPerpsCredential? Perps { get; set; }
 
         /// <summary>
         /// Create new credentials
@@ -31,10 +37,15 @@ namespace Polymarket.Net
         /// </summary>
         /// <param name="layer1Credential">Layer 1 credentials</param>
         /// <param name="layer2Credentials">Layer 2 credentials</param>
-        public PolymarketCredentials(PolymarketL1Credential layer1Credential, HMACPassCredential? layer2Credentials = null)
+        /// <param name="perpsCredentials">Perps credentials</param>
+        public PolymarketCredentials(
+            PolymarketL1Credential? layer1Credential,
+            HMACPassCredential? layer2Credentials = null,
+            PolymarketPerpsCredential? perpsCredentials = null)
         {
             L1 = layer1Credential;
             L2 = layer2Credentials;
+            Perps = perpsCredentials;
         }
 
         /// <summary>
@@ -65,17 +76,26 @@ namespace Polymarket.Net
             return this;
         }
 
+        /// <summary>
+        /// Specify the Perps credentials
+        /// </summary>
+        public PolymarketCredentials WithPerps(string secret, EthKey? signerKey, EthKey proxyKey)
+        {
+            if (Perps != null) throw new InvalidOperationException("Perps credentials already set");
+
+            Perps = new PolymarketPerpsCredential(secret, signerKey, proxyKey);
+            return this;
+        }
+
         /// <inheritdoc />
-        public override ApiCredentials Copy() => new PolymarketCredentials { L1 = L1, L2 = L2 };
+        public override ApiCredentials Copy() => new PolymarketCredentials { L1 = L1, L2 = L2, Perps = Perps };
 
         /// <inheritdoc />
         public override void Validate()
         {
-            if (L1 == null)
-                throw new ArgumentException("Layer 1 credential not set");
-
-            L1.Validate();
+            L1?.Validate();
             L2?.Validate();
+            Perps?.Validate();
         }
     }
 }

@@ -60,7 +60,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             Category? category = null,
             CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             parameters.Add("instrument_type", symbolType);
             parameters.Add("category", category);
@@ -76,7 +76,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
         /// <inheritdoc />
         public async Task<HttpResult<PolymarketTicker[]>> GetTickersAsync(long? symbolId = null, CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/tickers", PolymarketPlatform.RateLimiter.PerpsApi, 2, false);
             var result = await _baseClient.SendAsync<PolymarketTicker[]>(request, parameters, ct).ConfigureAwait(false);
@@ -90,7 +90,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
         /// <inheritdoc />
         public async Task<HttpResult<PolymarketStatistics[]>> GetStatisticsAsync(long? symbolId = null, CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/statistics", PolymarketPlatform.RateLimiter.PerpsApi, 2, false);
             var result = await _baseClient.SendAsync<PolymarketStatistics[]>(request, parameters, ct).ConfigureAwait(false);
@@ -107,7 +107,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             DateTime endTime,
             CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("start_timestamp", startTime);
             parameters.Add("end_timestamp", endTime);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/exchange-stats", PolymarketPlatform.RateLimiter.PerpsApi, 10, false);
@@ -127,7 +127,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             DateTime? endTime = null,
             CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             parameters.Add("interval", interval);
             parameters.Add("start_timestamp", startTime);
@@ -149,7 +149,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             DateTime? endTime = null,
             CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             parameters.Add("interval", interval);
             parameters.Add("start_timestamp", startTime);
@@ -166,7 +166,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
         /// <inheritdoc />
         public async Task<HttpResult<PolymarketBookTicker[]>> GetBookTickerAsync(long? symbolId = null, CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/bbo", PolymarketPlatform.RateLimiter.PerpsApi, 2, false);
             var result = await _baseClient.SendAsync<PolymarketBookTicker[]>(request, parameters, ct).ConfigureAwait(false);
@@ -183,7 +183,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             int? depth = null,
             CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             parameters.Add("depth", depth);
             var weight = depth <= 10 ? 2 :
@@ -202,7 +202,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
         /// <inheritdoc />
         public async Task<HttpResult<PolymarketIndex>> GetIndexAsync(string asset, CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("asset", asset);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/index", PolymarketPlatform.RateLimiter.PerpsApi, 2, false);
             var result = await _baseClient.SendAsync<PolymarketIndex>(request, parameters, ct).ConfigureAwait(false);
@@ -220,12 +220,84 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             DateTime? endTime = null,
             CancellationToken ct = default)
         {
-            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
             parameters.Add("instrument_id", symbolId);
             parameters.Add("start_timestamp", startTime);
             parameters.Add("end_timestamp", endTime);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/trades", PolymarketPlatform.RateLimiter.PerpsApi, 10, false);
             var result = await _baseClient.SendAsync<PolymarketPaged<PolymarketPerpTrade>>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+        #region Get Portfolio
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketPortfolio>> GetPortfolioAsync(string? address = null, CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            parameters.Add("address", address ?? _baseClient.AuthenticationProvider?.ApiCredentials.L1?.Key);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/portfolio", PolymarketPlatform.RateLimiter.PerpsApi, 1, false);
+            var result = await _baseClient.SendAsync<PolymarketPortfolio>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+        #region Get Funding Rate History
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketPaged<PolymarketFundingRate>>> GetFundingRateHistoryAsync(
+            long symbolId,
+            DateTime? startTime = null,
+            DateTime? endTime = null,
+            CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            parameters.Add("instrument_id", symbolId);
+            parameters.Add("start_timestamp", startTime);
+            parameters.Add("end_timestamp", endTime);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/funding", PolymarketPlatform.RateLimiter.PerpsApi, 1, false);
+            var result = await _baseClient.SendAsync<PolymarketPaged<PolymarketFundingRate>>(request, parameters, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+        #region Get Fees
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketFeeRate[]>> GetFeesAsync(CancellationToken ct = default)
+        {
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/fees", PolymarketPlatform.RateLimiter.PerpsApi, 1, false);
+            var result = await _baseClient.SendAsync<PolymarketFeeRatesWrapper>(request, null, ct).ConfigureAwait(false);
+            return !result.Success ? HttpResult.Fail<PolymarketFeeRate[]>(result) : HttpResult.Ok(result, result.Data.FeeSchedule);
+        }
+
+        #endregion
+
+        #region Get Limit Tiers
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketLimitTier[]>> GetLimitTiersAsync(CancellationToken ct = default)
+        {
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/limit-tiers", PolymarketPlatform.RateLimiter.PerpsApi, 2, false);
+            var result = await _baseClient.SendAsync<PolymarketLimitTier[]>(request, null, ct).ConfigureAwait(false);
+            return result;
+        }
+
+        #endregion
+
+        #region Get Is Registered
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketRegistered>> GetIsRegisteredAsync(string address, CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.Add("address", address);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/registered", PolymarketPlatform.RateLimiter.PerpsApi, 1, false);
+            var result = await _baseClient.SendAsync<PolymarketRegistered>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
 

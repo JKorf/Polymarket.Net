@@ -1,0 +1,16 @@
+GET
+/v1/account/builder-approvals
+false
+UriParams: {"builder": "123"}
+{
+  "data": [
+    {
+      "trader": "0x1234567890abcdef1234567890abcdef12345678",
+      "builder": "0x1234567890abcdef1234567890abcdef12345678",
+      "max_fee_rate": "0.001",
+      "approval_version": 2,
+      "timestamp": 1767225600000,
+      "sequence": 123
+    }
+  ]
+}

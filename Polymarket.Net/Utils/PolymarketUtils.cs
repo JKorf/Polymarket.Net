@@ -18,6 +18,26 @@ namespace Polymarket.Net.Utils
         private static Dictionary<string, Dictionary<string, PolymarketTokenCache>> _tokenInfos = new Dictionary<string, Dictionary<string, PolymarketTokenCache>>();
         private static readonly SemaphoreSlim _semaphoreSpot = new SemaphoreSlim(1, 1);
 
+
+        internal static Parameters GetOperationParameters(string type, Parameters parameters)
+        {
+            var result = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            var operation = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            operation.Add("type", type);
+            operation.Add("args", parameters.BodyValue ?? parameters);
+            result.Add("op", operation);
+            return result;
+        }
+        internal static Parameters GetOperationParameters(string type, Parameters[] parameters)
+        {
+            var result = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            var operation = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            operation.Add("type", type);
+            operation.Add("args", parameters);
+            result.Add("op", operation);
+            return result;
+        }
+
         /// <summary>
         /// Get token info either from cache or from the API if the cache is outdated or not present
         /// </summary>
