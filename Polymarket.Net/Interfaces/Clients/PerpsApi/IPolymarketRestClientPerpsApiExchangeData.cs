@@ -14,6 +14,18 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
     public interface IPolymarketRestClientPerpsApiExchangeData
     {
         /// <summary>
+        /// Get server timestamp
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/get-server-time" /><br />
+        /// Endpoint:<br />
+        /// GET /v1/info/time<br />
+        /// </para>
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default);
+
+        /// <summary>
         /// Get exchange engine info
         /// <para>
         /// Docs:<br />

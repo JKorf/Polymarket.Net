@@ -31,7 +31,7 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
         /// <param name="reduceOnly">["<c>ro</c>"] Reduce only</param>
         /// <param name="clientOrderId">["<c>c</c>"] Client order id</param>
         /// <param name="ct">Cancellation token</param>
-        Task<HttpResult<PolymarketPerpOrderResult[]>> PlaceOrderAsync(
+        Task<HttpResult<PolymarketPerpOrderResult>> PlaceOrderAsync(
             long instrumentId,
             OrderSide side,
             decimal quantity,
@@ -43,27 +43,161 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
             CancellationToken ct = default);
 
         /// <summary>
+        /// Place multiple new orders
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/create-orders" /><br />
+        /// Endpoint:<br />
+        /// POST /v1/trade/orders<br />
+        /// </para>
+        /// </summary>
+        /// <param name="orders">Orders to place</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<CallResult<PolymarketPerpOrderResult>[]>> PlaceMultipleOrdersAsync(
+            IEnumerable<PolymarketPerpsOrderRequest> orders,
+            CancellationToken ct = default);
+
+        /// <summary>
         /// Edit an open order
         /// <para>
         /// Docs:<br />
         /// <a href="https://docs.polymarket.com/api-reference/modify-orders" /><br />
         /// Endpoint:<br />
-        /// GET /v1/trade/orders<br />
+        /// PATCH /v1/trade/orders<br />
         /// </para>
         /// </summary>
         /// <param name="orderId">["<c>oid</c>"] The order id</param>
         /// <param name="newPrice">["<c>p</c>"] New price</param>
         /// <param name="newQuantity">["<c>qty</c>"] New quantity</param>
         /// <param name="ct">Cancellation token</param>
-        Task<HttpResult<PolymarketPerpEditOrderResult[]>> EditOrderAsync(
+        Task<HttpResult<PolymarketPerpEditOrderResult>> EditOrderAsync(
             long orderId,
             decimal newPrice,
             decimal newQuantity,
             CancellationToken ct = default);
 
+        /// <summary>
+        /// Edit open orders
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/modify-orders" /><br />
+        /// Endpoint:<br />
+        /// PATCH /v1/trade/orders<br />
+        /// </para>
+        /// </summary>
+        /// <param name="orders">Orders to edit</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPerpEditOrderResult[]>> EditOrdersAsync(
+            IEnumerable<PolymarketPerpsEditRequest> orders,
+            CancellationToken ct = default);
 
-        Task<HttpResult<PolymarketPerpOrderResult[]>> CancelOrderAsync(
+        /// <summary>
+        /// Edit open order by client order id
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/modify-orders-coid" /><br />
+        /// Endpoint:<br />
+        /// PATCH /v1/trade/orders-coid<br />
+        /// </para>
+        /// </summary>
+        /// <param name="clientOrderId">The client order id</param>
+        /// <param name="newPrice">New price</param>
+        /// <param name="newQuantity">New quantity</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPerpEditOrderResult>> EditOrderByClientOrderIdAsync(
+            string clientOrderId,
+            decimal newPrice,
+            decimal newQuantity,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Edit open orders by client order id
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/modify-orders-coid" /><br />
+        /// Endpoint:<br />
+        /// PATCH /v1/trade/orders-coid<br />
+        /// </para>
+        /// </summary>
+        /// <param name="orders">Orders to edit</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPerpEditOrderResult[]>> EditOrdersByClientOrderIdAsync(
+            IEnumerable<PolymarketPerpsEditCidRequest> orders,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancel order
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/cancel-orders" /><br />
+        /// Endpoint:<br />
+        /// DELETE /v1/account/orders<br />
+        /// </para>
+        /// </summary>
+        /// <param name="orderId">Order id</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPerpOrderResult>> CancelOrderAsync(
             long orderId,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancel orders
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/cancel-orders" /><br />
+        /// Endpoint:<br />
+        /// DELETE /v1/account/orders<br />
+        /// </para>
+        /// </summary>
+        /// <param name="orderIds">Order ids</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPerpOrderResult[]>> CancelOrdersAsync(
+            IEnumerable<long> orderIds,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancel order by client order ids
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/cancel-orders-coid" /><br />
+        /// Endpoint:<br />
+        /// DELETE /v1/trade/orders-coid<br />
+        /// </para>
+        /// </summary>
+        /// <param name="clientOrderId">Client order id</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPerpOrderResult>> CancelOrderByClientOrderIdAsync(
+            string clientOrderId,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancel orders by client order ids
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/cancel-orders-coid" /><br />
+        /// Endpoint:<br />
+        /// DELETE /v1/trade/orders-coid<br />
+        /// </para>
+        /// </summary>
+        /// <param name="clientOrderIds">Client order ids</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketPerpOrderResult[]>> CancelOrdersByClientOrderIdAsync(
+            IEnumerable<string> clientOrderIds,
+            CancellationToken ct = default);
+
+        /// <summary>
+        /// Cancel all open orders for a symbol
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/cancel-all-orders" /><br />
+        /// Endpoint:<br />
+        /// DELETE /v1/trade/orders/all<br />
+        /// </para>
+        /// </summary>
+        /// <param name="symbolId">Symbol id</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult> CancelAllOrdersAsync(
+            long symbolId,
             CancellationToken ct = default);
 
         /// <summary>

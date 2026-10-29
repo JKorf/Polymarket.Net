@@ -99,17 +99,57 @@ namespace Polymarket.Net
                 return (parameters.BodyValue as Array)!.Cast<object>().ToArray();
             }
 
-            return parameters.Select(x => x.Value).ToArray();
+            var result = new List<object>();
+            foreach(var item in parameters)
+            {
+                if (item.Value is Parameters nestedParams)
+                {
+                    result.Add(GetValues(nestedParams));
+                }
+                else
+                {
+                    result.Add(item.Value);
+                }
+            }
+            return result.ToArray();
         }
 
-        public void AuthenticateCreateProxyRequest(RestApiClient apiClient, Parameters parameters, EthKey signKey, string proxyAddress)
+        public void AuthenticateCreateProxyRequest(
+            RestApiClient apiClient,
+            Parameters parameters, 
+            EthKey signKey,
+            string proxyAddress,
+            long expiry)
         {
             var time = GetMillisecondTimestampLong(apiClient);
             var salt = ExchangeHelpers.RandomLong(8);
 
-            var expireArg = (long)((Parameters)((Parameters)parameters["op"])["args"])["expiry"];
+            var proxyPayload = GetCreateProxyPayload(time, expiry, salt, proxyAddress,((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
+            var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(proxyPayload);
+            var keccakSigned = CeSha3Keccack.CalculateHash(msg);
+            var signature = signKey.Sign(keccakSigned);
 
-            var proxyPayload = GetCreateProxyPayload(time, expireArg, salt, proxyAddress,((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
+            parameters.Add("sig", signature);
+            parameters.Add("salt", salt);
+            parameters.Add("ts", time);
+        }
+
+        public void AuthenticateWithdrawRequest(
+            RestApiClient apiClient,
+            Parameters parameters,
+            EthKey signKey,
+            string depositContract,
+            string account,
+            string token,
+            long amount,
+            long fee,
+            string to
+            )
+        {
+            var time = GetMillisecondTimestampLong(apiClient);
+            var salt = ExchangeHelpers.RandomLong(8);
+
+            var proxyPayload = GetWithdrawPayload(depositContract, account, token, amount, fee, to, time, salt, ((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
             var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(proxyPayload);
             var keccakSigned = CeSha3Keccack.CalculateHash(msg);
             var signature = signKey.Sign(keccakSigned);
@@ -199,20 +239,34 @@ namespace Polymarket.Net
             };
         }
 
-        public CeTypedDataRaw GetDeleteProxyPayload(long ts, long salt, string proxyAddress, uint chainId)
+        public CeTypedDataRaw GetWithdrawPayload(
+            string depositContract,
+            string account,
+            string token,
+            long amount,
+            long fee,
+            string to,
+            long ts,
+            long salt,
+            uint chainId)
         {
             return new CeTypedDataRaw
             {
-                PrimaryType = "DeleteProxy",
+                PrimaryType = "Withdraw",
                 DomainRawValues = new CeMemberValue[]
                 {
                     new CeMemberValue { TypeName = "string", Value = "Polymarket" },
                     new CeMemberValue { TypeName = "string", Value = "1" },
                     new CeMemberValue { TypeName = "uint256", Value = chainId },
+                    new CeMemberValue { TypeName = "address", Value = depositContract}
                 },
                 Message = new CeMemberValue[]
                 {
-                    new CeMemberValue { TypeName = "address", Value = proxyAddress },
+                    new CeMemberValue { TypeName = "address", Value = account },
+                    new CeMemberValue { TypeName = "address", Value = token },
+                    new CeMemberValue { TypeName = "uint256", Value = amount },
+                    new CeMemberValue { TypeName = "uint256", Value = fee },
+                    new CeMemberValue { TypeName = "address", Value = to },
                     new CeMemberValue { TypeName = "uint64", Value = salt },
                     new CeMemberValue { TypeName = "uint64", Value = ts }
                 },
@@ -223,13 +277,18 @@ namespace Polymarket.Net
                         {
                             new CeMemberDescription { Name = "name", Type = "string" },
                             new CeMemberDescription { Name = "version", Type = "string" },
-                            new CeMemberDescription { Name = "chainId", Type = "uint256" }
+                            new CeMemberDescription { Name = "chainId", Type = "uint256" },
+                            new CeMemberDescription { Name = "verifyingContract", Type = "address" }
                         }
                     },
-                    { "DeleteProxy",
+                    { "Withdraw",
                         new CeMemberDescription[]
                         {
-                            new CeMemberDescription { Name = "addr", Type = "address" },
+                            new CeMemberDescription { Name = "account", Type = "address" },
+                            new CeMemberDescription { Name = "token", Type = "address" },
+                            new CeMemberDescription { Name = "amount", Type = "uint256" },
+                            new CeMemberDescription { Name = "fee", Type = "uint256" },
+                            new CeMemberDescription { Name = "to", Type = "address" },
                             new CeMemberDescription { Name = "salt", Type = "uint64" },
                             new CeMemberDescription { Name = "ts", Type = "uint64" }
                         }

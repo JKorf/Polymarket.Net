@@ -1,6 +1,7 @@
 using CryptoExchange.Net.Clients;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Polymarket.Net.Clients.PerpsApi;
 using Polymarket.Net.Clients.PredictionApi;
 using Polymarket.Net.Interfaces.Clients;
 using Polymarket.Net.Interfaces.Clients.PredictionApi;
@@ -20,6 +21,8 @@ namespace Polymarket.Net.Clients
         
          /// <inheritdoc />
         public IPolymarketSocketClientPredictionApi PredictionApi { get; }
+         /// <inheritdoc />
+        public IPolymarketSocketClientPerpsApi PerpsApi { get; }
 
         #endregion
 
@@ -44,6 +47,7 @@ namespace Polymarket.Net.Clients
             Initialize(options.Value);
 
             PredictionApi = AddApiClient(new PolymarketSocketClientPredictionApi(loggerFactory, options.Value));
+            PerpsApi = AddApiClient(new PolymarketSocketClientPerpsApi(loggerFactory, options.Value));
         }
         #endregion
 

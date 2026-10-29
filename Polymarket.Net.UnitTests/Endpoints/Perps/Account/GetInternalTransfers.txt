@@ -1,0 +1,18 @@
+GET
+/v1/account/internal-transfers
+true
+UriParams: {}
+{
+  "data": [
+    {
+      "transfer_id": 123,
+      "asset": "USDC",
+      "amount": "100",
+      "direction": "in",
+      "counterparty": "0x1234567890abcdef1234567890abcdef12345678",
+      "created_timestamp": 1767225600000,
+      "label": "trading-bot"
+    }
+  ],
+  "more": true
+}

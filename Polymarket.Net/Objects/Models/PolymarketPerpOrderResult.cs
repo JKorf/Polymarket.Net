@@ -15,6 +15,11 @@ public record PolymarketPerpOrderResult
     [JsonPropertyName("status")]
     public string Status { get; set; } = string.Empty;
     /// <summary>
+    /// ["<c>error</c>"] Error message
+    /// </summary>
+    [JsonPropertyName("error")]
+    public string? Error { get; set; }
+    /// <summary>
     /// ["<c>oid</c>"] Order id
     /// </summary>
     [JsonPropertyName("oid")]

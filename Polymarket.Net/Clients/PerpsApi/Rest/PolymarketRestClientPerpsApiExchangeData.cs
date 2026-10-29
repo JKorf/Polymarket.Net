@@ -27,6 +27,21 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             _baseClient = client;
         }
 
+        #region Get Server Time
+
+        /// <inheritdoc />
+        public async Task<HttpResult<DateTime>> GetServerTimeAsync(CancellationToken ct = default)
+        {
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/time", PolymarketPlatform.RateLimiter.PerpsApi, 2, false);
+            var result = await _baseClient.SendAsync<PolymarketTime>(request, null, ct, skipBuilderCheck: true).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail<DateTime>(result);
+
+            return HttpResult.Ok(result, result.Data.Time);
+        }
+
+        #endregion
+
         #region Get Exchange Info
 
         /// <inheritdoc />

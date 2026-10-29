@@ -14,6 +14,11 @@ namespace Polymarket.Net.Interfaces.Clients
         /// </summary>
         /// <see cref="IPolymarketSocketClientPredictionApi"/>
         public IPolymarketSocketClientPredictionApi PredictionApi { get; }
+        /// <summary>
+        /// Perps API endpoints
+        /// </summary>
+        /// <see cref="IPolymarketSocketClientPerpsApi"/>
+        public IPolymarketSocketClientPerpsApi PerpsApi { get; }
 
         /// <summary>
         /// Update existing credentials which specify L1 credentials (PolymarketAddress, L1PrivateKey) with L2 credentials

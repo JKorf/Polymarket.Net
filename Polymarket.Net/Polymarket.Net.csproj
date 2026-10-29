@@ -60,9 +60,6 @@
     <PackageReference Include="Secp256k1.Net" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Clients\PerpsApi\Socket\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\CryptoExchange.Net\CryptoExchange.Net.Web3\CryptoExchange.Net.Web3.csproj" />
     <ProjectReference Include="..\..\CryptoExchange.Net\CryptoExchange.Net\CryptoExchange.Net.csproj" />
   </ItemGroup>

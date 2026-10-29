@@ -76,7 +76,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             if (!makerTakerQuantities.Success)
                 return HttpResult.Fail<PolymarketOrderResult>(_client.Exchange, makerTakerQuantities.Error);
 
-            var builderCode = _client.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
+            var builderCode = _client.ClientOptions.PredictionOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             var orderParameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             var credentials = _client.AuthenticationProvider!.ApiCredentials;
@@ -140,7 +140,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
                 orderBookInfos = tokenResult.Data;
             }
 
-            var builderCode = _client.ClientOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
+            var builderCode = _client.ClientOptions.PredictionOptions.BuilderCode ?? "0x0000000000000000000000000000000000000000000000000000000000000000";
 
             var credentials = _client.AuthenticationProvider!.ApiCredentials;
 

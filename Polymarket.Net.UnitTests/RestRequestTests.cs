@@ -71,13 +71,24 @@ namespace Polymarket.Net.UnitTests
                 opts.AutoTimestamp = false;
             });
             var tester = new RestRequestValidator<PolymarketRestClient>(client, "Endpoints/Perps/Account", "https://data-api.polymarket.com", IsAuthenticated);
-            await tester.ValidateAsync(client => client.PerpsApi.Account.ApproveBuilderAsync("123", "123", 0.1m), "ApproveBuilder");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.ApproveBuilderAsync("123", 0.1m), "ApproveBuilder");
             await tester.ValidateAsync(client => client.PerpsApi.Account.GetBuilderApprovalsAsync("123"), "GetBuilderApprovals");
             await tester.ValidateAsync(client => client.PerpsApi.Account.GetBalancesAsync(), "GetBalances");
             await tester.ValidateAsync(client => client.PerpsApi.Account.GetPortfolioAsync(), "GetPortfolio");
             await tester.ValidateAsync(client => client.PerpsApi.Account.GetEquityHistoryAsync(KlineInterval.OneMinute, DateTime.UtcNow), "GetEquityHistory");
             await tester.ValidateAsync(client => client.PerpsApi.Account.GetPnlHistoryAsync(KlineInterval.OneMinute, DateTime.UtcNow), "GetPnlHistory");
             await tester.ValidateAsync(client => client.PerpsApi.Account.GetFundingHistoryAsync(), "GetFundingHistory");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetCredentialsAsync(), "GetCredentials");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.SetLeverageAsync(123, 2, true), "SetLeverage");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.UpdateIsolatedMarginAsync(123, 0.1m), "UpdateIsolatedMargin");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.WithdrawAsync("123", 1, "123"), "Withdraw");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.TransferInternalAsync("123", 0.1m, "123"), "TransferInternal");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetDepositsAsync(), "GetDeposits");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetInternalTransfersAsync(), "GetInternalTransfers");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetWithdrawalsAsync(), "GetWithdrawals");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetAccountStatsAsync(), "GetAccountStats");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetAccountLimitsAsync(), "GetAccountLimits");
+            await tester.ValidateAsync(client => client.PerpsApi.Account.GetLeverageMarginConfigAsync(), "GetLeverageMarginConfig");
         }
 
         [Test]

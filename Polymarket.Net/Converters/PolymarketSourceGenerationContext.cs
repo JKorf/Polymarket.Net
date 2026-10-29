@@ -7,6 +7,19 @@ using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Converters
 {
+    [JsonSerializable(typeof(PolymarketPerpsSocketRequest))]
+    [JsonSerializable(typeof(PolymarketPerpsOpSocketRequest))]
+    [JsonSerializable(typeof(PolymarketPerpsChannelSocketRequest))]
+    [JsonSerializable(typeof(PolymarketPerpsAuthSocketRequest))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketResponse))]
+    //[JsonSerializable(typeof(PolymarketPerpsSocketResponse<X>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpTrade[]>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpTickerUpdate>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpBookTickerUpdate>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpBookUpdate>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketKline[]>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketStatisticsUpdate>))]
+
     [JsonSerializable(typeof(PolymarketSymbol[]))]
     [JsonSerializable(typeof(PolymarketExchangeInfo))]
     [JsonSerializable(typeof(PolymarketCollateralAsset[]))]
@@ -35,6 +48,16 @@ namespace Polymarket.Net.Converters
     [JsonSerializable(typeof(PolymarketPaged<PolymarketPerpUserTrade>))]
     [JsonSerializable(typeof(PolymarketPaged<PolymarketPerpValue>))]
     [JsonSerializable(typeof(PolymarketPaged<PolymarketFundingHistory>))]
+    [JsonSerializable(typeof(PolymarketPerpsCredentials))]
+    [JsonSerializable(typeof(PolymarketLeverageResult))]
+    [JsonSerializable(typeof(PolymarketWithdrawResult))]
+    [JsonSerializable(typeof(PolymarketPaged<PolymarketPerpsDeposit>))]
+    [JsonSerializable(typeof(PolymarketPaged<PolymarketPerpsTransfer>))]
+    [JsonSerializable(typeof(PolymarketPaged<PolymarketPerpsWithdrawal>))]
+    [JsonSerializable(typeof(PolymarketAccountStats))]
+    [JsonSerializable(typeof(PolymarketAccountLimit))]
+    [JsonSerializable(typeof(PolymarketLeverageMargin[]))]
+    [JsonSerializable(typeof(PolymarketTime))]
 
     [JsonSerializable(typeof(PolymarketBoltSubscribeRequest))]
     [JsonSerializable(typeof(PolymarketBoltAuthRequest))]

@@ -26,6 +26,6 @@ namespace Polymarket.Net.Objects.Models
         /// ["<c>cursor</c>"] Pagination cursor
         /// </summary>
         [JsonPropertyName("cursor")]
-        public string Cursor { get; set; } = string.Empty;
+        public string? Cursor { get; set; }
     }
 }

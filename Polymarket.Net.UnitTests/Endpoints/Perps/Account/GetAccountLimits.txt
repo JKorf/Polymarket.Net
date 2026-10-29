@@ -1,0 +1,14 @@
+GET
+/v1/account/limits
+false
+UriParams: {}
+{
+  "actions_per_minute": 23,
+  "actions_per_minute_limit": 300,
+  "actions_burst": 123,
+  "actions_burst_limit": 123,
+  "open_orders": 42,
+  "open_orders_limit": 1000,
+  "reset": 1767225660000,
+  "messages_per_minute": 300
+}

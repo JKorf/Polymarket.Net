@@ -1,20 +1,23 @@
+using CryptoExchange.Net.Clients;
+using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Interfaces;
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Objects.Errors;
+using CryptoExchange.Net.SharedApis;
+using CryptoExchange.Net.Web3;
 using Microsoft.Extensions.Logging;
+using Polymarket.Net.Clients.MessageHandlers;
+using Polymarket.Net.Clients.PerpsApi.Rest;
+using Polymarket.Net.Interfaces.Clients.PerpsApi;
+using Polymarket.Net.Objects.Models;
+using Polymarket.Net.Objects.Options;
+using Polymarket.Net.Utils;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Polymarket.Net.Objects.Options;
-using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.Converters.SystemTextJson;
-using CryptoExchange.Net.Interfaces;
-using CryptoExchange.Net.SharedApis;
-using CryptoExchange.Net.Objects.Errors;
-using CryptoExchange.Net.Converters.MessageParsing.DynamicConverters;
-using Polymarket.Net.Clients.MessageHandlers;
-using Polymarket.Net.Objects.Models;
-using Polymarket.Net.Clients.PerpsApi.Rest;
-using Polymarket.Net.Interfaces.Clients.PerpsApi;
 
 namespace Polymarket.Net.Clients.PerpsApi
 {
@@ -62,28 +65,73 @@ namespace Polymarket.Net.Clients.PerpsApi
             return result;
         }
 
-        internal async Task<HttpResult<T>> SendAsync<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
+        internal async Task<HttpResult<T>> SendAsync<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null, bool skipBuilderCheck = false)
         {
+            if (!skipBuilderCheck)
+                await PolymarketUtils.CheckPerpBuilderAsync(this, cancellationToken).ConfigureAwait(false);
+
             var result = await base.SendAsync<T>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
             return result;
         }
 
-        internal async Task<HttpResult<T>> SendV2Async<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null)
-        {
-            var result = await base.SendAsync<PolymarketResponse<T>>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
-            if (!result.Success)
-                return HttpResult.Fail<T>(result);
-
-            return HttpResult.Ok(result, result.Data.Data);
-        }
-
         /// <inheritdoc />
-        protected override Task<HttpResult<DateTime>> GetServerTimestampAsync() => throw new NotImplementedException();
+        protected override Task<HttpResult<DateTime>> GetServerTimestampAsync() =>
+            ExchangeData.GetServerTimeAsync();
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)
             => throw new NotImplementedException();
 
 
+        internal bool ValidateProxyCredentialsAvailable(bool requiresSecret, bool requiresPrivateKey, out Error? error)
+        {
+            var result = ValidateCredentialsAvailable(
+                ApiCredentials?.Perps?.ProxyKey,
+                "ProxyKey",
+                requiresPrivateKey: requiresPrivateKey,
+                out error);
+            if (!result)
+                return result;
+
+            if (string.IsNullOrEmpty(ApiCredentials?.Perps?.Secret))
+            {
+                error = new NoApiCredentialsError($"No secret provided in the ApiCredentials.");
+                return false;
+            }
+
+            return true;
+        }
+
+        internal bool ValidateSignerCredentialsAvailable(out Error? error)
+        {
+            var result = ValidateCredentialsAvailable(
+                ApiCredentials?.Perps?.SignerKey,
+                "SignerKey",
+                requiresPrivateKey: true,
+                out error);
+            return result;
+        }
+
+        internal bool ValidateCredentialsAvailable(
+            EthKey? key,
+            string keyName,
+            bool requiresPrivateKey,
+            out Error? error)
+        {
+            error = null;
+            if (key == null)
+            {
+                error = new NoApiCredentialsError($"Missing credentials, {keyName} is not set");
+                return false;
+            }
+
+            if (requiresPrivateKey && key.PrivateKey == null)
+            {
+                error = new NoApiCredentialsError($"The {keyName} is not provided. Please provide {keyName} in the ApiCredentials.");
+                return false;
+            }
+
+            return true;
+        }
     }
 }

@@ -48,6 +48,11 @@ namespace Polymarket.Net
         /// </summary>
         public string PerpsRestClientAddress { get; }
 
+        /// <summary>
+        /// Socket Perps API address
+        /// </summary>
+        public string PerpsSocketClientAddress { get; }
+
         internal PolymarketEnvironment(
             string name,
             uint chainId,
@@ -57,7 +62,8 @@ namespace Polymarket.Net
             string clobStreamAddress,
             string sportStreamAddress,
             string polyBoltStreamAddress,
-            string perpsRestAddress) :
+            string perpsRestAddress,
+            string perpsSocketAddress) :
             base(name)
         {
             ChainId = chainId;
@@ -68,6 +74,7 @@ namespace Polymarket.Net
             SportSocketClientAddress = sportStreamAddress;
             PolyBoltSocketClientAddress = polyBoltStreamAddress;
             PerpsRestClientAddress = perpsRestAddress;
+            PerpsSocketClientAddress = perpsSocketAddress;
         }
 
         /// <summary>
@@ -109,7 +116,8 @@ namespace Polymarket.Net
                                      PolymarketApiAddresses.Default.ClobSocketClientAddress,
                                      PolymarketApiAddresses.Default.SportsSocketClientAddress,
                                      PolymarketApiAddresses.Default.PolyBoltSocketClientAddress,
-                                     PolymarketApiAddresses.Default.PerpsRestClientAddress);
+                                     PolymarketApiAddresses.Default.PerpsRestClientAddress,
+                                     PolymarketApiAddresses.Default.PerpsSocketClientAddress);
 
         /// <summary>
         /// Test environment
@@ -123,7 +131,8 @@ namespace Polymarket.Net
                                      PolymarketApiAddresses.Default.ClobSocketClientAddress,
                                      PolymarketApiAddresses.Default.SportsSocketClientAddress,
                                      PolymarketApiAddresses.Default.PolyBoltSocketClientAddress,
-                                     PolymarketApiAddresses.Default.PerpsRestClientAddress);
+                                     PolymarketApiAddresses.Default.PerpsRestClientAddress,
+                                     PolymarketApiAddresses.Default.PerpsSocketClientAddress);
 
         /// <summary>
         /// Create a custom environment
@@ -138,7 +147,8 @@ namespace Polymarket.Net
                         string clobSocketStreamsAddress,
                         string sportSocketStreamsAddress,
                         string polyBoltSocketStreamsAddress,
-                        string perpsRestAddress)
+                        string perpsRestAddress,
+                        string perpsSocketAddress)
             => new PolymarketEnvironment(
                 name, 
                 chainId, 
@@ -148,7 +158,8 @@ namespace Polymarket.Net
                 clobSocketStreamsAddress,
                 sportSocketStreamsAddress,
                 polyBoltSocketStreamsAddress,
-                perpsRestAddress
+                perpsRestAddress,
+                perpsSocketAddress
                 );
     }
 }

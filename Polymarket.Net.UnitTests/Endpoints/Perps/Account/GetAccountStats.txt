@@ -1,0 +1,13 @@
+GET
+/v1/account/stats
+true
+UriParams: {}
+{
+  "volume_7d": "5000000",
+  "taker_volume_7d": "3500000",
+  "maker_volume_7d": "1500000",
+  "account_maker_share_7d": "0.35",
+  "entity_maker_share_7d": "0.35",
+  "entity_id": 42,
+  "entity_name": "desk"
+}
