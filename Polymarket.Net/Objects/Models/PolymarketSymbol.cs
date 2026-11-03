@@ -10,10 +10,10 @@ namespace Polymarket.Net.Objects.Models;
 public record PolymarketSymbol
 {
     /// <summary>
-    /// ["<c>instrument_id</c>"] Instrument id
+    /// ["<c>instrument_id</c>"] Symbol id
     /// </summary>
     [JsonPropertyName("instrument_id")]
-    public long InstrumentId { get; set; }
+    public long SymbolId { get; set; }
     /// <summary>
     /// ["<c>instrument_type</c>"] Instrument type
     /// </summary>
@@ -113,7 +113,7 @@ public record PolymarketSymbol
     /// ["<c>display_symbol</c>"] Display symbol
     /// </summary>
     [JsonPropertyName("display_symbol")]
-    public string DisplaySymbol { get; set; } = string.Empty;
+    public string? DisplaySymbol { get; set; }
     /// <summary>
     /// ["<c>settlement</c>"] Settlement
     /// </summary>

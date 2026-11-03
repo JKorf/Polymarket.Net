@@ -14,55 +14,55 @@ public enum KlineInterval
     /// ["<c>1s</c>"] One second
     /// </summary>
     [Map("1s")]
-    OneSecond,
+    OneSecond = 1,
     /// <summary>
     /// ["<c>1m</c>"] One minute
     /// </summary>
     [Map("1m")]
-    OneMinute,
+    OneMinute = 60,
     /// <summary>
     /// ["<c>5m</c>"] Five minutes
     /// </summary>
     [Map("5m")]
-    FiveMinutes,
+    FiveMinutes = 60 * 5,
     /// <summary>
     /// ["<c>15m</c>"] Fifteen minutes
     /// </summary>
     [Map("15m")]
-    FifteenMinutes,
+    FifteenMinutes = 60 * 15,
     /// <summary>
     /// ["<c>30m</c>"] Thirty minutes
     /// </summary>
     [Map("30m")]
-    ThirtyMinutes,
+    ThirtyMinutes = 60 * 30,
     /// <summary>
     /// ["<c>1h</c>"] One hour
     /// </summary>
     [Map("1h")]
-    OneHour,
+    OneHour = 60 * 60,
     /// <summary>
     /// ["<c>4h</c>"] Four hours
     /// </summary>
     [Map("4h")]
-    FourHours,
+    FourHours = 60 * 60 * 4,
     /// <summary>
     /// ["<c>6h</c>"] Six hours
     /// </summary>
     [Map("6h")]
-    SixHours,
+    SixHours = 60 * 60 * 6,
     /// <summary>
     /// ["<c>12h</c>"] Twelve hours
     /// </summary>
     [Map("12h")]
-    TwelveHours,
+    TwelveHours = 60 * 60 * 12,
     /// <summary>
     /// ["<c>1d</c>"] One day
     /// </summary>
     [Map("1d")]
-    OneDay,
+    OneDay = 60 * 60 * 24,
     /// <summary>
     /// ["<c>1w</c>"] One week
     /// </summary>
     [Map("1w")]
-    OneWeek,
+    OneWeek = 60 * 60 * 24 * 7,
 }

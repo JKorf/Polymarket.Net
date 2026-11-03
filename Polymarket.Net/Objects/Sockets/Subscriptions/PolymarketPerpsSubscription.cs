@@ -6,6 +6,7 @@ using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Default.Routing;
 using Microsoft.Extensions.Logging;
+using Polymarket.Net.Clients.PerpsApi;
 using Polymarket.Net.Objects.Internal;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,15 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
         private readonly bool _all;
         private readonly string? _postFix;
 
-        public PolymarketPerpsSubscription(ILogger logger, SocketApiClient client, string topic, IEnumerable<long>? symbolIds, Action<DataEvent<T>> handler, bool all = false, string? postFix = null) : base(logger, false, true)
+        public PolymarketPerpsSubscription(
+            ILogger logger,
+            SocketApiClient client, 
+            string topic,
+            IEnumerable<long>? symbolIds,
+            Action<DataEvent<T>> handler, 
+            bool all = false, 
+            string? postFix = null,
+            bool authenticated = false) : base(logger, authenticated, true)
         {
             _client = client;
             _topic = topic;
@@ -46,7 +55,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
 
         protected override Query? GetSubQuery(SocketConnection connection)
         {
-            return new PolymarketPerpsQuery<PolymarketPerpsSocketResponse>(new PolymarketPerpsChannelSocketRequest
+            return new PolymarketPerpsQuery<PolymarketStatus[]>(_client, new PolymarketPerpsChannelSocketRequest
             {
                 Id = ExchangeHelpers.NextId(),
                 Request = "sub",
@@ -56,7 +65,7 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
 
         protected override Query? GetUnsubQuery(SocketConnection connection)
         {
-            return new PolymarketPerpsQuery<PolymarketPerpsSocketResponse>(new PolymarketPerpsChannelSocketRequest
+            return new PolymarketPerpsQuery<PolymarketStatus[]>(_client, new PolymarketPerpsChannelSocketRequest
             {
                 Id = ExchangeHelpers.NextId(),
                 Request = "unsub",
@@ -82,11 +91,22 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
         {
             _client.UpdateTimeOffset(message.Timestamp);
 
-            _handler.Invoke(new DataEvent<T>(_client.Exchange, message.Data, receiveTime, originalData)
+            var evnt = new DataEvent<T>(_client.Exchange, message.Data, receiveTime, originalData)
                 .WithStreamId(message.Channel)
-                //.WithSymbol(_symbolId)
                 .WithSequenceNumber(message.Sequence)
-                .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset()));
+                .WithDataTimestamp(message.Timestamp, _client.GetTimeOffset());
+            if (message.Channel.IndexOf("::") > 0)
+            {
+                var split = message.Channel.Split(new string[] { "::" }, StringSplitOptions.None);
+                if (long.TryParse(split[1], out var symbolId))
+                {
+                    var symbol = PolymarketRestClientPerpsApi.GetSymbolNameById(_client.EnvironmentName, symbolId);
+                    if (!string.IsNullOrEmpty(symbol))
+                        evnt = evnt.WithSymbol(symbol);
+                }
+            }
+
+            _handler.Invoke(evnt);
 
             return CallResult.Ok();
         }

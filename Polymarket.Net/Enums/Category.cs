@@ -11,6 +11,11 @@ namespace Polymarket.Net.Enums;
 public enum Category
 {
     /// <summary>
+    /// ["<c>pre_ipo</c>"] Pre Ipo
+    /// </summary>
+    [Map("pre_ipo")]
+    PreIpo,
+    /// <summary>
     /// ["<c>equity</c>"] Equity
     /// </summary>
     [Map("equity")]

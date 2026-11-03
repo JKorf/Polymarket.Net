@@ -1,4 +1,5 @@
 using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.Web3;
 using Polymarket.Net.Enums;
 using Polymarket.Net.Objects.Models;
 using System;
@@ -46,6 +47,7 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
 
         Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(DateTime expireTime, string? label = null, CancellationToken ct = default);
         Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(string proxyAddress, DateTime expireTime, string? label = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(EthKey signingKey, string proxyAddress, DateTime expireTime, string? label = null, CancellationToken ct = default);
 
         Task<HttpResult<PolymarketProxyResult>> DeleteProxyAsync(string proxyAddress, CancellationToken ct = default);
 
@@ -162,7 +164,7 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
             CancellationToken ct = default);
 
         /// <summary>
-        /// Updated isolated margin for a symbol
+        /// Update isolated margin for a symbol
         /// <para>
         /// Docs:<br />
         /// <a href="https://docs.polymarket.com/api-reference/update-isolated-margin" /><br />

@@ -32,7 +32,11 @@ namespace Polymarket.Net.Objects.Options
         /// <summary>
         /// Perps API options
         /// </summary>
-        public SocketApiOptions PerpsOptions { get; private set; } = new SocketApiOptions();
+        public PolymarketSocketPerpsApiOptions PerpsOptions { get; private set; } = new PolymarketSocketPerpsApiOptions()
+        {
+            BuilderCode = "0xECdcc8933F29Ec16E820227C743A21dBa18C1149",
+            BuilderFeePercentage = 0.01m
+        };
 
         internal PolymarketSocketOptions Set(PolymarketSocketOptions targetOptions)
         {

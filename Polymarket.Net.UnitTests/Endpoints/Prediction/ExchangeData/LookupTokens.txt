@@ -1,12 +1,28 @@
 GET
-/v2/oi
+/v2/tokens
 false
 UriParams: {}
 {
   "data": [
     {
       "condition_id": "<string>",
-      "value": 123
+      "module": "v1_ctf",
+      "outcome_index": 123,
+      "resolved": true,
+      "token_id": "<string>",
+      "clob_index": 123,
+      "closed": true,
+      "event_id": 123,
+      "event_slug": "<string>",
+      "final_price": 123,
+      "market_slug": "<string>",
+      "neg_risk": true,
+      "neg_risk_market_id": "<string>",
+      "opposite_token_id": "<string>",
+      "outcome": "<string>",
+      "question_index": 123,
+      "structural_condition_id": "<string>",
+      "title": "<string>"
     }
   ]
 }

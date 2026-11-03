@@ -1,6 +1,6 @@
 GET
 /v1/account/fills
-false
+true
 UriParams: {}
 {
   "data": [
@@ -23,11 +23,7 @@ UriParams: {}
       "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
       "builder_fee": "20.00",
       "total_fee": "24.00",
-      "settlement": true,
-      "builder": {
-        "address": "0x1234567890abcdef1234567890abcdef12345678",
-        "fee_rate": "0.001"
-      }
+      "settlement": true
     }
   ],
   "more": true,

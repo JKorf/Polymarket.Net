@@ -1,7 +1,11 @@
-POST
-/v1/account/internal-transfer
+GET
+/v1/account/balances
 true
-{
-  "status": "ok",
-  "transfer_id": 123
-}
+UriParams: {}
+[
+  {
+    "asset": "USDC",
+    "balance": "10000.00",
+    "value": "10000.00"
+  }
+]

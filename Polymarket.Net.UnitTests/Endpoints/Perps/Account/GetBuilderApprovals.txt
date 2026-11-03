@@ -1,6 +1,6 @@
 GET
 /v1/account/builder-approvals
-false
+true
 UriParams: {"builder": "123"}
 {
   "data": [

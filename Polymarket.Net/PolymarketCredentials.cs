@@ -11,14 +11,14 @@ namespace Polymarket.Net
     public class PolymarketCredentials : ApiCredentials
     {
         /// <summary>
-        /// Layer 1 credentials
+        /// Prediction API Layer 1 credentials
         /// </summary>
-        public PolymarketL1Credential? L1 { get; set; }
+        public PolymarketL1Credential? PredictionL1 { get; set; }
 
         /// <summary>
-        /// Layer 2 credentials
+        /// Prediction API Layer 2 credentials
         /// </summary>
-        public HMACPassCredential? L2 { get; set; }
+        public HMACPassCredential? PredictionL2 { get; set; }
 
         /// <summary>
         /// Perps credentials
@@ -35,30 +35,30 @@ namespace Polymarket.Net
         /// <summary>
         /// Create new credentials
         /// </summary>
-        /// <param name="layer1Credential">Layer 1 credentials</param>
-        /// <param name="layer2Credentials">Layer 2 credentials</param>
-        /// <param name="perpsCredentials">Perps credentials</param>
+        /// <param name="predictionL1">Layer 1 credentials</param>
+        /// <param name="predictionL2">Layer 2 credentials</param>
+        /// <param name="perps">Perps credentials</param>
         public PolymarketCredentials(
-            PolymarketL1Credential? layer1Credential,
-            HMACPassCredential? layer2Credentials = null,
-            PolymarketPerpsCredential? perpsCredentials = null)
+            PolymarketL1Credential? predictionL1 = null,
+            HMACPassCredential? predictionL2 = null,
+            PolymarketPerpsCredential? perps = null)
         {
-            L1 = layer1Credential;
-            L2 = layer2Credentials;
-            Perps = perpsCredentials;
+            PredictionL1 = predictionL1;
+            PredictionL2 = predictionL2;
+            Perps = perps;
         }
 
         /// <summary>
         /// Specify the Layer 1 credentials
         /// </summary>
         /// <param name="signType">Signature type</param>
-        /// <param name="privateKey">Private key</param>
+        /// <param name="walletKey">Wallet key, requires private key to be set</param>
         /// <param name="polymarketFundingAddress">The polymarket funding address when using email/magic wallets. Can be found in your account in the web interface</param>
-        public PolymarketCredentials WithL1(SignType signType, string privateKey, string? polymarketFundingAddress = null)
+        public PolymarketCredentials WithL1(SignType signType, EthKey walletKey, string? polymarketFundingAddress = null)
         {
-            if (L1 != null) throw new InvalidOperationException("L1 credentials already set");
+            if (PredictionL1 != null) throw new InvalidOperationException("PredictionL1 credentials already set");
 
-            L1 = new PolymarketL1Credential(signType, privateKey, polymarketFundingAddress);
+            PredictionL1 = new PolymarketL1Credential(signType, walletKey, polymarketFundingAddress);
             return this;
         }
 
@@ -70,9 +70,9 @@ namespace Polymarket.Net
         /// <param name="pass">Passphrase</param>
         public PolymarketCredentials WithL2(string key, string secret, string pass)
         {
-            if (L2 != null) throw new InvalidOperationException("L2 credentials already set");
+            if (PredictionL2 != null) throw new InvalidOperationException("PredictionL2 credentials already set");
 
-            L2 = new HMACPassCredential(key, secret, pass);
+            PredictionL2 = new HMACPassCredential(key, secret, pass);
             return this;
         }
 
@@ -88,14 +88,17 @@ namespace Polymarket.Net
         }
 
         /// <inheritdoc />
-        public override ApiCredentials Copy() => new PolymarketCredentials { L1 = L1, L2 = L2, Perps = Perps };
+        public override ApiCredentials Copy() => new PolymarketCredentials { PredictionL1 = PredictionL1, PredictionL2 = PredictionL2, Perps = Perps };
 
         /// <inheritdoc />
         public override void Validate()
         {
-            L1?.Validate();
-            L2?.Validate();
+            PredictionL1?.Validate();
+            PredictionL2?.Validate();
             Perps?.Validate();
+
+            if (PredictionL1 == null && PredictionL2 == null && Perps == null)
+                throw new Exception("No credentials provided. Provide at least one of PredictionL1, PredictionL2 or Perps credentials.");
         }
     }
 }

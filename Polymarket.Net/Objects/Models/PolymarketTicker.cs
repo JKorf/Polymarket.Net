@@ -5,7 +5,7 @@ using Polymarket.Net.Enums;
 namespace Polymarket.Net.Objects.Models;
 
 /// <summary>
-/// 
+/// Ticker
 /// </summary>
 public record PolymarketTicker
 {

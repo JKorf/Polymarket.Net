@@ -89,6 +89,7 @@ namespace Polymarket.Net.Interfaces.Clients.PredictionApi
         /// <param name="quantityType">Type of quantity for an order, either in shares (default) or in value (USD). Value is only available for market buy orders</param>
         /// <param name="tickQuantity">Tick quantity, can be provided together with negative risk to bypass token info retrieval for limit orders</param>
         /// <param name="negativeRisk">If negative risk token, can be provided together with tickQuantity to bypass token info retrieval for limit orders</param>
+        /// <param name="marketVersion">V1 or V2 market. With either V2 + tickQuantity or V1 + negativeRisk + tickQuantity the token info retrieval for limit orders can be bypassed</param>
         /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketOrderResult>> PlaceOrderAsync(
             string tokenId,
@@ -103,6 +104,7 @@ namespace Polymarket.Net.Interfaces.Clients.PredictionApi
             QuantityType? quantityType = null,
             decimal? tickQuantity = null,
             bool? negativeRisk = null,
+            int marketVersion = 1,
             CancellationToken ct = default);
 
         /// <summary>
@@ -205,5 +207,48 @@ namespace Polymarket.Net.Interfaces.Clients.PredictionApi
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         Task<HttpResult> PostOrderHeartbeatAsync(CancellationToken ct = default);
+
+        /// <summary>
+		/// Get list of all positions for a user
+		/// <para>
+		/// Docs:<br />
+		/// <a href="https://data-api.polymarket.com/v2/docs#tag/wallet/GET/v2/positions" /><br />
+		/// Endpoint:<br />
+		/// GET /positions
+		/// </para>
+		/// </summary>
+		/// <param name="user">["<c>user</c>"] Fitler by user</param>
+		/// <param name="market">["<c>condition</c>"] Comma-separated list of condition IDs</param>
+		/// <param name="status">["<c>status</c>"] Filter by status</param>
+		/// <param name="eventId">["<c>event_id</c>"] Comma-separated list of event IDs</param>
+		/// <param name="title">["<c>title</c>"] Filter by title</param>
+		/// <param name="filterType">["<c>filter_type</c>"] Filter type, CASH or TOKENS</param>
+		/// <param name="filterAmount">["<c>filter_amount</c>"] Filter quantity of filterType</param>
+		/// <param name="includeArchived">["<c>include_archived</c>"] Include archrived positions</param>
+		/// <param name="startTime">["<c>start</c>"] Filter by start time</param>
+		/// <param name="endTime">["<c>end</c>"] Filter by end time</param>
+		/// <param name="sortBy">["<c>sort_by</c>"] Sort direction</param>
+		/// <param name="limit">["<c>limit</c>"] Max number of results, max 1000</param>
+		/// <param name="sortDirection">["<c>sort_direction</c>"] Sort direction</param>
+		/// <param name="cursor">["<c>cursor</c>"] Page cursor</param>
+		/// <param name="ct">Cancellation token</param>
+		/// <returns></returns>
+		Task<HttpResult<PolymarketDataPage<PolymarketPosition>>> GetPositionsAsync(
+            string? user = null,
+            string? market = null,
+            PositionStatus? status = null,
+            string? eventId = null,
+            string? title = null,
+            string? filterType = null,
+            decimal? filterAmount = null,
+            bool? includeArchived = null,
+            DateTime? startTime = null,
+            DateTime? endTime = null,
+            int? limit = null,
+            PositionSortBy? sortBy = null,
+            SortDirection? sortDirection = null,
+            string? cursor = null,
+            CancellationToken ct = default);
+
     }
 }

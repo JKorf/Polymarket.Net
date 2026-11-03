@@ -31,8 +31,19 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
         #region Create Proxy
 
         /// <inheritdoc />
-        public Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(DateTime expireTime, string? label = null, CancellationToken ct = default)
-            => CreateProxyAsync(_baseClient.ApiCredentials.Perps.ProxyKey.PublicAddress, expireTime, label, ct);
+        public async Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(DateTime expireTime, string? label = null, CancellationToken ct = default)
+        {
+            if (!_baseClient.ValidateSignerCredentialsAvailable(out var error))
+                return HttpResult.Fail<PolymarketProxyResult>(_baseClient.Exchange, error!);
+
+            if (!_baseClient.ValidateProxyCredentialsAvailable(false, false, out error))
+                return HttpResult.Fail<PolymarketProxyResult>(_baseClient.Exchange, error!);
+
+            var signKey = _baseClient.ApiCredentials!.Perps!.SignerKey;
+            var proxyAddress = _baseClient.ApiCredentials!.Perps!.ProxyKey.PublicAddress;
+            return await CreateProxyAsync(signKey, proxyAddress, expireTime, label, ct).ConfigureAwait(false);
+
+        }
 
         /// <inheritdoc />
         public async Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(string proxyAddress, DateTime expireTime, string? label = null, CancellationToken ct = default)
@@ -40,17 +51,24 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             if (!_baseClient.ValidateSignerCredentialsAvailable(out var error))
                 return HttpResult.Fail<PolymarketProxyResult>(_baseClient.Exchange, error!);
 
+            var signKey = _baseClient.ApiCredentials!.Perps!.SignerKey;
+            return await CreateProxyAsync(signKey, proxyAddress, expireTime, label, ct).ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(EthKey signingKey, string proxyAddress, DateTime expireTime, string? label = null, CancellationToken ct = default)
+        {
             var expireMs = DateTimeConverter.ConvertToMilliseconds(expireTime).Value;
             var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
-            parameters.Add("owner", _baseClient.ApiCredentials!.Perps!.SignerKey!.PublicAddress);
+            parameters.Add("owner", signingKey.PublicAddress);
             parameters.Add("proxy", proxyAddress);
             parameters.Add("expiry", expireMs);
             var opParameters = PolymarketUtils.GetOperationParameters("createProxy", parameters);
             opParameters.Add("label", label);
-            _baseClient.AuthenticationProvider?.AuthenticateCreateProxyRequest(_baseClient, opParameters, _baseClient.ApiCredentials!.Perps!.SignerKey!, proxyAddress, expireMs);
+            _baseClient.AuthenticationProvider?.AuthenticateCreateProxyRequest(_baseClient, opParameters, signingKey, proxyAddress, expireMs);
             var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/v1/account/proxy", PolymarketPlatform.RateLimiter.PerpsApi, 1, true);
             var result = await _baseClient.SendAsync<PolymarketProxyResult>(request, opParameters, ct).ConfigureAwait(false);
-            if (result.Success && proxyAddress == _baseClient.ApiCredentials.Perps.ProxyKey.PublicAddress)
+            if (result.Success && proxyAddress == _baseClient.ApiCredentials?.Perps?.ProxyKey.PublicAddress)
                 _baseClient.ApiCredentials.Perps.Secret = result.Data.Secret;
 
             return result;

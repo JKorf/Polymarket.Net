@@ -12,13 +12,22 @@ namespace Polymarket.Net.Converters
     [JsonSerializable(typeof(PolymarketPerpsChannelSocketRequest))]
     [JsonSerializable(typeof(PolymarketPerpsAuthSocketRequest))]
     [JsonSerializable(typeof(PolymarketPerpsSocketResponse))]
-    //[JsonSerializable(typeof(PolymarketPerpsSocketResponse<X>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketResponse<PolymarketStatus>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketResponse<PolymarketStatus[]>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketResponse<PolymarketPerpOrderResult[]>))]
     [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpTrade[]>))]
     [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpTickerUpdate>))]
     [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpBookTickerUpdate>))]
     [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpBookUpdate>))]
     [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketKline[]>))]
     [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketStatisticsUpdate>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpBalance>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpOrder>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpUserTradeUpdate[]>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketUserFundingUpdate>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpPortfolio>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpsDepositUpdate[]>))]
+    [JsonSerializable(typeof(PolymarketPerpsSocketUpdate<PolymarketPerpsTpSlUpdate>))]
 
     [JsonSerializable(typeof(PolymarketSymbol[]))]
     [JsonSerializable(typeof(PolymarketExchangeInfo))]
@@ -58,6 +67,7 @@ namespace Polymarket.Net.Converters
     [JsonSerializable(typeof(PolymarketAccountLimit))]
     [JsonSerializable(typeof(PolymarketLeverageMargin[]))]
     [JsonSerializable(typeof(PolymarketTime))]
+    [JsonSerializable(typeof(PolymarketPerpsTranfserResult))]
 
     [JsonSerializable(typeof(PolymarketBoltSubscribeRequest))]
     [JsonSerializable(typeof(PolymarketBoltAuthRequest))]
@@ -87,6 +97,7 @@ namespace Polymarket.Net.Converters
     [JsonSerializable(typeof(PolymarketSeries[]))]
     [JsonSerializable(typeof(PolymarketGammaMarket))]
     [JsonSerializable(typeof(PolymarketGammaMarket[]))]
+    [JsonSerializable(typeof(PolymarketMarketPage))]
     [JsonSerializable(typeof(PolymarketEventPage))]
     [JsonSerializable(typeof(PolymarketEvent[]))]
     [JsonSerializable(typeof(PolymarketRelatedTag[]))]
@@ -152,7 +163,7 @@ namespace Polymarket.Net.Converters
     [JsonSerializable(typeof(DateTime))]
     [JsonSerializable(typeof(DateTime?))]
 
-    [JsonSerializable(typeof(PolymarketPosition[]))]
+    [JsonSerializable(typeof(PolymarketDataPage<PolymarketPosition>))]
     [JsonSerializable(typeof(PolymarketClosedPosition[]))]
 
     internal partial class PolymarketSourceGenerationContext : JsonSerializerContext

@@ -46,12 +46,26 @@ namespace Polymarket.Net
             
         }
 
+        public void AuthenticateOpRequest(SocketApiClient apiClient, Parameters parameters, EthKey signKey)
+        {
+            var chainId = ((PolymarketSocketOptions)apiClient.ClientOptions).Environment.ChainId;
+            var ts = GetMillisecondTimestampLong(apiClient);
+            AuthenticateOpRequest(ts, chainId, parameters, signKey);
+        }
+
         public void AuthenticateOpRequest(RestApiClient apiClient, Parameters parameters, EthKey signKey)
         {
-            var hash = HashOperation(apiClient, parameters);
-            var time = GetMillisecondTimestampLong(apiClient);
+            var chainId = ((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId;
+            var ts = GetMillisecondTimestampLong(apiClient);
+            AuthenticateOpRequest(ts, chainId, parameters, signKey);
+        }
+
+        public void AuthenticateOpRequest(long ts, uint chainId, Parameters parameters, EthKey signKey)
+        {
+            var hash = HashOperation(parameters);
+            var time = ts;
             var salt = ExchangeHelpers.RandomLong(8);
-            var payload = GetOperationPayload(time, salt, hash, ((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
+            var payload = GetOperationPayload(time, salt, hash, chainId);
             var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(payload);
             var keccakSigned = CeSha3Keccack.CalculateHash(msg);
             var signature = signKey.Sign(keccakSigned);
@@ -61,8 +75,7 @@ namespace Polymarket.Net
             parameters.Add("ts", time);
         }
 
-
-        public byte[] HashOperation(RestApiClient apiClient, Parameters parameters)
+        public byte[] HashOperation(Parameters parameters)
         {
             var op = (Parameters)parameters["op"];
             var type = op["type"];
@@ -85,6 +98,9 @@ namespace Polymarket.Net
             {
                 signPayload.Add(arrayArgs.Cast<object>().ToArray());
             }
+
+            if (op.TryGetValue("grp", out var grouping))
+                signPayload.Add(grouping);
 
             var packed = new MessagePackConverter().
                 Pack(signPayload);

@@ -33,8 +33,8 @@ UriParams: {}
     "settlement": {
       "sequence": 1,
       "timestamp": 1,
-      "price": "<string>",
-      "insurance_debit": "<string>"
+      "price": "123",
+      "insurance_debit": "123"
     }
   }
 ]

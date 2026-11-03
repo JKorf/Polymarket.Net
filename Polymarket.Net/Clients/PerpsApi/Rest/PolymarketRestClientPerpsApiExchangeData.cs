@@ -81,6 +81,9 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             parameters.Add("category", category);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/instruments", PolymarketPlatform.RateLimiter.PerpsApi, 2, false);
             var result = await _baseClient.SendAsync<PolymarketSymbol[]>(request, parameters, ct).ConfigureAwait(false);
+            if (result.Success && symbolId == null && category == null)
+                PolymarketRestClientPerpsApi.SetSymbolCache(_baseClient.EnvironmentName, result.Data);
+
             return result;
         }
 
@@ -252,7 +255,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
         public async Task<HttpResult<PolymarketPortfolio>> GetPortfolioAsync(string? address = null, CancellationToken ct = default)
         {
             var parameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
-            parameters.Add("address", address ?? _baseClient.AuthenticationProvider?.ApiCredentials.L1?.Key);
+            parameters.Add("address", address ?? _baseClient.AuthenticationProvider?.ApiCredentials.PredictionL1?.Key);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/v1/info/portfolio", PolymarketPlatform.RateLimiter.PerpsApi, 1, false);
             var result = await _baseClient.SendAsync<PolymarketPortfolio>(request, parameters, ct).ConfigureAwait(false);
             return result;

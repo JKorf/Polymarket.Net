@@ -54,5 +54,17 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("c"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string? ClientOrderId { get; set; }
+        /// <summary>
+        /// ["<c>tr.market</c>"] Trigger order type
+        /// </summary>
+        public OrderType? TriggerOrderType { get; set; }
+        /// <summary>
+        /// ["<c>tr.trp</c>"] Trigger order price
+        /// </summary>
+        public decimal? TriggerPrice { get; set; }
+        /// <summary>
+        /// ["<c>tr.tpsl</c>"] Trigger type
+        /// </summary>
+        public TpSlType? TriggerType { get; set; }
     }
 }

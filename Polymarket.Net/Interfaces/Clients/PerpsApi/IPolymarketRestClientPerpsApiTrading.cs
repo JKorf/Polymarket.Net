@@ -30,6 +30,10 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
         /// <param name="postOnly">["<c>po</c>"] Post only</param>
         /// <param name="reduceOnly">["<c>ro</c>"] Reduce only</param>
         /// <param name="clientOrderId">["<c>c</c>"] Client order id</param>
+        /// <param name="triggerOrderType">["<c>tr.market</c>"] Trigger order type</param>
+        /// <param name="triggerPrice">["<c>tr.trp</c>"] Trigger price</param>
+        /// <param name="tpslType">["<c>tr.tpsl</c>"] Tp/Sl type</param>
+        /// <param name="grouping">["<c>grp</c>"] Order grouping</param>
         /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketPerpOrderResult>> PlaceOrderAsync(
             long instrumentId,
@@ -40,6 +44,10 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
             bool? postOnly = null,
             bool? reduceOnly = null,
             string? clientOrderId = null,
+            OrderType? triggerOrderType = null,
+            decimal? triggerPrice = null,
+            TpSlType? tpslType = null,
+            TpSlGrouping? grouping = null,
             CancellationToken ct = default);
 
         /// <summary>
@@ -52,9 +60,11 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
         /// </para>
         /// </summary>
         /// <param name="orders">Orders to place</param>
+        /// <param name="grouping">["<c>grp</c>"] Order grouping</param>
         /// <param name="ct">Cancellation token</param>
         Task<HttpResult<CallResult<PolymarketPerpOrderResult>[]>> PlaceMultipleOrdersAsync(
             IEnumerable<PolymarketPerpsOrderRequest> orders,
+            TpSlGrouping? grouping = null,
             CancellationToken ct = default);
 
         /// <summary>

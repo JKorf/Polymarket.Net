@@ -44,22 +44,31 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             bool? postOnly = null,
             bool? reduceOnly = null,
             string? clientOrderId = null,
+            OrderType? triggerOrderType = null,
+            decimal? triggerPrice = null,
+            TpSlType? tpslType = null,
+            TpSlGrouping? grouping = null,
             CancellationToken ct = default)
         {
             var result = await PlaceMultipleOrdersAsync(new[]
-            {
-                new PolymarketPerpsOrderRequest
                 {
-                    SymbolId = instrumentId,
-                    Side = side,
-                    Price = price,
-                    Quantity = quantity,
-                    TimeInForce = timeInForce,
-                    PostOnly = postOnly,
-                    ReduceOnly = reduceOnly,
-                    ClientOrderId = clientOrderId
-                }
-            }, ct).ConfigureAwait(false);
+                    new PolymarketPerpsOrderRequest
+                    {
+                        SymbolId = instrumentId,
+                        Side = side,
+                        Price = price,
+                        Quantity = quantity,
+                        TimeInForce = timeInForce,
+                        PostOnly = postOnly,
+                        ReduceOnly = reduceOnly,
+                        ClientOrderId = clientOrderId,
+                        TriggerOrderType = triggerOrderType,
+                        TriggerType = tpslType,
+                        TriggerPrice = triggerPrice,
+                    },
+                },
+                grouping: grouping,
+                ct).ConfigureAwait(false);
 
             if (!result.Success && result.Error.ErrorType != ErrorType.AllOrdersFailed)
                 return HttpResult.Fail<PolymarketPerpOrderResult>(result);
@@ -81,6 +90,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
         /// <inheritdoc />
         public async Task<HttpResult<CallResult<PolymarketPerpOrderResult>[]>> PlaceMultipleOrdersAsync(
             IEnumerable<PolymarketPerpsOrderRequest> orders,
+            TpSlGrouping? grouping = null,
             CancellationToken ct = default)
         {
             if (!_baseClient.ValidateProxyCredentialsAvailable(false, true, out var error))
@@ -110,6 +120,14 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
                 orderParameters.Add("po", order.PostOnly);
                 orderParameters.Add("ro", order.ReduceOnly);
                 orderParameters.Add("c", order.ClientOrderId);
+                if (order.TriggerPrice != null)
+                {
+                    var tpSlParameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+                    tpSlParameters.Add("market", order.TriggerOrderType == OrderType.Market);
+                    tpSlParameters.Add("trp", order.TriggerPrice);
+                    tpSlParameters.Add("tpsl", order.TriggerType);
+                    orderParameters.AddRaw("tr", tpSlParameters);
+                }
                 if (builder != null)
                 {
                     var builderParameters = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
@@ -121,6 +139,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             }
 
             var opParameters = PolymarketUtils.GetOperationParameters("createOrders", allOrders.ToArray());
+            ((Parameters)opParameters["op"]).Add("grp", grouping);
             _baseClient.AuthenticationProvider?.AuthenticateOpRequest(_baseClient, opParameters, _baseClient.ApiCredentials!.Perps!.ProxyKey!);
             var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/v1/trade/orders", PolymarketPlatform.RateLimiter.PerpsApi, 1, true);
             var result = await _baseClient.SendAsync<PolymarketPerpOrderResult[]>(request, opParameters, ct, skipBuilderCheck: true).ConfigureAwait(false);

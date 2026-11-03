@@ -1,13 +1,14 @@
-using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.RateLimiting.Interfaces;
-using CryptoExchange.Net.RateLimiting;
-using System;
-using Polymarket.Net.Converters;
-using System.Text.Json;
-using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Converters;
-using CryptoExchange.Net.RateLimiting.Guards;
+using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Objects;
+using CryptoExchange.Net.RateLimiting;
 using CryptoExchange.Net.RateLimiting.Filters;
+using CryptoExchange.Net.RateLimiting.Guards;
+using CryptoExchange.Net.RateLimiting.Interfaces;
+using CryptoExchange.Net.SharedApis;
+using Polymarket.Net.Converters;
+using System;
+using System.Text.Json;
 
 namespace Polymarket.Net
 {
@@ -51,6 +52,27 @@ namespace Polymarket.Net
                 CentralizationType.Decentralized,
                 PolymarketEnvironment.All
                 );
+
+        public static AssetAliasConfiguration AssetAliases { get; } = new AssetAliasConfiguration
+        {
+            Aliases =
+            [
+                new AssetAlias("USD", SharedSymbol.UsdOrStable.ToUpperInvariant(), AliasType.OnlyToExchange)
+            ]
+        };
+
+        /// <summary>
+        /// Format a base and quote asset to a Polymarket recognized symbol 
+        /// </summary>
+        /// <param name="baseAsset">Base asset</param>
+        /// <param name="quoteAsset">Quote asset</param>
+        /// <param name="tradingMode">Trading mode</param>
+        /// <param name="deliverTime">Delivery time for delivery futures</param>
+        /// <returns></returns>
+        public static string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
+        {
+            return baseAsset + "-" + quoteAsset;
+        }
 
         /// <summary>
         /// Rate limiter configuration for the Polymarket API

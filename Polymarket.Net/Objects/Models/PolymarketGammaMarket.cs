@@ -5,6 +5,24 @@ using System.Text.Json.Serialization;
 namespace Polymarket.Net.Objects.Models
 {
     /// <summary>
+    /// Markets page
+    /// </summary>
+    public record PolymarketMarketPage
+    {
+        /// <summary>
+        /// ["<c>markets</c>"] Markets
+        /// </summary>
+        [JsonPropertyName("markets")]
+        public PolymarketGammaMarket[] Markets { get; set; } = [];
+
+        /// <summary>
+        /// ["<c>next_cursor</c>"] Pagination cursor
+        /// </summary>
+        [JsonPropertyName("next_cursor")]
+        public string? NextPageCursor { get; set; }
+    }
+
+    /// <summary>
     /// Gamma API market info
     /// </summary>
     public record PolymarketGammaMarket
@@ -352,11 +370,16 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("secondsDelay")]
         public decimal SecondsDelay { get; set; }
         /// <summary>
-        /// ["<c>clobTokenIds</c>"] Clob token ids
+        /// ["<c>clobTokenIds</c>"] Clob token ids, use this when Version = v1
         /// </summary>
         [JsonPropertyName("clobTokenIds")]
         [JsonConverter(typeof(ObjectStringConverter<string[]>))]
         public string[]? ClobTokenIds { get; set; }
+        /// <summary>
+        /// ["<c>positionIds</c>"] Position ids, use this when Version = v2
+        /// </summary>
+        [JsonPropertyName("positionIds")]
+        public string[]? PositionIds { get; set; }
         /// <summary>
         /// ["<c>disqusThread</c>"] Disqus thread
         /// </summary>
@@ -717,5 +740,10 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("feeSchedule")]
         public PolymarketFeeSchedule? FeeSchedule { get; set; }
+        /// <summary>
+        /// ["<c>version</c>"] Version
+        /// </summary>
+        [JsonPropertyName("version")]
+        public string Version { get; set; } = string.Empty;
     }
 }

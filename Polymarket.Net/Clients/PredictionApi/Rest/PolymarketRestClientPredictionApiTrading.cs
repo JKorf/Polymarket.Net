@@ -45,6 +45,8 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             _client = client;
         }
 
+        #region Place Order
+
         public async Task<HttpResult<PolymarketOrderResult>> PlaceOrderAsync(
             string tokenId,
             OrderSide side,
@@ -58,10 +60,14 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             QuantityType? quantityType = null,
             decimal? tickQuantity = null,
             bool? negativeRisk = null,
+            int marketVersion = 1,
             CancellationToken ct = default)
         {
+            if (marketVersion > 2 || marketVersion < 1)
+                throw new ArgumentException("Market version must be 1 or 2", nameof(marketVersion));
+
             PolymarketOrderBook? tokenInfo = null;
-            if (orderType != OrderType.Limit || tickQuantity is null || negativeRisk is null)
+            if (orderType != OrderType.Limit || tickQuantity is null || (negativeRisk is null && marketVersion == 1))
             {
                 var tokenResult = await PolymarketUtils.GetTokenInfoAsync(tokenId, _client).ConfigureAwait(false);
                 if (!tokenResult.Success)
@@ -81,11 +87,11 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             var orderParameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             var credentials = _client.AuthenticationProvider!.ApiCredentials;
 
-            var maker = credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress();
-            var signer = credentials.L1.GetPublicAddress();
-            if (credentials.L1.SignType == SignType.Poly1271)
+            var maker = credentials.PredictionL1.PolymarketFundingAddress ?? credentials.PredictionL1.WalletKey.PublicAddress;
+            var signer = credentials.PredictionL1.WalletKey.PublicAddress;
+            if (credentials.PredictionL1.SignType == SignType.Poly1271)
             {
-                signer = credentials.L1.PolymarketFundingAddress;
+                signer = credentials.PredictionL1.PolymarketFundingAddress;
             }
 
             orderParameters.AddRaw("salt", (ulong)(clientOrderId ?? ExchangeHelpers.RandomLong(1000000000000, 9999999999999)));
@@ -96,7 +102,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             orderParameters.Add("takerAmount", makerTakerQuantities.Data.TakerQuantity);
             orderParameters.Add("side", side);
             orderParameters.Add("expiration", (expiration == null ? 0 : DateTimeConverter.ConvertToSeconds(expiration.Value)).ToString());
-            orderParameters.Add("signatureType", (int)credentials.L1.SignType);
+            orderParameters.Add("signatureType", (int)credentials.PredictionL1.SignType);
             orderParameters.Add("timestamp", DateTime.UtcNow);
             orderParameters.Add("metadata", "0x0000000000000000000000000000000000000000000000000000000000000000");
             orderParameters.Add("builder", builderCode!);
@@ -104,10 +110,11 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
                 _client.AuthenticationProvider.GetOrderSignature(
                     orderParameters,
                     _client.ClientOptions.Environment.ChainId,
-                    negativeRisk.Value).ToLowerInvariant());
+                    negativeRisk,
+                    marketVersion).ToLowerInvariant());
 
             parameters.Add("order", orderParameters);
-            parameters.Add("owner", credentials.L2!.Key!);
+            parameters.Add("owner", credentials.PredictionL2!.Key!);
             parameters.Add("orderType", timeInForce ?? (orderType == OrderType.Limit ? TimeInForce.GoodTillCanceled : TimeInForce.ImmediateOrCancel));
             parameters.Add("postOnly", postOnly);
             var request = _definitions.GetOrCreate(HttpMethod.Post, _client.ClobApiAddress, "/order", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
@@ -122,6 +129,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
             return result;
         }
+
+        #endregion
+
+        #region Place Multiple Orders
 
         public async Task<HttpResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
@@ -144,15 +155,18 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
             var credentials = _client.AuthenticationProvider!.ApiCredentials;
 
-            var maker = credentials.L1.PolymarketFundingAddress ?? credentials.L1.GetPublicAddress();
-            var signer = credentials.L1.GetPublicAddress();
-            if (credentials.L1.SignType == SignType.Poly1271)
+            var maker = credentials.PredictionL1.PolymarketFundingAddress ?? credentials.PredictionL1.WalletKey.PublicAddress;
+            var signer = credentials.PredictionL1.WalletKey.PublicAddress;
+            if (credentials.PredictionL1.SignType == SignType.Poly1271)
             {
-                signer = credentials.L1.PolymarketFundingAddress;
+                signer = credentials.PredictionL1.PolymarketFundingAddress;
             }
             var parameterList = new List<Parameters>();
             foreach (var request in requests)
             {
+                if (request.MarketVersion > 2 || request.MarketVersion < 1)
+                    throw new ArgumentException("Market version must be 1 or 2", nameof(request.MarketVersion));
+
                 PolymarketOrderBook? tokenInfo = null;
                 decimal? tickQuantity = request.TickQuantity;
                 bool? negativeRisk = request.NegativeRisk;
@@ -186,15 +200,16 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
                 orderParameters.Add("metadata", "0x0000000000000000000000000000000000000000000000000000000000000000");
                 orderParameters.Add("builder", builderCode!);
                 orderParameters.Add("side", request.Side);
-                orderParameters.Add("signatureType", (int)credentials.L1.SignType);
+                orderParameters.Add("signatureType", (int)credentials.PredictionL1.SignType);
                 orderParameters.Add("signature",
                     _client.AuthenticationProvider.GetOrderSignature(
                         orderParameters,
                         _client.ClientOptions.Environment.ChainId,
-                        negativeRisk!.Value).ToLowerInvariant());
+                        negativeRisk!.Value,
+                        request.MarketVersion).ToLowerInvariant());
 
                 parameters.Add("order", orderParameters);
-                parameters.Add("owner", credentials.L2!.Key!);
+                parameters.Add("owner", credentials.PredictionL2!.Key!);
                 parameters.Add("orderType", request.TimeInForce ?? TimeInForce.GoodTillCanceled);
                 parameters.Add("postOnly", request.PostOnly);
                 parameterList.Add(parameters);
@@ -384,6 +399,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             return Math.Floor(value * factor) / factor;
         }
 
+        #endregion
+
+        #region Get Order
+
         public async Task<HttpResult<PolymarketOrder>> GetOrderAsync(string orderId, CancellationToken ct = default)
         {
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
@@ -392,6 +411,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             var result = await _client.SendAsync<PolymarketOrder>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
+
+        #endregion
+
+        #region Get Open Orders
 
         public async Task<HttpResult<PolymarketPage<PolymarketOrder>>> GetOpenOrdersAsync(
             string? orderId = null,
@@ -411,6 +434,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             return result;
         }
 
+        #endregion
+
+        #region Get Order Reward Scoring
+
         public async Task<HttpResult<PolymarketOrderScoring>> GetOrderRewardScoringAsync(string orderId, CancellationToken ct = default)
         {
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
@@ -420,6 +447,9 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             return result;
         }
 
+        #endregion
+
+        #region Get Order Rewards Scoring
 
         public async Task<HttpResult<Dictionary<string, bool>>> GetOrdersRewardScoringAsync(IEnumerable<string> orderIds, CancellationToken ct = default)
         {
@@ -428,6 +458,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             var result = await _client.SendAsync<Dictionary<string, bool>>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
+
+        #endregion
+
+        #region Cancel Order
 
         public async Task<HttpResult<PolymarketCancelResult>> CancelOrderAsync(string orderId, CancellationToken ct = default)
         {
@@ -439,6 +473,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             return result;
         }
 
+        #endregion
+
+        #region Cancel Orders
+
         public async Task<HttpResult<PolymarketCancelResult>> CancelOrdersAsync(IEnumerable<string> orderIds, CancellationToken ct = default)
         {
             var parameters = new Parameters(orderIds.ToArray(), PolymarketPlatform._parameterSerializationSettings);
@@ -447,6 +485,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             var result = await _client.SendAsync<PolymarketCancelResult>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
+
+        #endregion
+
+        #region Cancel Orders On Market
 
         public async Task<HttpResult<PolymarketCancelResult>> CancelOrdersOnMarketAsync(string? market = null, string? tokenId = null, CancellationToken ct = default)
         {
@@ -459,6 +501,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             return result;
         }
 
+        #endregion
+
+        #region Cancel All Orders
+
         public async Task<HttpResult<PolymarketCancelResult>> CancelAllOrdersAsync(CancellationToken ct = default)
         {
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
@@ -467,6 +513,10 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             var result = await _client.SendAsync<PolymarketCancelResult>(request, parameters, ct).ConfigureAwait(false);
             return result;
         }
+
+        #endregion
+
+        #region Get User Trades
 
         public async Task<HttpResult<PolymarketPage<PolymarketTrade>>> GetUserTradesAsync(
             string? tradeId = null,
@@ -492,12 +542,59 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             return result;
         }
 
+        #endregion
+
+        #region Post Order Heartbeat
+
         public async Task<HttpResult> PostOrderHeartbeatAsync(CancellationToken ct = default)
         {
             var request = _definitions.GetOrCreate(HttpMethod.Post, _client.ClobApiAddress, "/heartbeats", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
             var result = await _client.SendAsync<PolymarketOrderHeartbeat>(request, null, ct).ConfigureAwait(false);
             return result;
         }
+
+        #endregion
+
+        #region Get Positions 
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketDataPage<PolymarketPosition>>> GetPositionsAsync(
+            string? user = null,
+            string? market = null,
+            PositionStatus? status = null,
+            string? eventId = null,
+            string? title = null,
+            string? filterType = null,
+            decimal? filterAmount = null,
+            bool? includeArchived = null,
+            DateTime? startTime = null,
+            DateTime? endTime = null,
+            int? limit = null,
+            PositionSortBy? sortBy = null,
+            SortDirection? sortDirection = null,
+            string? cursor = null,
+            CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
+            parameters.Add("user", user);
+            parameters.Add("condition", market);
+            parameters.Add("status", status);
+            parameters.Add("event_id", eventId);
+            parameters.Add("title", title);
+            parameters.Add("filter_type", filterType);
+            parameters.Add("filter_amount", filterAmount);
+            parameters.Add("include_archived", includeArchived);
+            parameters.Add("start", startTime);
+            parameters.Add("end", endTime);
+            parameters.Add("limit", limit);
+            parameters.Add("sort_by", sortBy);
+            parameters.Add("sort_direction", sortDirection);
+            parameters.Add("cursor", cursor);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _client.DataApiAddress, "/v2/positions", PolymarketPlatform.RateLimiter.DataApi, 1, false);
+            return await _client.SendAsync<PolymarketDataPage<PolymarketPosition>>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
 
         private static int GetDecimalPlaces(decimal value)
         {

@@ -25,10 +25,6 @@ UriParams: {}
       "parent_oid": 1234567890,
       "armed_qty": "10.00",
       "slip_bps": 1000
-    },
-    "builder": {
-      "address": "0x1234567890abcdef1234567890abcdef12345678",
-      "fee_rate": "0.001"
     }
   }
 ]

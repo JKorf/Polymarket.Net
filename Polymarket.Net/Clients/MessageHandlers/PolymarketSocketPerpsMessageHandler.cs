@@ -15,7 +15,16 @@ namespace Polymarket.Net.Clients.MessageHandlers
 
         public PolymarketSocketPerpsMessageHandler()
         {
-            AddTopicMapping<PolymarketPerpsSocketUpdate>(x => string.Join("", x.Channel.Split(new [] { "::" }, StringSplitOptions.None).Skip(1)));
+            AddTopicMapping<PolymarketPerpsSocketUpdate>(x =>
+            {
+                var channelSplit = x.Channel.Split(new[] { "::" }, StringSplitOptions.None);
+                if (channelSplit[0].Equals("tpsl", StringComparison.Ordinal))
+                    // TP/SL updates are sent as 'tpsl::<account_id>'. We ignore account id 
+                    return null;
+
+                var type = string.Join("", channelSplit.Skip(1));
+                return type;
+            });
         }
 
         protected override MessageTypeDefinition[] TypeEvaluators { get; } = [

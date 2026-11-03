@@ -70,10 +70,14 @@ namespace Polymarket.Net.Clients
             var existingCreds = ((PolymarketRestClientPredictionApi)PredictionApi).ApiCredentials
                 ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
 
-            SetApiCredentials(
-                new PolymarketCredentials()
-                    .WithL1(existingCreds.L1.SignType, existingCreds.L1.PrivateKey, existingCreds.L1.PolymarketFundingAddress)
-                    .WithL2(credentials.ApiKey, credentials.Secret, credentials.Passphrase));
+            var newCreds = new PolymarketCredentials()
+                    .WithL1(existingCreds.PredictionL1.SignType, existingCreds.PredictionL1.WalletKey, existingCreds.PredictionL1.PolymarketFundingAddress)
+                    .WithL2(credentials.ApiKey, credentials.Secret, credentials.Passphrase);
+
+            if (existingCreds.Perps != null)
+                newCreds = newCreds.WithPerps(existingCreds.Perps.Secret, existingCreds.Perps.SignerKey, existingCreds.Perps.ProxyKey);
+
+            SetApiCredentials(newCreds);
         }
     }
 }

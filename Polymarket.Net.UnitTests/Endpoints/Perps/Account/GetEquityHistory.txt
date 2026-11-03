@@ -1,7 +1,7 @@
 GET
 /v1/account/equity
 true
-UriParams: {"interval": "1m","start_timestamp": DateTime.UtcNow}
+UriParams: {"interval": "1m"}
 {
   "data": [
     [

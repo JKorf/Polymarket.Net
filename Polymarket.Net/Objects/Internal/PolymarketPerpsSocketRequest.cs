@@ -30,8 +30,11 @@ namespace Polymarket.Net.Objects.Internal
 
     internal record PolymarketPerpsAuthSocketRequest : PolymarketPerpsOpSocketRequest
     {
+        [JsonPropertyName("sig")]
         public string Signature { get; set; } = string.Empty;
+        [JsonPropertyName("salt")]
         public long Salt { get; set; }
+        [JsonPropertyName("ts")]
         public long Timestamp { get; set; }
     }
 }

@@ -35,6 +35,7 @@ namespace Polymarket.Net
 
         private static byte[] _ctfExchangeNameHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("Polymarket CTF Exchange"));
         private static byte[] _ctfExchangeVersionHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("2"));
+        private static byte[] _ctfExchangeVersion3Hash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes("3"));
 
         private static byte[] _soladyTypeHash = CeSha3Keccack.CalculateHash(Encoding.UTF8.GetBytes($"TypedDataSign(Order contents,string name,string version,uint256 chainId,"
                                                                                                 + "address verifyingContract,bytes32 salt)"
@@ -46,10 +47,11 @@ namespace Polymarket.Net
         private static byte[] _abiDomainTypeHash = CeAbiEncoder.AbiValueEncodeBytes(32, _domainTypeHash);
         private static byte[] _abiExchangeName = CeAbiEncoder.AbiValueEncodeBytes(32, _ctfExchangeNameHash);
         private static byte[] _abiExchangeVersion = CeAbiEncoder.AbiValueEncodeBytes(32, _ctfExchangeVersionHash);
+        private static byte[] _abiExchangeVersion3 = CeAbiEncoder.AbiValueEncodeBytes(32, _ctfExchangeVersion3Hash);
 
         private static IStringMessageSerializer _serializer = new SystemTextJsonMessageSerializer(PolymarketPlatform._serializerContext);
 
-        public override string Key => ApiCredentials.L1.Key;
+        public override string Key => ApiCredentials.PredictionL1?.Key ?? ApiCredentials.Perps?.Key!;
 
         public PolymarketAuthenticationProvider(PolymarketCredentials credentials) : base(credentials)
         {
@@ -68,7 +70,7 @@ namespace Polymarket.Net
             }
             else
             {
-                if (ApiCredentials.L2 == null)
+                if (ApiCredentials.PredictionL1 == null)
                     throw new InvalidOperationException("Layer 2 credentials required");
 
                 // L2 authentication
@@ -78,10 +80,10 @@ namespace Polymarket.Net
 
         public override Query? GetAuthenticationQuery(SocketApiClient apiClient, SocketConnection connection, Dictionary<string, object?>? context = null)
         {
-            if (ApiCredentials.L2 == null)
+            if (ApiCredentials.PredictionL2 == null)
                 throw new InvalidOperationException("Layer 2 credentials required");
 
-            return new PolymarketInitialQuery<object>("USER", true, ApiCredentials.L2.Key, ApiCredentials.L2.Secret!, ApiCredentials.L2.Pass!);
+            return new PolymarketInitialQuery<object>("USER", true, ApiCredentials.PredictionL2.Key, ApiCredentials.PredictionL2.Secret!, ApiCredentials.PredictionL2.Pass!);
         }
 
         private void SignL1Custom(RestRequestConfiguration requestConfig, uint chainId)
@@ -95,7 +97,7 @@ namespace Polymarket.Net
 
             var signature = SignHash(keccakSigned);
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.L1.GetPublicAddress());
+            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.PredictionL1.WalletKey.PublicAddress);
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.ToLowerInvariant());
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
             requestConfig.Headers.Add("POLY_NONCE", nonce?.ToString() ?? "0");
@@ -103,12 +105,12 @@ namespace Polymarket.Net
 
         private void SignL2(RestApiClient client, RestRequestConfiguration requestConfig)
         {
-            _hmacBytes ??= Convert.FromBase64String(ApiCredentials.L2!.Secret!.Replace('-', '+').Replace('_', '/'));
+            _hmacBytes ??= Convert.FromBase64String(ApiCredentials.PredictionL2!.Secret!.Replace('-', '+').Replace('_', '/'));
             var timestamp = DateTimeConverter.ConvertToSeconds(DateTime.UtcNow);
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.L1.Key!);
-            requestConfig.Headers.Add("POLY_API_KEY", ApiCredentials.L2!.Key!);
-            requestConfig.Headers.Add("POLY_PASSPHRASE", ApiCredentials.L2.Pass!);
+            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.PredictionL1.WalletKey.PublicAddress!);
+            requestConfig.Headers.Add("POLY_API_KEY", ApiCredentials.PredictionL2!.Key!);
+            requestConfig.Headers.Add("POLY_PASSPHRASE", ApiCredentials.PredictionL2.Pass!);
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
 
             var signData = timestamp + requestConfig.RequestDefinition.Method.ToString() + requestConfig.RequestDefinition.Path;
@@ -126,14 +128,18 @@ namespace Polymarket.Net
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.Replace('+', '-').Replace('/', '_'));
         }
 
-        public string GetOrderSignature(Parameters parameters, uint chainId, bool negativeRisk)
+        public string GetOrderSignature(Parameters parameters, uint chainId, bool? negativeRisk, int marketVersion)
         {
             var signType = (int)parameters["signatureType"];
             if (signType == (int)SignType.Poly1271)
             {
                 var abiChainId = CeAbiEncoder.AbiValueEncodeBigInteger(false, new BigInteger(chainId));
-                var abiContractAddress = CeAbiEncoder.AbiValueEncodeAddress(GetContract(parameters, chainId, negativeRisk));
-                var domainSeparatorBytes = CombineBytes(_abiDomainTypeHash, _abiExchangeName, _abiExchangeVersion, abiChainId, abiContractAddress);
+                var abiContractAddress = CeAbiEncoder.AbiValueEncodeAddress(GetContract(parameters, chainId, negativeRisk, marketVersion));
+                
+                var domainSeparatorBytes = 
+                    marketVersion == 1 
+                        ? CombineBytes(_abiDomainTypeHash, _abiExchangeName, _abiExchangeVersion, abiChainId, abiContractAddress)
+                        : CombineBytes(_abiDomainTypeHash, _abiExchangeName, _abiExchangeVersion3, abiChainId, abiContractAddress);
                 var appDomainSepBytes = CeSha3Keccack.CalculateHash(domainSeparatorBytes);
                 var appDomainSep = BytesToHexString(appDomainSepBytes);
 
@@ -175,7 +181,7 @@ namespace Polymarket.Net
             }
             else
             {
-                var typeRaw = GetTypeDataRawCustom(parameters, chainId, negativeRisk);
+                var typeRaw = GetTypeDataRawCustom(parameters, chainId, negativeRisk, marketVersion);
                 var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(typeRaw);
                 var orderHashBytes = CeSha3Keccack.CalculateHash(msg);
                 return SignHash(orderHashBytes);
@@ -184,7 +190,7 @@ namespace Polymarket.Net
 
         private string SignHash(byte[] hash)
         {
-            (var signature, var recover) = Secp256k1.SignRecoverable(hash, HexToBytesString(ApiCredentials.L1.PrivateKey));
+            (var signature, var recover) = Secp256k1.SignRecoverable(hash, HexToBytesString(ApiCredentials.PredictionL1.WalletKey.PrivateKey));
             var hexCompactR = BytesToHexString(new ArraySegment<byte>(signature, 0, 32));
             var hexCompactS = BytesToHexString(new ArraySegment<byte>(signature, 32, 32));
             var hexCompactV = BytesToHexString([(byte)(recover + 27)]);
@@ -195,17 +201,29 @@ namespace Polymarket.Net
             return result;
         }
 
-        private string GetContract(Parameters order, uint chainId, bool negativeRisk)
+        private string GetContract(Parameters order, uint chainId, bool? negativeRisk, int marketVersion)
         {
-            if (chainId == 137)            
-                return negativeRisk ? PolymarketContractsConfig.PolygonNegRiskConfig.Exchange : PolymarketContractsConfig.PolygonConfig.Exchange;            
+            if (chainId == 137)
+            {
+                if (marketVersion == 2)
+                    return PolymarketContractsConfig.PolygonConfigV3.Exchange;
+
+                return negativeRisk == true ? PolymarketContractsConfig.PolygonNegRiskConfig.Exchange : PolymarketContractsConfig.PolygonConfig.Exchange;
+            }
             else if (chainId == 80002)
-                return negativeRisk ? PolymarketContractsConfig.AmoyNegRiskConfig.Exchange : PolymarketContractsConfig.AmoyConfig.Exchange;
+            {
+                if (marketVersion == 2)
+                    return PolymarketContractsConfig.AmoyConfigV3.Exchange;
+
+                return negativeRisk == true ? PolymarketContractsConfig.AmoyNegRiskConfig.Exchange : PolymarketContractsConfig.AmoyConfig.Exchange;
+            }
             else
+            {
                 throw new InvalidOperationException("Unknown chainId: " + chainId);
+            }
         }
 
-        private CeTypedDataRaw GetTypeDataRawCustom(Parameters order, uint chainId, bool negativeRisk)
+        private CeTypedDataRaw GetTypeDataRawCustom(Parameters order, uint chainId, bool? negativeRisk, int marketVersion)
         {
             return new CeTypedDataRaw
             {
@@ -213,9 +231,9 @@ namespace Polymarket.Net
                 DomainRawValues = new CeMemberValue[]
                 {
                     new CeMemberValue { TypeName = "string", Value = "Polymarket CTF Exchange" },
-                    new CeMemberValue { TypeName = "string", Value = "2" },
+                    new CeMemberValue { TypeName = "string", Value = marketVersion == 2 ? "3" : "2" },
                     new CeMemberValue { TypeName = "uint256", Value = chainId },
-                    new CeMemberValue { TypeName = "address", Value = GetContract(order, chainId, negativeRisk) }
+                    new CeMemberValue { TypeName = "address", Value = GetContract(order, chainId, negativeRisk, marketVersion) }
                 },
                 Message = new CeMemberValue[]
                 {
@@ -275,7 +293,7 @@ namespace Polymarket.Net
                 },
                 Message = new CeMemberValue[]
                 {
-                    new CeMemberValue { TypeName = "address", Value = ApiCredentials.L1.GetPublicAddress() },
+                    new CeMemberValue { TypeName = "address", Value = ApiCredentials.PredictionL1.WalletKey.PublicAddress },
                     new CeMemberValue { TypeName = "string", Value = timestamp },
                     new CeMemberValue { TypeName = "uint256", Value = nonce },
                     new CeMemberValue { TypeName = "string", Value = _l1SignMessage }

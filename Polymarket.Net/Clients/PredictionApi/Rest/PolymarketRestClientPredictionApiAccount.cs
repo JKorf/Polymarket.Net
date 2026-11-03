@@ -90,7 +90,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
                 return HttpResult.Fail<PolymarketNotification[]>(_client.Exchange, new NoApiCredentialsError());
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
-            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.L1.SignType);
+            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _client.ClobApiAddress, "notifications", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
                 limitGuard: new SingleLimitGuard(900, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
             var result = await _client.SendAsync<PolymarketNotification[]>(request, parameters, ct).ConfigureAwait(false);
@@ -103,7 +103,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
                 return HttpResult.Fail<PolymarketNotification[]>(_client.Exchange, new NoApiCredentialsError());
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
-            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.L1.SignType);
+            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);
             parameters.Add("ids", string.Join(",", ids));
             var request = _definitions.GetOrCreate(HttpMethod.Delete, _client.ClobApiAddress, "notifications", PolymarketPlatform.RateLimiter.ClobApi, 1, true, parameterPosition: HttpMethodParameterPosition.InUri,
                 limitGuard: new SingleLimitGuard(125, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding));
@@ -117,7 +117,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
                 return HttpResult.Fail<PolymarketBalanceAllowance>(_client.Exchange, new NoApiCredentialsError());
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
-            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.L1.SignType);
+            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);
             parameters.Add("asset_type", assetType);
             parameters.Add("token_id", tokenId);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _client.ClobApiAddress, "balance-allowance", PolymarketPlatform.RateLimiter.ClobApi, 1, true,
@@ -132,7 +132,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
                 return HttpResult.Fail(_client.Exchange, new NoApiCredentialsError());
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
-            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.L1.SignType);
+            parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);
             parameters.Add("asset_type", assetType);
             parameters.Add("token_id", tokenId);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _client.ClobApiAddress, "balance-allowance/update", PolymarketPlatform.RateLimiter.ClobApi, 1, true,

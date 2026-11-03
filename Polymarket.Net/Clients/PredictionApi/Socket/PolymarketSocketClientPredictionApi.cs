@@ -210,15 +210,18 @@ namespace Polymarket.Net.Clients.PredictionApi
 
         protected override Task<Query?> GetAuthenticationRequestAsync(SocketConnection connection, IMessageProcessor? processor)
         {
+            if (processor is PolymarketUserSubscription)
+                return Task.FromResult<Query?>(AuthenticationProvider!.GetAuthenticationQuery(this, connection));
+
             var msg = new PolymarketBoltAuthRequest
             {
                 Operation = "auth",
                 RequestId = ExchangeHelpers.NextId().ToString(),
                 Auth = new PolymarketBoltAuth
                 {
-                    ApiKey = AuthenticationProvider.ApiCredentials.L2.Key,
-                    Secret = AuthenticationProvider.ApiCredentials.L2.Secret,
-                    Passphrase = AuthenticationProvider.ApiCredentials.L2.Pass
+                    ApiKey = AuthenticationProvider.ApiCredentials.PredictionL2.Key,
+                    Secret = AuthenticationProvider.ApiCredentials.PredictionL2.Secret,
+                    Passphrase = AuthenticationProvider.ApiCredentials.PredictionL2.Pass
                 }
             };
             return Task.FromResult<Query?>(new PolymarketBoltQuery(msg, false));

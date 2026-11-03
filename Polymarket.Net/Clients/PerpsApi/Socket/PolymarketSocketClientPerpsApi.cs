@@ -10,15 +10,18 @@ using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Sockets;
 using CryptoExchange.Net.Sockets.Default;
 using CryptoExchange.Net.Sockets.Interfaces;
+using CryptoExchange.Net.Web3;
 using Microsoft.Extensions.Logging;
 using Polymarket.Net.Clients.MessageHandlers;
 using Polymarket.Net.Enums;
+using Polymarket.Net.Interfaces.Clients.PerpsApi;
 using Polymarket.Net.Interfaces.Clients.PredictionApi;
 using Polymarket.Net.Objects.Internal;
 using Polymarket.Net.Objects.Models;
 using Polymarket.Net.Objects.Options;
 using Polymarket.Net.Objects.Sockets;
 using Polymarket.Net.Objects.Sockets.Subscriptions;
+using Polymarket.Net.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,10 +37,20 @@ namespace Polymarket.Net.Clients.PerpsApi
     internal partial class PolymarketSocketClientPerpsApi : SocketApiClient<PolymarketEnvironment, PolymarketPerpsAuthenticationProvider, PolymarketCredentials>, IPolymarketSocketClientPerpsApi
     {
         #region fields
+        public new PolymarketSocketOptions ClientOptions => (PolymarketSocketOptions)base.ClientOptions;
 
         protected override ErrorMapping ErrorMapping => PolymarketErrors.Errors;
 
         #endregion
+
+        /// <inheritdoc />
+        public IPolymarketSocketClientPerpsSharedApi SharedApi { get; }
+        /// <inheritdoc />
+        public IPolymarketSocketClientPerpsApiAccount Account { get; }
+        /// <inheritdoc />
+        public IPolymarketSocketClientPerpsApiExchangeData ExchangeData { get; }
+        /// <inheritdoc />
+        public IPolymarketSocketClientPerpsApiTrading Trading { get; }
 
         #region constructor/destructor
 
@@ -45,13 +58,13 @@ namespace Polymarket.Net.Clients.PerpsApi
         /// ctor
         /// </summary>
         internal PolymarketSocketClientPerpsApi(ILoggerFactory? loggerFactory, PolymarketSocketOptions options) :
-            base(loggerFactory, PolymarketPlatform.Metadata.Id, options.Environment.PerpsSocketClientAddress!, options, options.PredictionOptions)
+            base(loggerFactory, PolymarketPlatform.Metadata.Id, options.Environment.PerpsSocketClientAddress!, options, options.PerpsOptions)
         {
             RegisterPeriodicQuery(
                 "Ping",
                 TimeSpan.FromSeconds(10),
                 x => 
-                    new PolymarketPerpsQuery<PolymarketPerpsSocketResponse>(new PolymarketPerpsOpSocketRequest
+                    new PolymarketPerpsQuery<PolymarketStatus>(this, new PolymarketPerpsOpSocketRequest
                     {
                         Id = ExchangeHelpers.NextId(),
                         Request = "post",
@@ -69,6 +82,12 @@ namespace Polymarket.Net.Clients.PerpsApi
                         _ = connection.TriggerReconnectAsync();
                     }
                 });
+
+            Account = new PolymarketSocketClientPerpsApiAccount(_logger, this);
+            ExchangeData = new PolymarketSocketClientPerpsApiExchangeData(_logger, this);
+            Trading = new PolymarketSocketClientPerpsApiTrading(_logger, this);
+
+            SharedApi = new PolymarketSocketClientPerpsSharedApi(this);
         }
         #endregion
 
@@ -83,196 +102,117 @@ namespace Polymarket.Net.Clients.PerpsApi
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)
-            => throw new NotImplementedException();
+            => PolymarketPlatform.FormatSymbol(baseAsset, quoteAsset, tradingMode, deliverDate);
 
-        #region Trades
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(
-            long symbolId,
-            Action<DataEvent<PolymarketPerpTrade[]>> onUpdate,
-            CancellationToken ct = default)
-            => await SubscribeToTradeUpdatesAsync(new[] { symbolId }, onUpdate, ct).ConfigureAwait(false);
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(
-            IEnumerable<long> symbolIds,
-            Action<DataEvent<PolymarketPerpTrade[]>> onUpdate,
-            CancellationToken ct = default)
+        protected override Task<Query?> GetAuthenticationRequestAsync(SocketConnection connection, IMessageProcessor? processor)
         {
-            var subscription = new PolymarketPerpsSubscription<PolymarketPerpTrade[]>(
-                _logger,
-                this,
-                "trades",
-                symbolIds,
-                onUpdate);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
+            var parameters = (Parameters)PolymarketUtils.GetOperationParameters("auth", new Parameters(PolymarketPlatform._perpsParameterSerializationSettings)
+            {
+                { "proxy", _authenticationProvider.ApiCredentials.Perps.ProxyKey.PublicAddress },
+                { "secret", _authenticationProvider.ApiCredentials.Perps.Secret }
+            })["op"];
+
+            var request = new PolymarketPerpsOpSocketRequest
+            {
+                Id = ExchangeHelpers.NextId(),
+                Request = "post",
+                Op = parameters
+            };
+
+            return Task.FromResult<Query?>(new PolymarketPerpsQuery<PolymarketStatus>(this, request, false));
         }
 
-        #endregion
+        internal new Task<QueryResult<THandlerResponse>> QueryAsync<THandlerResponse>(string url, Query<THandlerResponse> query, CancellationToken ct = default)
+            => base.QueryAsync(url, query, ct);
 
-        #region Tickers
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(
-            long symbolId,
-            Action<DataEvent<PolymarketPerpTickerUpdate>> onUpdate,
-            CancellationToken ct = default)
-            => await SubscribeToTickerUpdatesAsync(new[] { symbolId }, onUpdate, ct).ConfigureAwait(false);
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTickerUpdatesAsync(
-            IEnumerable<long> symbolIds,
-            Action<DataEvent<PolymarketPerpTickerUpdate>> onUpdate,
-            CancellationToken ct = default)
+        internal async Task<QueryResult<T>> Query<T>(string type, Parameters parameters)
         {
-            var subscription = new PolymarketPerpsSubscription<PolymarketPerpTickerUpdate>(
-                _logger,
-                this,
-                "tickers",
-                symbolIds,
-                onUpdate);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
+            var opParameters = PolymarketUtils.GetOperationParameters(type, parameters);
+            AuthenticationProvider?.AuthenticateOpRequest(this, opParameters, ApiCredentials!.Perps!.ProxyKey!);
+
+            var request = new PolymarketPerpsAuthSocketRequest
+            {
+                Id = ExchangeHelpers.NextId(),
+                Request = "post",
+                Op = (Parameters)opParameters["op"],
+                Salt = (long)opParameters["salt"],
+                Timestamp = (long)opParameters["ts"],
+                Signature = (string)opParameters["sig"]
+            };
+
+            return await base.QueryAsync<T>(BaseAddress.AppendPath("/v1/ws"), new PolymarketPerpsQuery<T>(this, request, false)).ConfigureAwait(false);
         }
 
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToAllTickerUpdatesAsync(
-            Action<DataEvent<PolymarketPerpTickerUpdate>> onUpdate,
-            CancellationToken ct = default)
+        internal async Task<QueryResult<T>> Query<T>(string type, Parameters[] parameters)
         {
-            var subscription = new PolymarketPerpsSubscription<PolymarketPerpTickerUpdate>(
-                _logger,
-                this,
-                "tickers",
-                null,
-                onUpdate,
-                true);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
+            var opParameters = PolymarketUtils.GetOperationParameters(type, parameters);
+            AuthenticationProvider?.AuthenticateOpRequest(this, opParameters, ApiCredentials!.Perps!.ProxyKey!);
+
+            var request = new PolymarketPerpsAuthSocketRequest
+            {
+                Id = ExchangeHelpers.NextId(),
+                Request = "post",
+                Op = (Parameters)opParameters["op"],
+                Salt = (long)opParameters["salt"],
+                Timestamp = (long)opParameters["ts"],
+                Signature = (string)opParameters["sig"]
+            };
+
+            return await base.QueryAsync<T>(BaseAddress.AppendPath("/v1/ws"), new PolymarketPerpsQuery<T>(this, request, false)).ConfigureAwait(false);
         }
 
-        #endregion
+        internal new Task<WebSocketResult<UpdateSubscription>> SubscribeAsync(string url, Subscription subscription, CancellationToken ct)
+            => base.SubscribeAsync(url, subscription, ct);
 
-        #region Book Ticker
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToBookTickerUpdatesAsync(
-            long symbolId,
-            Action<DataEvent<PolymarketPerpBookTickerUpdate>> onUpdate,
-            CancellationToken ct = default)
-            => await SubscribeToBookTickerUpdatesAsync(new[] { symbolId }, onUpdate, ct).ConfigureAwait(false);
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToBookTickerUpdatesAsync(
-            IEnumerable<long> symbolIds,
-            Action<DataEvent<PolymarketPerpBookTickerUpdate>> onUpdate,
-            CancellationToken ct = default)
+        internal bool ValidateProxyCredentialsAvailable(bool requiresSecret, bool requiresPrivateKey, out Error? error)
         {
-            var subscription = new PolymarketPerpsSubscription<PolymarketPerpBookTickerUpdate>(
-                _logger,
-                this,
-                "bbo",
-                symbolIds,
-                onUpdate);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
+            var result = ValidateCredentialsAvailable(
+                ApiCredentials?.Perps?.ProxyKey,
+                "ProxyKey",
+                requiresPrivateKey: requiresPrivateKey,
+                out error);
+            if (!result)
+                return result;
+
+            if (requiresSecret && string.IsNullOrEmpty(ApiCredentials?.Perps?.Secret))
+            {
+                error = new NoApiCredentialsError($"No secret provided in the ApiCredentials.");
+                return false;
+            }
+
+            return true;
         }
 
-        #endregion
-
-        #region Order Book
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(
-            long symbolId,
-            Action<DataEvent<PolymarketPerpBookUpdate>> onUpdate,
-            CancellationToken ct = default)
-            => await SubscribeToOrderBookUpdatesAsync(new[] { symbolId }, onUpdate, ct).ConfigureAwait(false);
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToOrderBookUpdatesAsync(
-            IEnumerable<long> symbolIds,
-            Action<DataEvent<PolymarketPerpBookUpdate>> onUpdate,
-            CancellationToken ct = default)
+        internal bool ValidateSignerCredentialsAvailable(out Error? error)
         {
-            var subscription = new PolymarketPerpsSubscription<PolymarketPerpBookUpdate>(
-                _logger,
-                this,
-                "book",
-                symbolIds,
-                onUpdate);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
+            var result = ValidateCredentialsAvailable(
+                ApiCredentials?.Perps?.SignerKey,
+                "SignerKey",
+                requiresPrivateKey: true,
+                out error);
+            return result;
         }
 
-        #endregion
-
-        #region Klines
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(
-            long symbolId,
-            KlineInterval interval,
-            Action<DataEvent<PolymarketKline[]>> onUpdate,
-            CancellationToken ct = default)
-            => await SubscribeToKlineUpdatesAsync(new[] { symbolId }, interval, onUpdate, ct).ConfigureAwait(false);
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToKlineUpdatesAsync(
-            IEnumerable<long> symbolIds,
-            KlineInterval interval,
-            Action<DataEvent<PolymarketKline[]>> onUpdate,
-            CancellationToken ct = default)
+        internal bool ValidateCredentialsAvailable(
+            EthKey? key,
+            string keyName,
+            bool requiresPrivateKey,
+            out Error? error)
         {
-            var intervalStr = EnumConverter.GetString(interval);
-            var subscription = new PolymarketPerpsSubscription<PolymarketKline[]>(
-                _logger,
-                this,
-                "klines",
-                symbolIds,
-                onUpdate,
-                postFix: intervalStr);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
+            error = null;
+            if (key == null)
+            {
+                error = new NoApiCredentialsError($"Missing credentials, {keyName} is not set");
+                return false;
+            }
+
+            if (requiresPrivateKey && key.PrivateKey == null)
+            {
+                error = new NoApiCredentialsError($"The {keyName} is not provided. Please provide {keyName} in the ApiCredentials.");
+                return false;
+            }
+
+            return true;
         }
-
-        #endregion
-
-        #region Statistics
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToStatisticsUpdatesAsync(
-            long symbolId,
-            Action<DataEvent<PolymarketStatisticsUpdate>> onUpdate,
-            CancellationToken ct = default)
-            => await SubscribeToStatisticsUpdatesAsync(new[] { symbolId }, onUpdate, ct).ConfigureAwait(false);
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToStatisticsUpdatesAsync(
-            IEnumerable<long> symbolIds,
-            Action<DataEvent<PolymarketStatisticsUpdate>> onUpdate,
-            CancellationToken ct = default)
-        {
-            var subscription = new PolymarketPerpsSubscription<PolymarketStatisticsUpdate>(
-                _logger,
-                this,
-                "statistics",
-                symbolIds,
-                onUpdate);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToAllStatisticsUpdatesAsync(
-            Action<DataEvent<PolymarketStatisticsUpdate>> onUpdate,
-            CancellationToken ct = default)
-        {
-            var subscription = new PolymarketPerpsSubscription<PolymarketStatisticsUpdate>(
-                _logger,
-                this,
-                "statistics",
-                null,
-                onUpdate,
-                true);
-            return await SubscribeAsync(BaseAddress.AppendPath("/v1/ws"), subscription, ct).ConfigureAwait(false);
-        }
-
-        #endregion
     }
 }

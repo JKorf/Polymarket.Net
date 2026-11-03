@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using CryptoExchange.Net.Converters;
 using CryptoExchange.Net.Converters.SystemTextJson;
+using CryptoExchange.Net.Interfaces;
 using Polymarket.Net.Enums;
 
 namespace Polymarket.Net.Objects.Models;
@@ -25,7 +26,7 @@ public record PolymarketPerpOrderBook
     /// ["<c>sequence</c>"] Sequence
     /// </summary>
     [JsonPropertyName("sequence")]
-    public decimal Sequence { get; set; }
+    public long Sequence { get; set; }
 
     /// <summary>
     /// ["<c>asks</c>"] Asks
@@ -43,7 +44,7 @@ public record PolymarketPerpOrderBook
 /// Order book entry
 /// </summary>
 [JsonConverter(typeof(ArrayConverter<PolymarketOrderBookEntry>))]
-public record PolymarketOrderBookEntry
+public record PolymarketOrderBookEntry : ISymbolOrderBookEntry
 {
     /// <summary>
     /// Price

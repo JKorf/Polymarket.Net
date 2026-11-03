@@ -36,9 +36,9 @@ namespace Polymarket.Net.Objects.Models
         /// ["<c>p</c>"] Price
         /// </summary>
         [JsonPropertyName("p")]
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         [JsonInclude, JsonPropertyName("price")]
-        internal decimal PriceInt { set => Price = value; }
+        internal decimal? PriceInt { set => Price = value; }
         /// <summary>
         /// ["<c>qty</c>"] Quantity
         /// </summary>
@@ -103,6 +103,47 @@ namespace Polymarket.Net.Objects.Models
         public string? ClientOrderId { get; set; }
         [JsonInclude, JsonPropertyName("client_order_id")]
         internal string? ClientOrderIdInt { set => ClientOrderId = value; }
+        /// <summary>
+        /// ["<c>tpsl</c>"] Take profit/stop loss info
+        /// </summary>
+        [JsonPropertyName("tpsl")]
+        public PolymarketPerpOrderTpSl? TpSl { get; set; }
     }
 
+    /// <summary>
+    /// Tp/sl info
+    /// </summary>
+    public record PolymarketPerpOrderTpSl
+    {
+        /// <summary>
+        /// ["<c>kind</c>"] Tp/sl type
+        /// </summary>
+        [JsonPropertyName("kind")]
+        public TpSlType Kind { get; set; }
+        /// <summary>
+        /// ["<c>scope</c>"] Scope
+        /// </summary>
+        [JsonPropertyName("scope")]
+        public TpSlGrouping Scope { get; set; }
+        /// <summary>
+        /// ["<c>trp</c>"] Trigger price
+        /// </summary>
+        [JsonPropertyName("trp")]
+        public decimal TriggerPrice { get; set; }
+        /// <summary>
+        /// ["<c>parent_oid</c>"] Parent order id
+        /// </summary>
+        [JsonPropertyName("parent_oid")]
+        public long? ParentOrderId { get; set; }
+        /// <summary>
+        /// ["<c>armed_qty</c>"] Armed quantity
+        /// </summary>
+        [JsonPropertyName("armed_qty")]
+        public decimal ArmedQuantity { get; set; }
+        /// <summary>
+        /// ["<c>slip_bps</c>"] Slippage cap in basis points
+        /// </summary>
+        [JsonPropertyName("slip_bps")]
+        public int? SlippageCap { get; set; }
+    }
 }
