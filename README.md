@@ -418,6 +418,43 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 5.0.0 - 04 Nov 2026
+    * Perps API
+      * Added Perps REST and WebSocket API support
+      * Accessible via the PerpsApi on clients
+      * Added PerpsOptions to options objects
+      * Added Shared API implementation
+        * Added (I)PolymarketSharedApiClient for Shared API access
+      * Added Perps to PolymarketCredentials
+      * Added PolymarketPerpsSymbolOrderBook order book implementation
+      * Added PolymarketUserPerpsDataTracker user data tracker implementation
+    * Prediction API
+      * Moved prediction API logic
+        * Renamed ClobApi to PredictionApi on REST and WebSocket clients
+        * Moved Gamma endpoints to PredictionApi.ExchangeData
+        * Moved Data position endpoints to PredictionApi.Trading
+      * Moved builder options under PredictionOptions
+      * Added support for V2 markets
+        * Added Version and PositionIds to Gamma market models. V2 orders use PositionIds and marketVersion: 2.
+        * Added marketVersion parameter to restClient.PredictionApi.Trading.PlaceOrderAsync endpoint
+        * Added MarketVersion property to PolymarketOrderRequest
+      * Added socketClient.PredictionApi.SubscribeToCryptoPriceUpdatesAsync
+      * Added socketClient.PredictionApi.SubscribeToCryptoTwapPriceUpdatesAsync
+      * Added socketClient.PredictionApi.SubscribeToEquityPriceUpdatesAsync
+      * Added socketClient.PredictionApi.SubscribeToEquityTwapPriceUpdatesAsync
+      * Added restClient.PredictionApi.Account.GetRateLimitTierAsync endpoint
+      * Added restClient.PredictionApi.ExchangeData.GetMarketsKeysetPaginationAsync endpoint
+      * Added restClient.PredictionApi.ExchangeData.GetMarketByTokenAsync endpoint
+      * Added restClient.PredictionApi.ExchangeData.GetResolutionStateAsync endpoint
+      * Added restClient.PredictionApi.ExchangeData.GetOpenInterestAsync endpoint
+      * Added restClient.PredictionApi.ExchangeData.GetEventVolumeAsync endpoint
+      * Added restClient.PredictionApi.ExchangeData.LookupTokensAsync endpoint
+      * Updated some response models
+      * Updated Data API GetPositionsAsync endpoint to Data API v2, now under restClient.PredictionApi.Trading
+      * Renamed L1/L2 on PolymarketCredentials to PredictionL1/PredictionL2
+      * Updated PolymarketL1Credential and WithL1 to accept EthKey instead of a private key string
+      * Renamed PolymarketClobSymbolOrderBook to PolymarketPredictionSymbolOrderBook
+
 * Version 4.6.0 - 30 Sep 2026
     * Updated CryptoExchange.Net to V13.1.0
 
