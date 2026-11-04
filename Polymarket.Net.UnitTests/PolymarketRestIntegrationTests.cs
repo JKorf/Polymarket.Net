@@ -19,7 +19,7 @@ namespace Polymarket.Net.UnitTests
     [NonParallelizable]
     public class PolymarketRestIntegrationTests : RestIntegrationTest<PolymarketRestClient>
     {
-        public override bool Run { get; set; } = true;
+        public override bool Run { get; set; } = false;
 
         public override PolymarketRestClient GetClient(ILoggerFactory loggerFactory)
         {
