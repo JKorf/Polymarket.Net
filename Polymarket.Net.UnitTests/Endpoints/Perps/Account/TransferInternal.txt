@@ -1,0 +1,7 @@
+POST
+/v1/account/internal-transfer
+true
+{
+  "status": "ok",
+  "transfer_id": 123
+}

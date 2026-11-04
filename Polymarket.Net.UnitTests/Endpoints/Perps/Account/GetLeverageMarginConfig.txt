@@ -1,0 +1,11 @@
+GET
+/v1/account/config
+true
+UriParams: {}
+[
+  {
+    "instrument_id": 1,
+    "leverage": 10,
+    "cross": true
+  }
+]

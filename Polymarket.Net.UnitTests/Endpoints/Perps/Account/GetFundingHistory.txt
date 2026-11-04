@@ -1,0 +1,18 @@
+GET
+/v1/account/funding
+true
+UriParams: {}
+{
+  "data": [
+    {
+      "id": 3055723280187747,
+      "instrument_id": 1,
+      "size": "10.00",
+      "funding_rate": "0.0001",
+      "funding_asset": "USDC",
+      "funding": "1.00",
+      "timestamp": 1767225600000
+    }
+  ],
+  "more": true
+}

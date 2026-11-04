@@ -1,0 +1,11 @@
+GET
+/v1/account/balances
+true
+UriParams: {}
+[
+  {
+    "asset": "USDC",
+    "balance": "10000.00",
+    "value": "10000.00"
+  }
+]

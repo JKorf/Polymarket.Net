@@ -1,3 +1,4 @@
+using CryptoExchange.Net.Web3;
 using CryptoExchange.Net.Authentication;
 using Polymarket.Net;
 using Polymarket.Net.Clients;
@@ -8,7 +9,7 @@ var tokenId = "TOKEN_ID";
 
 // Public token stream. All handlers are optional; pass only the events you need.
 // Socket subscriptions return WebSocketResult<UpdateSubscription>.
-var tokenSubscription = await socketClient.ClobApi.SubscribeToTokenUpdatesAsync(
+var tokenSubscription = await socketClient.PredictionApi.SubscribeToTokenUpdatesAsync(
     new[] { tokenId },
     onPriceChangeUpdate: update => Console.WriteLine($"Price update: {update.Data}"),
     onBookUpdate: update => Console.WriteLine($"Book update: {update.Data}"),
@@ -23,7 +24,7 @@ if (!tokenSubscription.Success)
 }
 
 // Platform stream for new market and market-resolved events.
-var platformSubscription = await socketClient.ClobApi.SubscribeToPlatformUpdatesAsync(
+var platformSubscription = await socketClient.PredictionApi.SubscribeToPlatformUpdatesAsync(
     onNewMarketUpdate: update => Console.WriteLine($"New market: {update.Data}"),
     onMarketResolvedUpdate: update => Console.WriteLine($"Market resolved: {update.Data}"));
 
@@ -35,7 +36,7 @@ if (!platformSubscription.Success)
 }
 
 // Sports updates are public as well.
-var sportsSubscription = await socketClient.ClobApi.SubscribeToSportsUpdatesAsync(
+var sportsSubscription = await socketClient.PredictionApi.SubscribeToSportsUpdatesAsync(
     update => Console.WriteLine($"Sports update: {update.Data}"));
 
 if (!sportsSubscription.Success)
@@ -52,7 +53,7 @@ var authenticatedSocketClient = new PolymarketSocketClient(options =>
     options.ApiCredentials = new PolymarketCredentials(
         new PolymarketL1Credential(
             SignType.Poly1271,
-            "PRIVATE_KEY",
+            new EthKey(privateKey: "PRIVATE_KEY"),
             "POLYMARKET_FUNDING_OR_DEPOSIT_ADDRESS"),
         new HMACPassCredential(
             "L2_API_KEY",
@@ -60,7 +61,7 @@ var authenticatedSocketClient = new PolymarketSocketClient(options =>
             "L2_API_PASSPHRASE"));
 });
 
-var userSubscription = await authenticatedSocketClient.ClobApi.SubscribeToUserUpdatesAsync(
+var userSubscription = await authenticatedSocketClient.PredictionApi.SubscribeToUserUpdatesAsync(
     onOrderUpdate: update => Console.WriteLine($"Order update: {update.Data}"),
     onTradeUpdate: update => Console.WriteLine($"Trade update: {update.Data}"));
 

@@ -1,15 +1,14 @@
+using CryptoExchange.Net.Converters;
+using CryptoExchange.Net.Converters.SystemTextJson;
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.RateLimiting;
-using System;
+using CryptoExchange.Net.RateLimiting.Filters;
+using CryptoExchange.Net.RateLimiting.Guards;
+using CryptoExchange.Net.RateLimiting.Interfaces;
 using CryptoExchange.Net.SharedApis;
 using Polymarket.Net.Converters;
+using System;
 using System.Text.Json;
-using CryptoExchange.Net.Converters.SystemTextJson;
-using CryptoExchange.Net.Converters;
-using CryptoExchange.Net.RateLimiting.Guards;
-using CryptoExchange.Net.RateLimiting.Filters;
-using CryptoExchange.Net;
 
 namespace Polymarket.Net
 {
@@ -24,6 +23,12 @@ namespace Polymarket.Net
             Sort = false,
             Decimal = DecimalSerialization.String,
             DateTimes = DateTimeSerialization.MillisecondsString
+        };
+        internal static ParameterSerializationSettings _perpsParameterSerializationSettings = new ParameterSerializationSettings
+        {
+            Sort = false,
+            Decimal = DecimalSerialization.String,
+            DateTimes = DateTimeSerialization.MillisecondsNumber
         };
         internal static ParameterSerializationSettings _gammaParameterSerializationSettings = new ParameterSerializationSettings
         {
@@ -47,6 +52,30 @@ namespace Polymarket.Net
                 CentralizationType.Decentralized,
                 PolymarketEnvironment.All
                 );
+
+        /// <summary>
+        /// Asset alias notations
+        /// </summary>
+        public static AssetAliasConfiguration AssetAliases { get; } = new AssetAliasConfiguration
+        {
+            Aliases =
+            [
+                new AssetAlias("USD", SharedSymbol.UsdOrStable.ToUpperInvariant(), AliasType.OnlyToExchange)
+            ]
+        };
+
+        /// <summary>
+        /// Format a base and quote asset to a Polymarket recognized symbol 
+        /// </summary>
+        /// <param name="baseAsset">Base asset</param>
+        /// <param name="quoteAsset">Quote asset</param>
+        /// <param name="tradingMode">Trading mode</param>
+        /// <param name="deliverTime">Delivery time for delivery futures</param>
+        /// <returns></returns>
+        public static string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverTime = null)
+        {
+            return baseAsset + "-" + quoteAsset;
+        }
 
         /// <summary>
         /// Rate limiter configuration for the Polymarket API
@@ -92,17 +121,23 @@ namespace Polymarket.Net
             DataApi = new RateLimitGate("Data")
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Request), 1000, TimeSpan.FromSeconds(10), RateLimitWindowType.Sliding)); // 1000 requests per 10 seconds
 
+            PerpsApi = new RateLimitGate("Perps")
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Request), 1000, TimeSpan.FromSeconds(60), RateLimitWindowType.Sliding)); // 1000 tokens per 60 seconds
+
             ClobApi.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
             ClobApi.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
             GammaApi.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
             GammaApi.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
             DataApi.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
             DataApi.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
+            PerpsApi.RateLimitTriggered += (x) => RateLimitTriggered?.Invoke(x);
+            PerpsApi.RateLimitUpdated += (x) => RateLimitUpdated?.Invoke(x);
         }
 
 
         internal IRateLimitGate ClobApi { get; private set; }
         internal IRateLimitGate GammaApi { get; private set; }
         internal IRateLimitGate DataApi { get; private set; }
+        internal IRateLimitGate PerpsApi { get; private set; }
     }
 }

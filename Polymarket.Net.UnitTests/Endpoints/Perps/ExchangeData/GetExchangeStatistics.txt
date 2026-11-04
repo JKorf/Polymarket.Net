@@ -1,0 +1,12 @@
+GET
+/v1/info/exchange-stats
+false
+UriParams: {}
+{
+  "start_timestamp": 1767225600000,
+  "end_timestamp": 1767229200000,
+  "volume": "10164976.25",
+  "open_interest": "9238345.12",
+  "open_interest_timestamp": 1767225570000,
+  "fees": "1245.67"
+}

@@ -3,7 +3,7 @@ using Polymarket.Net.Clients;
 // REST
 var restClient = new PolymarketRestClient();
 var tokenId = "4153292802911610701832309484716814274802943278345248636922528170020319407796";
-var ticker = await restClient.ClobApi.ExchangeData.GetLastTradePriceAsync(tokenId);
+var ticker = await restClient.PredictionApi.ExchangeData.GetLastTradePriceAsync(tokenId);
 if (!ticker.Success)
 {
     Console.WriteLine($"Failed to get last trade price: {ticker.Error}");
@@ -18,7 +18,7 @@ Console.ReadLine();
 
 // Websocket
 var socketClient = new PolymarketSocketClient();
-var subscription = await socketClient.ClobApi.SubscribeToTokenUpdatesAsync([tokenId], onLastTradePriceUpdate: x =>
+var subscription = await socketClient.PredictionApi.SubscribeToTokenUpdatesAsync([tokenId], onLastTradePriceUpdate: x =>
 {
     Console.WriteLine(x.Data.Price);
 });

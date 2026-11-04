@@ -1,0 +1,13 @@
+GET
+/v1/info/mark-history
+false
+UriParams: {}
+{
+  "data": [
+    [
+      1767225600000,
+      "160.00"
+    ]
+  ],
+  "more": true
+}

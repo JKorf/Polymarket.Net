@@ -1,0 +1,34 @@
+GET
+/v1/account/portfolio
+true
+UriParams: {}
+{
+  "positions": [
+    {
+      "instrument_id": 123,
+      "symbol": "NVDA-USDC",
+      "size": "10.00",
+      "entry_price": "2986.30",
+      "leverage": 10,
+      "cross": true,
+      "initial_margin": "10.00",
+      "maintenance_margin": "100.00",
+      "position_value": "100.03",
+      "liquidation_price": "2866.27",
+      "unrealized_pnl": "-0.01",
+      "return_on_equity": "-0.0027",
+      "cumulative_funding": "514.09"
+    }
+  ],
+  "margin": {
+    "total_account_value": "13109.48",
+    "available_order_margin": "5055.79",
+    "total_initial_margin": "4.97",
+    "total_maintenance_margin": "2.49",
+    "total_position_value": "100.03"
+  },
+  "withdrawable": "13104.51",
+  "in_liquidation": true,
+  "fee_tier": 0,
+  "timestamp": 1767225600000
+}

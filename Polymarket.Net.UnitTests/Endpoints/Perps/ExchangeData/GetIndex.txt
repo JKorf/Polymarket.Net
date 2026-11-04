@@ -1,0 +1,17 @@
+GET
+/v1/info/index
+false
+UriParams: {"asset": "123"}
+{
+  "asset": "NVDA",
+  "index_price": "160.00",
+  "constituents": [
+    {
+      "source": "chainlink",
+      "symbol": "NVDA/USD",
+      "weight": "1.0",
+      "price": "160.00"
+    }
+  ],
+  "ts": 1767225600000
+}

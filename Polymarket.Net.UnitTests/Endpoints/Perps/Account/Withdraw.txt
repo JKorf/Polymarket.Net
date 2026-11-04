@@ -1,0 +1,7 @@
+POST
+/v1/account/withdraw
+true
+{
+  "status": "ok",
+  "withdraw_id": 123
+}

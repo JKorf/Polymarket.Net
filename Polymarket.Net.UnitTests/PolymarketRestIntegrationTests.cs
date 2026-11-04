@@ -1,10 +1,10 @@
 using CryptoExchange.Net.Objects.Errors;
 using CryptoExchange.Net.Testing;
+using CryptoExchange.Net.Web3;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Polymarket.Net.Clients;
-using Polymarket.Net.Clients.DataApi;
 using Polymarket.Net.Enums;
 using Polymarket.Net.Objects;
 using Polymarket.Net.Objects.Options;
@@ -12,13 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Polymarket.Net.UnitTests
 {
     [NonParallelizable]
     public class PolymarketRestIntegrationTests : RestIntegrationTest<PolymarketRestClient>
     {
-        public override bool Run { get; set; } = false;
+        public override bool Run { get; set; } = true;
 
         public override PolymarketRestClient GetClient(ILoggerFactory loggerFactory)
         {
@@ -30,7 +31,7 @@ namespace Polymarket.Net.UnitTests
             {
                 AutoTimestamp = false,
                 OutputOriginalData = true,
-                ApiCredentials = Authenticated ? new PolymarketCredentials().WithL1(Enums.SignType.EOA, key, sec) : null
+                //ApiCredentials = Authenticated ? new PolymarketCredentials()
             }));
         }
 
@@ -40,51 +41,117 @@ namespace Polymarket.Net.UnitTests
             if (!ShouldRun())
                 return;
 
-            var result = await CreateClient().ClobApi.ExchangeData.GetMarketAsync("123", default);
+            var result = await CreateClient().PredictionApi.ExchangeData.GetMarketByIdAsync(-1, default);
 
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Error.ErrorType, Is.EqualTo(ErrorType.UnknownSymbol));
         }
 
         [Test]
-        public async Task TestClobExchangeData()
+        public async Task TestPredictionAccount()
         {
-            var market = await CreateClient().GammaApi.GetMarketsAsync(closed: false, volumeMin: 1);
-            var marketId = market.Data.First().MarketId;
-            var tokenId = market.Data.First().ClobTokenIds.First();
-
             var warnings = new List<Exception>();
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetServerTimeAsync(default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetGeographicRestrictionsAsync(default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetSamplingSimplifiedMarketsAsync(default, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetSamplingMarketsAsync(default, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetSimplifiedMarketsAsync(default, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetMarketsAsync(default, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetMarketAsync(marketId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetPriceAsync(tokenId, Enums.OrderSide.Buy, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetPricesAsync(new Dictionary<string, Enums.OrderSide> { { "tokenId", Enums.OrderSide.Buy } }, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetMidpointPriceAsync(tokenId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetMidpointPricesAsync(new[] { tokenId }, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetPriceHistoryAsync(marketId, default, default, Enums.DataInterval.OneDay, default, default), false, "history");
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(tokenId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetBidAskSpreadsAsync(new string[] { tokenId }, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetOrderBookAsync(tokenId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetOrderBooksAsync(new[] { tokenId }, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetTickSizeAsync(tokenId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetNegativeRiskAsyncAsync(tokenId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetFeeRateBpsAsync(tokenId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetLastTradePriceAsync(tokenId, default), false);
-            await RunAndCheckResult(warnings, client => client.ClobApi.ExchangeData.GetLastTradePricesAsync(new[] { tokenId }, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.Account.GetRateLimitTierAsync(default), true);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.Account.GetClosedOnlyModeAsync(default), true);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.Account.GetApiKeysAsync(default), true);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.Account.GetNotificationsAsync(default), true);
             foreach (var warning in warnings)
                 Assert.Warn(warning.Message);
         }
 
         [Test]
-        public async Task TestDataApi() {
-            var user = "0x0000000000000000000000000000000000000000";
+        public async Task TestPredictionExchangeData()
+        {
+            var marketResult = await CreateClient().PredictionApi.ExchangeData.GetMarketsAsync(closed: false, volumeMin: 1);
+            var market = marketResult.Data.First();
+            var tokenId = marketResult.Data.First().ClobTokenIds.First();
 
-            await RunAndCheckResult(client => client.DataApi.GetPositionsAsync(user, null, null, 0, false, false, 100, 0, PositionSortBy.Tokens, SortDirection.Desc, null, default), false);
-            await RunAndCheckResult(client => client.DataApi.GetClosedPositionsAsync(user, null, null, 0, 0, ClosedPositionSortBy.RealizedPnl, SortDirection.Desc, null, default), false);
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetServerTimeAsync(default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetGeographicRestrictionsAsync(default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetSamplingSimplifiedMarketsAsync(default, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetSamplingMarketsAsync(default, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetSimplifiedMarketsAsync(default, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetMarketsAsync(default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default), false,
+                ignoreProperties: ["createdAt", "creationDate", "negRiskRequestID", "eventMetadata", "clobRewards"]);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetMarketByIdAsync(market.Id, default, default), false,
+                ignoreProperties: ["$schema", "clobRewards", "negRiskRequestID"]);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetPriceAsync(tokenId, Enums.OrderSide.Buy, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetPricesAsync(new Dictionary<string, Enums.OrderSide> { { "tokenId", Enums.OrderSide.Buy } }, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetMidpointPriceAsync(tokenId, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetMidpointPricesAsync(new[] { tokenId }, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetPriceHistoryAsync(market.MarketId, default, default, Enums.DataInterval.OneDay, default, default), false, "history");
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetBidAskSpreadsAsync(tokenId, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetBidAskSpreadsAsync(new string[] { tokenId }, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetOrderBookAsync(tokenId, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetOrderBooksAsync(new[] { tokenId }, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetTickSizeAsync(tokenId, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetNegativeRiskAsyncAsync(tokenId, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetFeeRateBpsAsync(tokenId, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetLastTradePriceAsync(tokenId, default), false);
+            await RunAndCheckResult(warnings, client => client.PredictionApi.ExchangeData.GetLastTradePricesAsync(new[] { tokenId }, default), false);
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
+        [Test]
+        public async Task TestPredictionTrading()
+        {
+            var marketResult = await CreateClient().PredictionApi.ExchangeData.GetMarketsAsync(closed: false, volumeMin: 1);
+            var market = marketResult.Data.First();
+
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(client => client.PredictionApi.Trading.GetPositionsAsync(default, market.MarketId, null, null, null, null, null, null, null, null, null, null, null, null, default), false);
+            await RunAndCheckResult(client => client.PredictionApi.Trading.GetOpenOrdersAsync(default, default, default, default, default), true);
+            await RunAndCheckResult(client => client.PredictionApi.Trading.GetUserTradesAsync(default, default, default, default, default, default, default, default), true);
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
+        [Test]
+        public async Task TestPerpsAccount()
+        {
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetCredentialsAsync(default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetBalancesAsync(default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetPortfolioAsync(default), true,
+                ignoreProperties: ["coverage"]);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetEquityHistoryAsync(KlineInterval.FifteenMinutes, DateTime.UtcNow.AddDays(-1), default, default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetPnlHistoryAsync(KlineInterval.OneHour, DateTime.UtcNow.AddDays(-1), default, default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetFundingHistoryAsync(default, default, default, default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetDepositsAsync(default, default, default, default, default), true,
+                ignoreProperties: ["log_index"]);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetInternalTransfersAsync(default, default, default, default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetWithdrawalsAsync(default, default, default, default, default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetAccountStatsAsync(default), true);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetAccountLimitsAsync(default), true,
+                ignoreProperties: ["tier"]);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.Account.GetLeverageMarginConfigAsync(default, default), true);
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
+        }
+
+        [Test]
+        public async Task TestPerpsExchangeData()
+        {
+            var warnings = new List<Exception>();
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetExchangeInfoAsync(default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetCollateralAssetsAsync(default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetSymbolsAsync(default, default, default, default), false,
+                ignoreProperties: ["fee_override", "funding_multiplier"]);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetTickersAsync(default, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetStatisticsAsync(default, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetExchangeStatisticsAsync(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetKlinesAsync(7, KlineInterval.FifteenMinutes, DateTime.UtcNow.AddDays(-1), default, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetMarkPriceHistoryAsync(7, KlineInterval.FifteenMinutes, DateTime.UtcNow.AddDays(-1), default, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetBookTickerAsync(7, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetOrderBookAsync(7, default, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetIndexAsync("ETH", default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetRecentTradesAsync(7, default, default, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetFundingRateHistoryAsync(7, default, default, default), false);
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetFeesAsync(default), false, "fee_schedule");
+            await RunAndCheckResult(warnings, client => client.PerpsApi.ExchangeData.GetLimitTiersAsync(default), false);
+            foreach (var warning in warnings)
+                Assert.Warn(warning.Message);
         }
     }
 }

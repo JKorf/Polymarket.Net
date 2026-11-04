@@ -1,0 +1,21 @@
+GET
+/v1/info/book
+false
+UriParams: {"instrument_id": 123}
+{
+  "instrument_id": 123,
+  "bids": [
+    [
+      "100.00",
+      "10.00"
+    ]
+  ],
+  "asks": [
+    [
+      "100.00",
+      "10.00"
+    ]
+  ],
+  "timestamp": 1767225600000,
+  "sequence": 1234567890
+}

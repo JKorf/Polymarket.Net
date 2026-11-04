@@ -1,10 +1,6 @@
 using CryptoExchange.Net.Converters.SystemTextJson;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Polymarket.Net.Objects.Models
 {
@@ -63,6 +59,11 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("creationDate")]
         public DateTime CreateTime { get; set; }
+        [JsonInclude, JsonPropertyName("createdAt")]
+        internal DateTime CreateTimeInt
+        {
+            set => CreateTime = value;
+        }
         /// <summary>
         /// ["<c>image</c>"] Image
         /// </summary>
@@ -98,6 +99,11 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("featured")]
         public bool Featured { get; set; }
+        /// <summary>
+        /// ["<c>cumulativeMarkets</c>"] Cumulative markets
+        /// </summary>
+        [JsonPropertyName("cumulativeMarkets")]
+        public bool CumulativeMarkets { get; set; }
         /// <summary>
         /// ["<c>restricted</c>"] Restricted
         /// </summary>
@@ -467,5 +473,26 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("gameId")]
         [JsonConverter(typeof(NumberStringConverter))]
         public string GameId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// ["<c>version</c>"] Version
+        /// </summary>
+        [JsonPropertyName("version")]
+        public string Version { get; set; } = string.Empty;
+        /// <summary>
+        /// ["<c>negRiskAugmented</c>"] Negative Risk Augmented
+        /// </summary>
+        [JsonPropertyName("negRiskAugmented")]
+        public bool NegRiskAugmented { get; set; }
+        /// <summary>
+        /// ["<c>countryName</c>"] Country name
+        /// </summary>
+        [JsonPropertyName("countryName")]
+        public string? CountryName { get; set; }
+        /// <summary>
+        /// ["<c>electionType</c>"] Election type
+        /// </summary>
+        [JsonPropertyName("electionType")]
+        public string? ElectionType { get; set; }
     }
 }

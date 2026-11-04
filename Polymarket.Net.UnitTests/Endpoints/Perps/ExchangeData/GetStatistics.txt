@@ -1,0 +1,23 @@
+GET
+/v1/info/statistics
+false
+UriParams: {}
+[
+  {
+    "instrument_id": 1,
+    "symbol": "NVDA-USDC",
+    "volume": "1000.00",
+    "open_price": "100.50",
+    "klines": [
+      [
+        1767225600000,
+        "100.00",
+        "105.00",
+        "99.00",
+        "102.00",
+        "500.00",
+        42
+      ]
+    ]
+  }
+]

@@ -1,0 +1,6 @@
+PATCH
+/v1/trade/margin
+true
+{
+  "status": "ok"
+}

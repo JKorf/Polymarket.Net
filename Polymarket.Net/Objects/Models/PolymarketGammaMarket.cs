@@ -1,13 +1,27 @@
 using CryptoExchange.Net.Converters.SystemTextJson;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Polymarket.Net.Objects.Models
 {
+    /// <summary>
+    /// Markets page
+    /// </summary>
+    public record PolymarketMarketPage
+    {
+        /// <summary>
+        /// ["<c>markets</c>"] Markets
+        /// </summary>
+        [JsonPropertyName("markets")]
+        public PolymarketGammaMarket[] Markets { get; set; } = [];
+
+        /// <summary>
+        /// ["<c>next_cursor</c>"] Pagination cursor
+        /// </summary>
+        [JsonPropertyName("next_cursor")]
+        public string? NextPageCursor { get; set; }
+    }
+
     /// <summary>
     /// Gamma API market info
     /// </summary>
@@ -17,7 +31,7 @@ namespace Polymarket.Net.Objects.Models
         /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
-        public string Id { get; set; } = string.Empty;
+        public long Id { get; set; }
         /// <summary>
         /// ["<c>question</c>"] Question
         /// </summary>
@@ -356,11 +370,16 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("secondsDelay")]
         public decimal SecondsDelay { get; set; }
         /// <summary>
-        /// ["<c>clobTokenIds</c>"] Clob token ids
+        /// ["<c>clobTokenIds</c>"] Clob token ids, use this when Version = v1
         /// </summary>
         [JsonPropertyName("clobTokenIds")]
         [JsonConverter(typeof(ObjectStringConverter<string[]>))]
         public string[]? ClobTokenIds { get; set; }
+        /// <summary>
+        /// ["<c>positionIds</c>"] Position ids, use this when Version = v2
+        /// </summary>
+        [JsonPropertyName("positionIds")]
+        public string[]? PositionIds { get; set; }
         /// <summary>
         /// ["<c>disqusThread</c>"] Disqus thread
         /// </summary>
@@ -721,5 +740,60 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("feeSchedule")]
         public PolymarketFeeSchedule? FeeSchedule { get; set; }
+        /// <summary>
+        /// ["<c>version</c>"] Market version. If version is v2 use PositionIds instead of ClobTokenIds for trading and specify v2 in order endpoints.
+        /// </summary>
+        [JsonPropertyName("version")]
+        public string Version { get; set; } = string.Empty;
+        /// <summary>
+        /// ["<c>submitted_by</c>"] Submitted by
+        /// </summary>
+        [JsonPropertyName("submitted_by")]
+        public string? SubmittedBy { get; set; }
+        /// <summary>
+        /// ["<c>negRisk</c>"] Is negative risk market
+        /// </summary>
+        [JsonPropertyName("negRisk")]
+        public bool NegativeRisk { get; set; }
+        /// <summary>
+        /// ["<c>cyom</c>"] Cyom
+        /// </summary>
+        [JsonPropertyName("cyom")]
+        public bool Cyom { get; set; }
+        /// <summary>
+        /// ["<c>approved</c>"] Approved
+        /// </summary>
+        [JsonPropertyName("approved")]
+        public bool Approved { get; set; }
+        /// <summary>
+        /// ["<c>holdingRewardsEnabled</c>"] Holding rewards enabled
+        /// </summary>
+        [JsonPropertyName("holdingRewardsEnabled")]
+        public bool HoldingRewardsEnabled { get; set; }
+        /// <summary>
+        /// ["<c>fallbackResolutionType</c>"] Fallback resolution type
+        /// </summary>
+        [JsonPropertyName("fallbackResolutionType")]
+        public string? FallbackResolutionType { get; set; }
+        /// <summary>
+        /// ["<c>resolutionMechanism</c>"] Resolution mechanism
+        /// </summary>
+        [JsonPropertyName("resolutionMechanism")]
+        public string? ResolutionMechanism { get; set; }
+        /// <summary>
+        /// ["<c>comboStatus</c>"] Combo status
+        /// </summary>
+        [JsonPropertyName("comboStatus")]
+        public string? ComboStatus { get; set; }
+        /// <summary>
+        /// ["<c>tradingEligible</c>"] Trading eligible
+        /// </summary>
+        [JsonPropertyName("tradingEligible")]
+        public bool TradingEligible { get; set; }
+        /// <summary>
+        /// ["<c>negRiskMarketID</c>"] Negative risk market ID
+        /// </summary>
+        [JsonPropertyName("negRiskMarketID")]
+        public string? NegativeRiskMarketId { get; set; }
     }
 }

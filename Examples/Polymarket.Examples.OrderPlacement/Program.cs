@@ -1,3 +1,4 @@
+using CryptoExchange.Net.Web3;
 using Polymarket.Net;
 using Polymarket.Net.Clients;
 using Polymarket.Net.Enums;
@@ -19,7 +20,7 @@ Console.WriteLine();
 var client = new PolymarketRestClient(options =>
 {
     options.ApiCredentials = new PolymarketCredentials()
-        .WithL1(SignType.EOA, privateKey, polymarketFundingAddress)
+        .WithL1(SignType.EOA, EthKey.FromPrivateKey(privateKey), polymarketFundingAddress)
         .WithL2(l2ApiKey, l2ApiSecret, l2ApiPassphrase);
 });
 
@@ -29,7 +30,7 @@ static async Task PlaceLimitOrderAsync(PolymarketRestClient client)
 {
     Console.WriteLine($"Placing CLOB limit buy order for token {tokenId}...");
 
-    var lastTradePrice = await client.ClobApi.ExchangeData.GetLastTradePriceAsync(tokenId);
+    var lastTradePrice = await client.PredictionApi.ExchangeData.GetLastTradePriceAsync(tokenId);
     if (!lastTradePrice.Success)
     {
         Console.WriteLine($"Failed to get last trade price: {lastTradePrice.Error}");
@@ -37,7 +38,7 @@ static async Task PlaceLimitOrderAsync(PolymarketRestClient client)
     }
 
     var safePrice = Math.Max(0.01m, Math.Round(lastTradePrice.Data.LastTradePrice * 0.95m, 2));
-    var order = await client.ClobApi.Trading.PlaceOrderAsync(
+    var order = await client.PredictionApi.Trading.PlaceOrderAsync(
         tokenId: tokenId,
         side: OrderSide.Buy,
         orderType: OrderType.Limit,
@@ -59,13 +60,13 @@ static async Task PlaceLimitOrderAsync(PolymarketRestClient client)
 
     Console.WriteLine($"Placed order {order.Data.OrderId}, status: {order.Data.Status}");
 
-    var orderStatus = await client.ClobApi.Trading.GetOrderAsync(order.Data.OrderId);
+    var orderStatus = await client.PredictionApi.Trading.GetOrderAsync(order.Data.OrderId);
     if (orderStatus.Success)
         Console.WriteLine($"Order status: {orderStatus.Data.Status}, filled: {orderStatus.Data.QuantityFilled}");
     else
         Console.WriteLine($"Failed to query order: {orderStatus.Error}");
 
-    var cancel = await client.ClobApi.Trading.CancelOrderAsync(order.Data.OrderId);
+    var cancel = await client.PredictionApi.Trading.CancelOrderAsync(order.Data.OrderId);
     if (!cancel.Success)
     {
         Console.WriteLine($"Failed to cancel order: {cancel.Error}");

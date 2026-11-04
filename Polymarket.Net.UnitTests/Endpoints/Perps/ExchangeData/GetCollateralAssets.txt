@@ -1,0 +1,13 @@
+GET
+/v1/info/assets
+false
+UriParams: {}
+[
+  {
+    "asset": "USDC",
+    "address": "0x1234567890abcdef1234567890abcdef12345678",
+    "decimals": 6,
+    "collateral_ratio": "1.00",
+    "withdrawal_fee": "5.00"
+  }
+]

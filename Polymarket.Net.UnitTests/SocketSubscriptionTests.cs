@@ -8,6 +8,7 @@ using Polymarket.Net.Clients;
 using Polymarket.Net.Objects.Models;
 using Polymarket.Net.Objects.Options;
 using Polymarket.Net.Objects;
+using CryptoExchange.Net.Web3;
 
 namespace Polymarket.Net.UnitTests
 {
@@ -19,11 +20,11 @@ namespace Polymarket.Net.UnitTests
         {
             var client = new PolymarketSocketClient(opts =>
             {
-                opts.ApiCredentials = new PolymarketCredentials().WithL1(Enums.SignType.EOA, "0x1212121212121212121212121212121212121212121212121212121212121212", "1").WithL2("MTIz", "3", "123");
+                opts.ApiCredentials = new PolymarketCredentials().WithL1(Enums.SignType.EOA, new EthKey(privateKey: "0x1212121212121212121212121212121212121212121212121212121212121212"), "1").WithL2("MTIz", "3", "123");
             });
-            var tester = new SocketSubscriptionValidator<PolymarketSocketClient>(client, "Subscriptions/Clob", "wss://ws-subscriptions-clob.polymarket.com");
-            await tester.ValidateAsync<PolymarketOrderUpdate>((client, handler) => client.ClobApi.SubscribeToUserUpdatesAsync(handler, null), "OrderUpdate", ignoreProperties: ["type"]);
-            await tester.ValidateAsync<PolymarketTradeUpdate>((client, handler) => client.ClobApi.SubscribeToUserUpdatesAsync(null, handler), "TradeUpdate", ignoreProperties: ["type", "fee_rate_bps"]);
+            var tester = new SocketSubscriptionValidator<PolymarketSocketClient>(client, "Subscriptions/Prediction", "wss://ws-subscriptions-clob.polymarket.com");
+            await tester.ValidateAsync<PolymarketOrderUpdate>((client, handler) => client.PredictionApi.SubscribeToUserUpdatesAsync(handler, null), "OrderUpdate", ignoreProperties: ["type"]);
+            await tester.ValidateAsync<PolymarketTradeUpdate>((client, handler) => client.PredictionApi.SubscribeToUserUpdatesAsync(null, handler), "TradeUpdate", ignoreProperties: ["type", "fee_rate_bps"]);
         }
 
         [Test]
@@ -34,14 +35,14 @@ namespace Polymarket.Net.UnitTests
 
             var client = new PolymarketSocketClient(Options.Create(new PolymarketSocketOptions
             {
-                ApiCredentials = new PolymarketCredentials().WithL1(Enums.SignType.EOA, "0x1212121212121212121212121212121212121212121212121212121212121212"),
+                ApiCredentials = new PolymarketCredentials().WithL1(Enums.SignType.EOA, new EthKey(privateKey: "0x1212121212121212121212121212121212121212121212121212121212121212")),
                 OutputOriginalData = true
             }), logger);
 
-            var tester = new SocketSubscriptionValidator<PolymarketSocketClient>(client, "Subscriptions/Clob", "wss://ws-subscriptions-clob.polymarket.com/ws/market", "data");
+            var tester = new SocketSubscriptionValidator<PolymarketSocketClient>(client, "Subscriptions/Prediction", "wss://ws-subscriptions-clob.polymarket.com/ws/market", "data");
             await tester.ValidateConcurrentAsync<PolymarketPriceChangeUpdate>(
-                (client, handler) => client.ClobApi.SubscribeToTokenUpdatesAsync(["0x123"], handler),
-                (client, handler) => client.ClobApi.SubscribeToTokenUpdatesAsync(["0x456"], handler),
+                (client, handler) => client.PredictionApi.SubscribeToTokenUpdatesAsync(["0x123"], handler),
+                (client, handler) => client.PredictionApi.SubscribeToTokenUpdatesAsync(["0x456"], handler),
                 "Concurrent");
         }
     }

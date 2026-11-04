@@ -1,0 +1,9 @@
+PATCH
+/v1/trade/leverage
+true
+{
+  "status": "ok",
+  "instrument_id": 1,
+  "leverage": 10,
+  "cross": true
+}

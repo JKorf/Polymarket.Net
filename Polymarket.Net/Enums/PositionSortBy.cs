@@ -13,45 +13,35 @@ namespace Polymarket.Net.Enums {
 		/// </summary>
 		[Map("TOKENS")]
 		Tokens,
-		/// <summary>
-		/// ["<c>CURRENT</c>"] Current
-		/// </summary>
-		[Map("CURRENT")]
-		Current,
-		/// <summary>
-		/// ["<c>INITIAL</c>"] Initial
-		/// </summary>
-		[Map("INITIAL")]
-		Initial,
-		/// <summary>
-		/// ["<c>CASHPNL</c>"] CashPnl
-		/// </summary>
-		[Map("CASHPNL")]
-		CashPnl,
-		/// <summary>
-		/// ["<c>PERCENTPNL</c>"] PercentPnl
-		/// </summary>
-		[Map("PERCENTPNL")]
-		PercentPnl,
-		/// <summary>
-		/// ["<c>TITLE</c>"] Title
-		/// </summary>
-		[Map("TITLE")]
-		Title,
-		/// <summary>
-		/// ["<c>RESOLVING</c>"] Resolving
-		/// </summary>
-		[Map("RESOLVING")]
-		Resolving,
-		/// <summary>
-		/// ["<c>PRICE</c>"] Price
-		/// </summary>
-		[Map("PRICE")]
-		Price,
-		/// <summary>
-		/// ["<c>AVGPRICE</c>"] AvgPrice
-		/// </summary>
-		[Map("AVGPRICE")]
-		AvgPrice
+        /// <summary>
+        /// ["<c>CURRENT_VALUE</c>"] Current value
+        /// </summary>
+        [Map("CURRENT_VALUE")]
+		CurrentValue,
+        /// <summary>
+        /// ["<c>PRICE</c>"] Price
+        /// </summary>
+        [Map("PRICE")]
+        Price,
+        /// <summary>
+        /// ["<c>UNREALIZED_PNL</c>"] Unrealized profit and loss
+        /// </summary>
+        [Map("UNREALIZED_PNL")]
+        UnrealizedPnl,
+        /// <summary>
+        /// ["<c>REALIZED_PNL</c>"] Realized profit and loss
+        /// </summary>
+        [Map("REALIZED_PNL")]
+        RealizedPnl,
+        /// <summary>
+        /// ["<c>TOTAL_PNL</c>"] Total profit and loss
+        /// </summary>
+        [Map("TOTAL_PNL")]
+        TotalPnl,
+        /// <summary>
+        /// ["<c>TIMESTAMP </c>"] Timestamp
+        /// </summary>
+        [Map("TIMESTAMP ")]
+		Timestamp
 	}
 }

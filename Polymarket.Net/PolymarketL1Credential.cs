@@ -1,10 +1,7 @@
-﻿using CryptoExchange.Net;
-using CryptoExchange.Net.Authentication;
-using CryptoExchange.Net.Authentication.Signing;
+﻿using CryptoExchange.Net.Authentication;
+using CryptoExchange.Net.Web3;
 using Polymarket.Net.Enums;
-using Secp256k1Net;
 using System;
-using System.Net;
 
 namespace Polymarket.Net
 {
@@ -13,71 +10,46 @@ namespace Polymarket.Net
     /// </summary>
     public class PolymarketL1Credential : CredentialSet
     {
-        private string? _publicAddress;
-
         /// <summary>
         /// Sign type
         /// </summary>
-        public SignType SignType { get; set; }
+        public SignType SignType { get; }
         /// <summary>
-        /// Private key
+        /// Wallet key
         /// </summary>
-        public string PrivateKey { get; set; }
+        public EthKey WalletKey { get; }
+
         /// <summary>
         /// The polymarket funding or deposit address. Should be provided when using SignType.EOA or SignType.Poly1271. Can be found in your account in the web interface
         /// </summary>
-        public string? PolymarketFundingAddress { get; set; }
+        public string? PolymarketFundingAddress { get; }
 
         /// <summary>
         /// Create new Polymarket Layer 1 credentials
         /// </summary>
         /// <param name="signType">Signature type</param>
-        /// <param name="privateKey">Private key</param>
+        /// <param name="walletKey">Wallet key, requires private key to be set</param>
         /// <param name="polymarketFundingAddress">Funding or deposit address, necessary when using SignType.EOA or SignType.Poly1271</param>
-        public PolymarketL1Credential(SignType signType, string privateKey, string? polymarketFundingAddress = null) : base(GetPublicAddress(privateKey))
+        public PolymarketL1Credential(SignType signType, EthKey walletKey, string? polymarketFundingAddress = null) : base(walletKey.PublicAddress)
         {
+            if (walletKey.PrivateKey == null)
+                throw new ArgumentException("Private key required for message signing");
+
             SignType = signType;
-            PrivateKey = privateKey;
+            WalletKey = walletKey;
             PolymarketFundingAddress = polymarketFundingAddress;
         }
 
-        /// <summary>
-        /// Get the public address corresponding to the provided private key
-        /// </summary>
-        public string GetPublicAddress()
-        {
-            if (_publicAddress != null)
-                return _publicAddress;
-
-            _publicAddress = GetPublicAddress(PrivateKey);
-            return _publicAddress;
-        }
-
         /// <inheritdoc />
-        public override ApiCredentials Copy() => new PolymarketL1Credential(SignType, PrivateKey, PolymarketFundingAddress);
-
-        private static string GetPublicAddress(string privateKey)
-        {
-            var publicKeyBytes = Secp256k1.CreatePublicKey(ExchangeHelpers.HexToBytesString(privateKey), false);
-
-            var withoutPrefix = new byte[64];
-            Array.Copy(publicKeyBytes, 1, withoutPrefix, 0, 64);
-
-            var hash = CeSha3Keccack.CalculateHash(withoutPrefix);
-            var pubAddress = new byte[20];
-            Array.Copy(hash, hash.Length - 20, pubAddress, 0, 20);
-
-            return "0x" + ExchangeHelpers.BytesToHexString(pubAddress);
-        }
+        public override ApiCredentials Copy() => new PolymarketL1Credential(SignType, WalletKey, PolymarketFundingAddress);
 
         /// <inheritdoc />
         public override void Validate()
         {
             base.Validate();
 
-            if (string.IsNullOrEmpty(PrivateKey))
-                throw new ArgumentException("PrivateKey not set", nameof(PrivateKey));
-
+            if (WalletKey == null)
+                throw new ArgumentException("Key not set", nameof(Key));
 
             if (SignType == SignType.Poly1271 && string.IsNullOrEmpty(PolymarketFundingAddress))
                 throw new Exception("Poly1271 signing requires the DepositAddress to be provided in the PolymarketFundingAddress");

@@ -1,10 +1,16 @@
-﻿using CryptoExchange.Net.Objects;
+﻿using CryptoExchange.Net;
+using CryptoExchange.Net.Objects;
 using CryptoExchange.Net.Objects.Errors;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
+using Polymarket.Net.Clients;
+using Polymarket.Net.Clients.PerpsApi;
+using Polymarket.Net.Interfaces.Clients.PredictionApi;
 using Polymarket.Net.Objects.Models;
+using Polymarket.Net.Objects.Options;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,11 +23,31 @@ namespace Polymarket.Net.Utils
     {
         private static Dictionary<string, Dictionary<string, PolymarketTokenCache>> _tokenInfos = new Dictionary<string, Dictionary<string, PolymarketTokenCache>>();
         private static readonly SemaphoreSlim _semaphoreSpot = new SemaphoreSlim(1, 1);
+        internal static readonly ConcurrentDictionary<string, BuilderFeeStatus> _builderFeeStatus = new ConcurrentDictionary<string, BuilderFeeStatus>();
+
+        internal static Parameters GetOperationParameters(string type, Parameters parameters)
+        {
+            var result = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            var operation = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            operation.Add("type", type);
+            operation.Add("args", parameters.BodyValue ?? parameters);
+            result.Add("op", operation);
+            return result;
+        }
+        internal static Parameters GetOperationParameters(string type, Parameters[] parameters)
+        {
+            var result = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            var operation = new Parameters(PolymarketPlatform._perpsParameterSerializationSettings);
+            operation.Add("type", type);
+            operation.Add("args", parameters);
+            result.Add("op", operation);
+            return result;
+        }
 
         /// <summary>
         /// Get token info either from cache or from the API if the cache is outdated or not present
         /// </summary>
-        public static async Task<CallResult<PolymarketOrderBook>> GetTokenInfoAsync(string tokenId, IPolymarketRestClientClobApi client)
+        public static async Task<CallResult<PolymarketOrderBook>> GetTokenInfoAsync(string tokenId, IPolymarketRestClientPredictionApi client)
         {
             await _semaphoreSpot.WaitAsync().ConfigureAwait(false);
             try
@@ -59,7 +85,7 @@ namespace Polymarket.Net.Utils
         /// <summary>
         /// Get token info either from cache or from the API if the cache is outdated or not present
         /// </summary>
-        public static async Task<CallResult<PolymarketOrderBook[]>> GetTokenInfosAsync(IEnumerable<string> tokenIds, IPolymarketRestClientClobApi client)
+        public static async Task<CallResult<PolymarketOrderBook[]>> GetTokenInfosAsync(IEnumerable<string> tokenIds, IPolymarketRestClientPredictionApi client)
         {
             await _semaphoreSpot.WaitAsync().ConfigureAwait(false);
             try
@@ -93,7 +119,7 @@ namespace Polymarket.Net.Utils
             }
         }
 
-        private static async Task<CallResult<PolymarketOrderBook[]>> UpdateTokenInfoAsync(string envName, IEnumerable<string> tokenIds, IPolymarketRestClientClobApi client)
+        private static async Task<CallResult<PolymarketOrderBook[]>> UpdateTokenInfoAsync(string envName, IEnumerable<string> tokenIds, IPolymarketRestClientPredictionApi client)
         {
             var tokenInfo = await client.ExchangeData.GetOrderBooksAsync(tokenIds).ConfigureAwait(false);
             if (!tokenInfo.Success)
@@ -107,6 +133,143 @@ namespace Polymarket.Net.Utils
             return CallResult.Ok(tokenInfo.Data);
         }
 
+        internal static async Task<ICallResult> CheckPerpBuilderAsync(PolymarketRestClientPerpsApi client, CancellationToken cancellationToken)
+        {
+            if (client.ApiCredentials?.Perps?.ProxyKey == null)
+                // No credentials provided, no need to check builder fee
+                return CallResult.Ok();
+
+            var envName = client.ClientOptions.Environment.Name;
+            if (envName.Equals("UnitTest", StringComparison.Ordinal))
+                return CallResult.Ok();
+
+            var key = client.ApiCredentials.Perps.ProxyKey.PublicAddress;
+            var builderStatus = _builderFeeStatus.GetOrAdd(key, (key) => new BuilderFeeStatus());
+            if (builderStatus.Checked)
+                // Already checked, no need to check again
+                return CallResult.Ok();
+
+            var options = client.ClientOptions;
+
+            if (options.PerpsOptions.BuilderFeePercentage == null
+                || options.PerpsOptions.BuilderFeePercentage == 0
+                || string.IsNullOrEmpty(options.PerpsOptions.BuilderCode))
+            {
+                // Builder disabled
+                return CallResult.Ok();
+            }
+
+            await builderStatus.Semaphore.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                builderStatus.Checked = true;
+
+                var approvals = await client.Account.GetBuilderApprovalsAsync(options.PerpsOptions.BuilderCode!, cancellationToken).ConfigureAwait(false);
+                if (!approvals.Success)
+                    // Failed to get approvals
+                    return approvals;
+
+                var target = options.PerpsOptions.BuilderFeePercentage.Value / 100;
+                var approval = approvals.Data.OrderByDescending(x => x.ApprovalVersion).FirstOrDefault();
+                if (approval != null && approval.MaxFeeRate >= target)
+                {
+                    // Builder already approved
+                    builderStatus.Success = true;
+                    return CallResult.Ok();
+                }
+
+                if (client.ApiCredentials?.Perps?.SignerKey?.PrivateKey == null)
+                    // No private key available, can't approve
+                    return CallResult.Ok();
+
+                var nextApproval = (approval?.ApprovalVersion + 1) ?? 1;
+                var approveResult = await client.Account.ApproveBuilderAsync(options.PerpsOptions.BuilderCode!, target, nextApproval, cancellationToken).ConfigureAwait(false);
+                if (!approveResult.Success)
+                    // Failed to approve
+                    return approveResult;
+
+                // Approved
+                builderStatus.Success = true;
+                return CallResult.Ok();
+            }
+            finally
+            {
+                builderStatus.Semaphore.Release();
+            }
+        }
+
+        internal static async Task<ICallResult> CheckPerpBuilderAsync(PolymarketSocketClientPerpsApi client, CancellationToken cancellationToken)
+        {
+            if (client.ApiCredentials?.Perps?.ProxyKey == null)
+                // No credentials provided, no need to check builder fee
+                return CallResult.Ok();
+
+            var envName = client.ClientOptions.Environment.Name;
+            if (envName.Equals("UnitTest", StringComparison.Ordinal))
+                return CallResult.Ok();
+
+            var key = client.ApiCredentials.Perps.ProxyKey.PublicAddress;
+            var builderStatus = _builderFeeStatus.GetOrAdd(key, (key) => new BuilderFeeStatus());
+            if (builderStatus.Checked)
+                // Already checked, no need to check again
+                return CallResult.Ok();
+
+            var options = client.ClientOptions;
+
+            if (options.PerpsOptions.BuilderFeePercentage == null
+                || options.PerpsOptions.BuilderFeePercentage == 0
+                || string.IsNullOrEmpty(options.PerpsOptions.BuilderCode))
+            {
+                // Builder disabled
+                return CallResult.Ok();
+            }
+
+            await builderStatus.Semaphore.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                builderStatus.Checked = true;
+
+                var restClient = new PolymarketRestClient(x =>
+                {
+                    x.ApiCredentials = client.ApiCredentials;
+                    x.Environment = client.ClientOptions.Environment;
+                    x.Proxy = client.ClientOptions.Proxy;
+                });
+
+                var approvals = await restClient.PerpsApi.Account.GetBuilderApprovalsAsync(options.PerpsOptions.BuilderCode!, cancellationToken).ConfigureAwait(false);
+                if (!approvals.Success)
+                    // Failed to get approvals
+                    return approvals;
+
+                var target = options.PerpsOptions.BuilderFeePercentage.Value / 100;
+                var approval = approvals.Data.OrderByDescending(x => x.ApprovalVersion).FirstOrDefault();
+                if (approval != null && approval.MaxFeeRate >= target)
+                {
+                    // Builder already approved
+                    builderStatus.Success = true;
+                    return CallResult.Ok();
+                }
+
+                if (client.ApiCredentials?.Perps?.SignerKey?.PrivateKey == null)
+                    // No private key available, can't approve
+                    return CallResult.Ok();
+
+                var nextApproval = (approval?.ApprovalVersion + 1) ?? 1;
+                var approveResult = await restClient.PerpsApi.Account.ApproveBuilderAsync(options.PerpsOptions.BuilderCode!, target, nextApproval, cancellationToken).ConfigureAwait(false);
+                if (!approveResult.Success)
+                    // Failed to approve
+                    return approveResult;
+
+                // Approved
+                builderStatus.Success = true;
+                return CallResult.Ok();
+            }
+            finally
+            {
+                builderStatus.Semaphore.Release();
+            }
+        }
+
         private class PolymarketTokenCache
         {
             public DateTime LastUpdateTime { get; set; } = default; 
@@ -117,6 +280,22 @@ namespace Polymarket.Net.Utils
                 LastUpdateTime = timestamp;
                 Book = book;
             }
+        }
+
+        internal class BuilderFeeStatus
+        {
+            /// <summary>
+            /// Whether builder fee was checked
+            /// </summary>
+            public bool Checked { get; set; }
+            /// <summary>
+            /// Whether builder fee is approved and can be applied
+            /// </summary>
+            public bool Success { get; set; }
+            /// <summary>
+            /// Key-specific semaphore
+            /// </summary>
+            public SemaphoreSlim Semaphore { get; set; } = new SemaphoreSlim(1, 1);
         }
     }
 }

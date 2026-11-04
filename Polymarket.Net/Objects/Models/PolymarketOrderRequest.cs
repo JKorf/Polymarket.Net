@@ -1,9 +1,5 @@
 using Polymarket.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Polymarket.Net.Objects.Models
 {
@@ -60,8 +56,13 @@ namespace Polymarket.Net.Objects.Models
         public decimal? TickQuantity { get; set; }
 
         /// <summary>
-        /// If negative risk token, can be provided together with tickQuantity to bypass token info retrieval for limit orders
+        /// If negative risk token, can be provided together with TickQuantity to bypass token info retrieval for limit orders
         /// </summary>
         public bool? NegativeRisk { get; set; }
+
+        /// <summary>
+        /// V1 or V2 market. With either V2 + TickQuantity or V1 + NegativeRisk + TickQuantity the token info retrieval for limit orders can be bypassed
+        /// </summary>
+        public int MarketVersion { get; set; } = 1;
     }
 }

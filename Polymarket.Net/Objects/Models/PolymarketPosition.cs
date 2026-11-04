@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Polymarket.Net.Enums;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Polymarket.Net.Objects.Models
@@ -9,159 +10,169 @@ namespace Polymarket.Net.Objects.Models
     public record PolymarketPosition
     {
         /// <summary>
-        /// ["<c>proxyWallet</c>"] ProxyWallet
+        /// ["<c>proxy_wallet</c>"] ProxyWallet
         /// </summary>
-        [JsonPropertyName("proxyWallet")]
+        [JsonPropertyName("proxy_wallet")]
         public string ProxyWallet { get; set; } = string.Empty;
-
         /// <summary>
-        /// ["<c>asset</c>"] Asset
+        /// ["<c>condition_id</c>"] Market id
         /// </summary>
-        [JsonPropertyName("asset")]
-        public string Asset { get; set; } = string.Empty;
-
-        /// <summary>
-        /// ["<c>conditionId</c>"] Market id
-        /// </summary>
-        [JsonPropertyName("conditionId")]
+        [JsonPropertyName("condition_id")]
         public string MarketId { get; set; } = string.Empty;
-
         /// <summary>
-        /// ["<c>size</c>"] Size
+        /// ["<c>token_id</c>"] Token id
         /// </summary>
-        [JsonPropertyName("size")]
-        public decimal Size { get; set; }
-
+        [JsonPropertyName("token_id")]
+        public string TokenId { get; set; } = string.Empty;
         /// <summary>
-        /// ["<c>avgPrice</c>"] AvgPrice
+        /// ["<c>current_size</c>"] Current size
         /// </summary>
-        [JsonPropertyName("avgPrice")]
+        [JsonPropertyName("current_size")]
+        public decimal CurrentSize { get; set; }
+        /// <summary>
+        /// ["<c>avg_price</c>"] Average price
+        /// </summary>
+        [JsonPropertyName("avg_price")]
         public decimal AvgPrice { get; set; }
-
         /// <summary>
-        /// ["<c>initialValue</c>"] InitialValue
+        /// ["<c>entry_cost_usdc</c>"] Entry cost in USDC
         /// </summary>
-        [JsonPropertyName("initialValue")]
-        public decimal InitialValue { get; set; }
-
+        [JsonPropertyName("entry_cost_usdc")]
+        public decimal EntryCostUsdc { get; set; }
         /// <summary>
-        /// ["<c>currentValue</c>"] CurrentValue
+        /// ["<c>entry_fees_usdc</c>"] Entry fees in USDC
         /// </summary>
-        [JsonPropertyName("currentValue")]
+        [JsonPropertyName("entry_fees_usdc")]
+        public decimal EntryFeesUsdc { get; set; }
+        /// <summary>
+        /// ["<c>total_cost_usdc</c>"] Total cost in USDC
+        /// </summary>
+        [JsonPropertyName("total_cost_usdc")]
+        public decimal TotalCostUsdc { get; set; }
+        /// <summary>
+        /// ["<c>current_price</c>"] Current price
+        /// </summary>
+        [JsonPropertyName("current_price")]
+        public decimal CurrentPrice { get; set; }
+        /// <summary>
+        /// ["<c>current_value</c>"] CurrentValue
+        /// </summary>
+        [JsonPropertyName("current_value")]
         public decimal CurrentValue { get; set; }
-
         /// <summary>
-        /// ["<c>cashPnl</c>"] CashPnl
+        /// ["<c>total_size</c>"] Total size
         /// </summary>
-        [JsonPropertyName("cashPnl")]
-        public decimal CashPnl { get; set; }
-
+        [JsonPropertyName("total_size")]
+        public decimal TotalSize { get; set; }
         /// <summary>
-        /// ["<c>percentPnl</c>"] PercentPnl
+        /// ["<c>realized_pnl</c>"] Realized profit and loss
         /// </summary>
-        [JsonPropertyName("percentPnl")]
-        public decimal PercentPnl { get; set; }
-
-        /// <summary>
-        /// ["<c>totalBought</c>"] TotalBought
-        /// </summary>
-        [JsonPropertyName("totalBought")]
-        public decimal TotalBought { get; set; }
-
-        /// <summary>
-        /// ["<c>totalSold</c>"] TotalSold
-        /// </summary>
-        [JsonPropertyName("realizedPnl")]
+        [JsonPropertyName("realized_pnl")]
         public decimal RealizedPnl { get; set; }
-
         /// <summary>
-        /// ["<c>percentRealizedPnl</c>"] PercentRealizedPnl
+        /// ["<c>realized_pnl</c>"] Unrealized profit and loss
         /// </summary>
-        [JsonPropertyName("percentRealizedPnl")]
+        [JsonPropertyName("unrealized_pnl")]
+        public decimal UnrealizedPnl { get; set; }
+        /// <summary>
+        /// ["<c>total_pnl</c>"] Total profit and loss
+        /// </summary>
+        [JsonPropertyName("total_pnl")]
+        public decimal TotalPnl { get; set; }
+        /// <summary>
+        /// ["<c>percent_pnl</c>"] Percentage profit and loss
+        /// </summary>
+        [JsonPropertyName("percent_pnl")]
+        public decimal PercentPnl { get; set; }
+        /// <summary>
+        /// ["<c>percent_realized_pnl</c>"] Percentage realized profit and loss
+        /// </summary>
+        [JsonPropertyName("percent_realized_pnl")]
         public decimal PercentRealizedPnl { get; set; }
-
         /// <summary>
-        /// ["<c>curPrice</c>"] CurPrice
+        /// ["<c>status</c>"] Position status
         /// </summary>
-        [JsonPropertyName("curPrice")]
-        public decimal CurPrice { get; set; }
-
+        [JsonPropertyName("status")]
+        public PositionStatus Status { get; set; }
         /// <summary>
         /// ["<c>redeemable</c>"] Redeemable
         /// </summary>
         [JsonPropertyName("redeemable")]
         public bool Redeemable { get; set; }
-
         /// <summary>
         /// ["<c>mergeable</c>"] Mergeable
         /// </summary>
         [JsonPropertyName("mergeable")]
         public bool Mergeable { get; set; }
-
+        /// <summary>
+        /// ["<c>negativeRisk</c>"] Negative risk
+        /// </summary>
+        [JsonPropertyName("negativeRisk")]
+        public bool NegativeRisk { get; set; }
+        /// <summary>
+        /// ["<c>archived</c>"] Archived
+        /// </summary>
+        [JsonPropertyName("archived")]
+        public bool Archived { get; set; }
         /// <summary>
         /// ["<c>title</c>"] Title
         /// </summary>
         [JsonPropertyName("title")]
         public string Title { get; set; } = string.Empty;
-
         /// <summary>
         /// ["<c>slug</c>"] Slug
         /// </summary>
         [JsonPropertyName("slug")]
         public string Slug { get; set; } = string.Empty;
-
         /// <summary>
         /// ["<c>icon</c>"] Icon
         /// </summary>
         [JsonPropertyName("icon")]
         public string Icon { get; set; } = string.Empty;
-
         /// <summary>
-        /// ["<c>eventId</c>"] EventId
+        /// ["<c>event_id</c>"] Event id
         /// </summary>
-        [JsonPropertyName("eventId")]
+        [JsonPropertyName("event_id")]
         public string EventId { get; set; } = string.Empty;
-
         /// <summary>
-        /// ["<c>eventSlug</c>"] EventSlug
+        /// ["<c>event_slug</c>"] Event slug
         /// </summary>
-        [JsonPropertyName("eventSlug")]
+        [JsonPropertyName("event_slug")]
         public string EventSlug { get; set; } = string.Empty;
-
         /// <summary>
         /// ["<c>outcome</c>"] Outcome
         /// </summary>
         [JsonPropertyName("outcome")]
         public string Outcome { get; set; } = string.Empty;
-
         /// <summary>
-        /// ["<c>outcomeIndex</c>"] OutcomeIndex
+        /// ["<c>outcome_index</c>"] OutcomeIndex
         /// </summary>
-        [JsonPropertyName("outcomeIndex")]
+        [JsonPropertyName("outcome_index")]
         public int OutcomeIndex { get; set; }
-
         /// <summary>
-        /// ["<c>oppositeOutcome</c>"] OppositeOutcome
+        /// ["<c>opposite_outcome</c>"] Opposite outcome
         /// </summary>
-        [JsonPropertyName("oppositeOutcome")]
+        [JsonPropertyName("opposite_outcome")]
         public string OppositeOutcome { get; set; } = string.Empty;
-
         /// <summary>
-        /// ["<c>oppositeAsset</c>"] OppositeAsset
+        /// ["<c>opposite_token_id</c>"] Opposite token id
         /// </summary>
-        [JsonPropertyName("oppositeAsset")]
-        public string OppositeAsset { get; set; } = string.Empty;
-
+        [JsonPropertyName("opposite_token_id")]
+        public string OppositeTokenId { get; set; } = string.Empty;
         /// <summary>
-        /// ["<c>createdDate</c>"] CreatedDate
+        /// ["<c>end_data</c>"] End date
         /// </summary>
-        [JsonPropertyName("endDate")]
-        public string EndDate { get; set; } = string.Empty;
-
+        [JsonPropertyName("end_date")]
+        public DateTime? EndDate { get; set; }
         /// <summary>
-        /// ["<c>negativeRisk</c>"] NegativeRisk
+        /// ["<c>last_event_at</c>"] Last event at
         /// </summary>
-        [JsonPropertyName("negativeRisk")]
-        public bool NegativeRisk { get; set; }
+        [JsonPropertyName("last_event_at")]
+        public DateTime? LastEventAt { get; set; }
+        /// <summary>
+        /// ["<c>first_entry_at</c>"] First entry at
+        /// </summary>
+        [JsonPropertyName("first_entry_at")]
+        public DateTime? FirstEntryAt { get; set; }
     }
 }

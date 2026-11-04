@@ -3,9 +3,10 @@
 [![.NET](https://img.shields.io/github/actions/workflow/status/JKorf/Polymarket.Net/dotnet.yml?style=for-the-badge)](https://github.com/JKorf/Polymarket.Net/actions/workflows/dotnet.yml) ![License](https://img.shields.io/github/license/JKorf/Polymarket.Net?style=for-the-badge)
 ![Since](https://img.shields.io/badge/since-2025-brightgreen?style=for-the-badge)
 
-Polymarket.Net is a client library for accessing the [Polymarket REST and Websocket API](https://docs.polymarket.com/developers/CLOB/introduction). 
+Polymarket.Net is a client library for accessing the [Polymarket REST and WebSocket APIs](https://docs.polymarket.com/developers/CLOB/introduction), covering prediction markets through `PredictionApi` and perpetual futures through `PerpsApi`.
 
 ## Features
+* Prediction market and perpetual futures REST and WebSocket APIs
 * Response data is mapped to descriptive models
 * Input parameters and response values are mapped to discriptive enum values where possible
 * High performance
@@ -47,164 +48,220 @@ Polymarket.Net is available on [GitHub packages](https://github.com/JKorf/Polyma
 The NuGet package files are added along side the source with the latest GitHub release which can found [here](https://github.com/JKorf/Polymarket.Net/releases).
 
 ## How to use
-*Basic request:* 
+
+The REST and WebSocket clients expose two API branches:
+
+|API|REST members|WebSocket members|
+|--|--|--|
+|Prediction markets|`PredictionApi.ExchangeData`, `.Account`, `.Trading`|`PredictionApi`|
+|Perpetual futures|`PerpsApi.ExchangeData`, `.Account`, `.Trading`|`PerpsApi.ExchangeData`, `.Account`, `.Trading`|
+
+When migrating from the previous structure, replace `ClobApi` with `PredictionApi`.
+Gamma market/event/search methods now live under `PredictionApi.ExchangeData`;
+Data API position methods live under `PredictionApi.Trading`.
+
+### Prediction market data
+
 ```csharp
-// Get the order book info for the outcomes of the first market via rest request
-var markets = await polymarketRestClient.GammaApi.GetMarketsAsync(closed: false);
+using Polymarket.Net.Clients;
+
+using var restClient = new PolymarketRestClient();
+var markets = await restClient.PredictionApi.ExchangeData.GetMarketsAsync(closed: false, limit: 5);
 if (!markets.Success)
 {
-	Console.WriteLine("Failed: " + markets.Error);
-	return;
+    Console.WriteLine(markets.Error);
+    return;
 }
 
-var firstMarket = markets.Data[0];
-var bookInfo = await polymarketRestClient.ClobApi.ExchangeData.GetOrderBooksAsync(firstMarket.ClobTokenIds!);
+var firstMarket = markets.Data.FirstOrDefault();
+// V1 markets use CLOB token ids; V2 markets use position ids.
+var tokenIds = firstMarket?.Version == "v2" ? firstMarket.PositionIds : firstMarket?.ClobTokenIds;
+if (tokenIds == null || tokenIds.Length == 0)
+    return;
+
+var books = await restClient.PredictionApi.ExchangeData.GetOrderBooksAsync(tokenIds);
+if (!books.Success)
+{
+    Console.WriteLine(books.Error);
+    return;
+}
+
+Console.WriteLine($"Loaded {books.Data.Length} order books.");
 ```
-	
-*Place order:*
+
+### Prediction authentication and orders
+
+Prediction authentication has two levels. L1 uses a wallet key to create or derive
+L2 credentials. L2 uses an API key, secret and passphrase for private CLOB endpoints.
+Order placement also needs the L1 wallet key to sign orders.
+
+Construct wallet keys with `new EthKey(privateKey: "PRIVATE_KEY")`. Choose the
+`SignType` that matches the account:
+
+|Sign type|Account|Address supplied to `WithL1`|
+|--|--|--|
+|`SignType.Poly1271`|Poly1271 wallet|Polymarket deposit address|
+|`SignType.Email`|Email/Magic wallet|Polymarket funding address|
+|`SignType.Proxy`|Browser wallet proxy|Polymarket funding address|
+|`SignType.EOA`|Externally owned account|Polymarket funding address when required by the account|
+
 ```csharp
-var restClient = new PolymarketRestClient(opts => {
-	opts.ApiCredentials = new PolymarketCredentials(new PolymarketL1Credential(
+using var restClient = new PolymarketRestClient(options =>
+{
+    options.ApiCredentials = new PolymarketCredentials().WithL1(
         SignType.Poly1271,
-        "PRIVATEKEY",
-        "DEPOSITADDRESS"
-        ));
+        new EthKey(privateKey: "PRIVATE_KEY"),
+        "POLYMARKET_DEPOSIT_ADDRESS");
 });
 
-// Update the client with layer 2 credentials
-var credentials = await polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync();
-polymarketRestClient.UpdateL2Credentials(credentials.Data);
+var credentials = await restClient.PredictionApi.Account.GetOrCreateApiCredentialsAsync();
+if (!credentials.Success)
+{
+    Console.WriteLine(credentials.Error);
+    return;
+}
+restClient.UpdateL2Credentials(credentials.Data);
 
-// Place Limit order to buy 50 shares at 0.1 ($10)
-var tokenIdTest = "67565972075898091709163371829761231762318232475740950317083391526954889294846";
-var result = await polymarketRestClient.ClobApi.Trading.PlaceOrderAsync(
-    tokenIdTest, 
-	OrderSide.Buy,
-	OrderType.Limit, 
-	50, 
-	price: 0.1m);
+// Buy 50 shares at $0.10 each ($5 before fees).
+// Use ClobTokenIds for V1 markets, or PositionIds with marketVersion: 2 for V2.
+var order = await restClient.PredictionApi.Trading.PlaceOrderAsync(
+    tokenId: "TOKEN_ID",
+    side: OrderSide.Buy,
+    orderType: OrderType.Limit,
+    quantity: 50m,
+    price: 0.1m,
+    marketVersion: 1);
 ```
 
-*WebSocket subscription:*
+If L2 credentials are already available, configure both levels directly:
+
 ```csharp
-// Subscribe to updates for a specific token/asset via the websocket API
+using CryptoExchange.Net.Web3;
+using Polymarket.Net;
+using Polymarket.Net.Enums;
+
+var credentials = new PolymarketCredentials()
+    .WithL1(SignType.Poly1271, new EthKey(privateKey: "PRIVATE_KEY"), "POLYMARKET_DEPOSIT_ADDRESS")
+    .WithL2("L2_API_KEY", "L2_API_SECRET", "L2_API_PASSPHRASE");
+```
+
+### Prediction WebSocket subscriptions
+
+```csharp
 var socketClient = new PolymarketSocketClient();
-var tokenId = "11862165566757345985240476164489718219056735011698825377388402888080786399275";
-var subscriptionResult = await polymarketSocketClient.ClobApi.SubscribeToTokenUpdatesAsync([tokenId2],
-	priceUpdate =>
-	{
-		// Handle price change update
-	},
-	bookUpdate =>
-	{
-		// Handle order book update
-	},
-	lastTradePriceUpdate =>
-	{
-		// Handle last trade price update
-	},
-	tickSizeUpdate =>
-	{
-		// Handle tick size update
-	},
-	bestBidAskUpdate =>
-	{
-		// Handle best bid/ask change update
-	});
+var subscription = await socketClient.PredictionApi.SubscribeToTokenUpdatesAsync(
+    new[] { "TOKEN_ID" },
+    onBookUpdate: update => Console.WriteLine($"Book update: {update.Data}"),
+    onBestBidAskUpdate: update => Console.WriteLine($"Best bid/ask: {update.Data}"));
+	
+Console.ReadLine();
 ```
 
-### Authentication
-Authenticate using Poly1271 signing and a deposit address, providing the private key and the deposit address. This should be used for Polymarket accounts created after 04 May 2026. This will require you to request the layer 2 credentials before orders can be placed:
-```csharp
-var credsPoly1271Layer1 = new PolymarketCredentials(
-	new PolymarketL1Credential(
-		SignType.Poly1271, // Poly1271 signing, for accounts created after 4 May 2026
-		"0x00..", // The private key for the wallet
-		"0x00..")); // The polymarket deposit address, can be found in the web interface under `Profile -> Copy Address`
-```
+For user order/trade subscriptions, configure prediction L2 credentials on the socket client. `UpdateL2Credentials` is available on both clients.
 
-Authenticate using Poly1271 signing and a deposit address, providing the private key and the deposit address, while also providing previously requested layer 2 credentials. Can be used to place orders directly:
-```csharp
-var credsPoly1271WithLayer2 = new PolymarketCredentials(
-    new PolymarketL1Credential(
-		SignType.Poly1271, // Poly1271 signing, for accounts created after 4 May 2026
-		"0x00..", // The private key for the wallet
-		"0x00..")); // The polymarket deposit address, can be found in the web interface under `Profile -> Copy Address`
-    new HMACPassCredential(
-        "KEY",// The L2 API key as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-        "SEC", // The L2 API secret as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-        "PASS" // The L2 API passphrase as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-    ));
-```
+### Perpetual futures market data
 
-Authenticate using an email account and providing the exported private key and the funding address. This will require you to request the layer 2 credentials before orders can be placed:
-```csharp
-var credsEmailLayer1 = new PolymarketCredentials(
-	new PolymarketL1Credential(
-		SignType.Email, // Email wallet, when creating a new wallet via the web interface
-		"0x00..", // The private key, can be exported from the web interface
-		"0x00..")); // The polymarket funding address, can be found in the web interface under `Profile -> Your Polymarket Wallet Address`
-```
+Perps calls use symbol ids discovered through `GetSymbolsAsync()`. Conversion is also available via `restClient.PerpsApi.GetSymbolIdByName` and `GetSymbolNameById` after having called `GetSymbolsAsync`.
 
-Authenticate using an email account and providing the exported private key and the funding address, while also providing previously requested layer 2 credentials. Can be used to place orders directly:
 ```csharp
-var credsEmailWithLayer2 = new PolymarketCredentials(
-    new PolymarketL1Credential(
-        SignType.Email,// Email wallet, when creating a new wallet via the web interface
-        "0x00..",// The private key, can be exported from the web interface
-        "0x00.."), // The polymarket funding address, can be found in the web interface under `Profile -> Your Polymarket Wallet Address`
-    new HMACPassCredential(
-        "KEY",// The L2 API key as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-        "SEC", // The L2 API secret as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-        "PASS" // The L2 API passphrase as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-    ));
-```
-
-Authenticate using an external account, for example MetaMask, and providing the private key. This will require you to request the layer 2 credentials before orders can be placed:
-```csharp
-var credsEoaLayer1 = new PolymarketCredentials(
-    new PolymarketL1Credential(
-        SignType.EOA, // Externally Owned Account wallet, when using an existing wallet to connect to polymarket
-        "0x00..")); // The private key for the wallet
-```
-
-Authenticate using an external account, for example MetaMask, and providing the private key, while also providing previously requested layer 2 credentials. Can be used to place orders directly:
-```csharp
-var credsEoaWithLayer2 = new PolymarketCredentials(
-    new PolymarketL1Credential(
-        SignType.EOA, // Externally Owned Account wallet, when using an existing wallet to connect to polymarket
-        "0x00.." // The private key for the wallet
-    ),
-    new HMACPassCredential(
-        "KEY", // The L2 API key as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-        "SEC", // The L2 API secret as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-        "PASS" // The L2 API passphrase as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
-    ));
-```
-
-Retrieve and set layer 2 credentials need for placing orders (required when L2 credentials not provided in the credentials):
-```csharp
-var credentialResult = await polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync();
-if (credentialResult.Success)
-    polymarketRestClient.UpdateL2Credentials(credentialResult.Data);
-```
-
-Set the previously created credentials:
-```csharp
-// Via constructor
-var client = new PolymarketRestClient(options =>
+var restClient = new PolymarketRestClient();
+var symbols = await restClient.PerpsApi.ExchangeData.GetSymbolsAsync();
+if (!symbols.Success)
 {
-    options.ApiCredentials = credentials;
+    Console.WriteLine(symbols.Error);
+    return;
+}
+
+var instrument = symbols.Data.FirstOrDefault();
+if (instrument == null)
+    return;
+
+Console.WriteLine($"{instrument.Symbol}: {instrument.SymbolId}");
+var book = await restClient.PerpsApi.ExchangeData.GetOrderBookAsync(instrument.SymbolId, depth: 10);
+if (!book.Success)
+{
+    Console.WriteLine(book.Error);
+    return;
+}
+
+Console.WriteLine($"Book: {book.Data.Bids.Length} bids, {book.Data.Asks.Length} asks");
+```
+
+### Perps authentication and orders
+
+Perps uses a registered proxy key and its API secret. The proxy private key signs
+trading operations; the secret authenticates private reads and user streams. Register
+a proxy through `PerpsApi.Account.CreateProxyAsync`, using the owner's `signerKey`,
+and retain the returned secret. For an existing proxy, configure its key and secret.
+
+Initial proxy creation:  
+```csharp
+var client = new PolymarketRestClient(x =>
+{
+    x.ApiCredentials = new PolymarketCredentials()
+        .WithPerps(null, EthKey.FromPrivateKey("<signing private key>"), EthKey.FromPrivateKey("<proxy private key>"));
 });
 
-// Via dependency injection
-services.AddPolymarket(options =>
+// Call CreateProxy to register the proxy address used in the credentials and get a secret.
+// The secret will be automatically applied if creation is successful,
+// for later use the secret should be stored and reused.
+var result = await client.PerpsApi.Account.CreateProxyAsync(
+    DateTime.UtcNow.AddDays(30)); // Expiration time, after which the proxy can not be used anymore
+
+if (!result.Success)
 {
-    options.ApiCredentials = credentials
-});
+    Console.WriteLine($"Failed to create proxy: {result.Error}");
+    return;
+}
+
+// Store the secret for later use
+var secret = result.Data.Secret;
+
+_ = await client.PerpsApi.Account.GetBalancesAsync();
 ```
 
-For information on the clients, dependency injection, response processing and more see the [documentation](https://cryptoexchange.jkorf.dev/client-libs/getting-started), or have a look at the examples [here](https://github.com/JKorf/Polymarket.Net/tree/main/Examples) or [here](https://github.com/JKorf/CryptoExchange.Net/tree/master/Examples).
+With already registered proxy:
+```csharp
+var previousSecret = "<previously obtained secret>";
+client = new PolymarketRestClient(x =>
+{
+    x.ApiCredentials = new PolymarketCredentials()
+        .WithPerps(previousSecret, EthKey.FromPrivateKey("<signing private key>"), EthKey.FromPrivateKey("<proxy private key>"));
+});
+
+_ = await client.PerpsApi.Account.GetBalancesAsync();
+```
+
+### Perps WebSocket subscriptions
+
+```csharp
+using Polymarket.Net.Clients;
+
+var symbolId = 7; // ETH-USD symbol
+var socketClient = new PolymarketSocketClient();
+var subscription = await socketClient.PerpsApi.ExchangeData.SubscribeToTickerUpdatesAsync(
+    symbolId, update => Console.WriteLine($"Ticker: {update.Data}"));
+```
+
+Public streams include tickers, trades, order books, candles and statistics. Configure
+Perps credentials on the socket client for private subscriptions under
+`PerpsApi.Trading` (orders and fills) and `PerpsApi.Account` (balances and portfolio).
+
+### Dependency injection
+
+```csharp
+services.AddPolymarket();
+
+var restClient = provider.GetRequiredService<IPolymarketRestClient>();
+var socketClient = provider.GetRequiredService<IPolymarketSocketClient>();
+```
+
+Set `options.ApiCredentials` through `services.AddPolymarket(options => { ... })` for
+private access. Both injected clients expose `PredictionApi` and `PerpsApi`.
+
+For client setup, dependency injection and response processing, see the
+[documentation](https://cryptoexchange.jkorf.dev/client-libs/getting-started) or the
+[examples](Examples), including the [AI-friendly examples](Examples/ai-friendly).
 
 ## AI / LLM documentation
 
@@ -217,12 +274,37 @@ Polymarket.Net includes AI-oriented documentation and examples for code generati
 |[`llms.txt`](llms.txt)|Short LLM index with links to docs, examples, and critical usage rules|
 |[`llms-full.txt`](llms-full.txt)|Detailed LLM context with endpoint routing, authentication levels, code patterns, and anti-hallucination checks|
 |[`docs/ai-api-map.md`](docs/ai-api-map.md)|Table-style intent-to-method map for CLOB, Gamma, Data, WebSocket, authentication, DI, and local order book workflows|
-|[`Examples/ai-friendly`](Examples/ai-friendly)|Compilable single-file examples for common REST, authentication/trading, WebSocket, DI/order book, and error handling workflows|
+|[`Examples/ai-friendly`](Examples/ai-friendly)|Compilable single-file Prediction and Perps examples for market data, authentication/trading, WebSocket, DI/order book, and error handling workflows|
 
 See [cryptoexchange-skills-hub](https://github.com/JKorf/cryptoexchange-skills-hub) for installable skills.
 
 **NOTE**  
-Polymarket.Net uses the Builder Code mechanism for Polymarket, which means that an additional 1bps / 0.01% fee is charged on top of orders placed with the library to fund development. This is entirely optional and can be disabled in the client options by setting `BuilderCode` to `null` in the REST client options.
+Polymarket.Net uses the Builder Code mechanism for Polymarket, which means that an additional 1bps / 0.01% fee is charged on top of orders placed with the library to fund development. This is entirely optional: set `PredictionOptions.BuilderCode` or `PerpsOptions.BuilderCode` to `null` in the client options to disable it for that API.
+
+## Updating from V4 to V5
+* Client structure:
+  * ClobApi has been renamed to PredictionApi on REST and WebSocket clients.
+  * GammaApi methods have moved to PredictionApi.ExchangeData.
+  * DataApi position queries have moved to PredictionApi.Trading.
+  * Update explicit API client types and namespace imports from ClobApi to PredictionApi.
+* Credentials:
+  * WithL1 and PolymarketL1Credential now accept an EthKey instead of a private key string. Import CryptoExchange.Net.Web3 and pass new EthKey(privateKey: privateKey).
+  * Credential properties L1 and L2 have been renamed to PredictionL1 and PredictionL2.
+  * PolymarketL1Credential.PrivateKey has been replaced by WalletKey.
+  * Create or derive L2 credentials through PredictionApi.Account.GetOrCreateApiCredentialsAsync() and apply them with UpdateL2Credentials.
+* Prediction positions:
+  * GetPositionsAsync has moved to PredictionApi.Trading and now returns PolymarketDataPage<PolymarketPosition>.
+  * Replace offset-based pagination with cursor, using Pagination.NextCursor.
+  * Replace GetClosedPositionsAsync with GetPositionsAsync(status: PositionStatus.Closed, ...).
+* Prediction market versions:
+  * For V1 markets, continue using ClobTokenIds.
+  * For markets with Version == "v2", use PositionIds and pass marketVersion: 2 when placing orders.
+* Client options:
+  * ClobOptions, GammaOptions and DataOptions have been consolidated into PredictionOptions.
+  * The REST-level BuilderCode setting has moved to PredictionOptions.BuilderCode.
+* Local order books:
+  * PolymarketClobSymbolOrderBook has been renamed to PolymarketPredictionSymbolOrderBook.
+  * IPolymarketOrderBookFactory.CreateClob(tokenId) has been renamed to CreatePrediction(tokenId).
 
 ## CryptoExchange.Net
 Polymarket.Net is based on the [CryptoExchange.Net](https://github.com/JKorf/CryptoExchange.Net) base library. Other exchange API implementations based on the CryptoExchange.Net base library are available and follow the same logic.
@@ -270,34 +352,59 @@ A Discord server is available [here](https://discord.gg/MSpeEtSY8t). For discuss
 
 ## Supported functionality
 
-### REST API
+### Prediction REST API
 |API|Supported|Location|
 |--|--:|--|
-|Events|✓|`restClient.ClobApi.ExchangeData`|
-|Markets|✓|`restClient.ClobApi.ExchangeData`|
-|Orderbook & Pricing|✓|`restClient.ClobApi.ExchangeData`|
-|Orders|✓|`restClient.ClobApi.Trading` / `restClient.ClobApi.Account`|
-|Trades|✓|`restClient.ClobApi.Trading` / `restClient.ClobApi.Account`|
-|CLOB Markets|✓|`restClient.ClobApi.ExchangeData`|
+|Events|✓|`restClient.PredictionApi.ExchangeData`|
+|Markets|✓|`restClient.PredictionApi.ExchangeData`|
+|Orderbook & Pricing|✓|`restClient.PredictionApi.ExchangeData`|
+|Orders|✓|`restClient.PredictionApi.Trading`|
+|Trades|✓|`restClient.PredictionApi.Trading`|
+|CLOB Market Info|✓|`restClient.PredictionApi.ExchangeData`|
 |Rebates|X||
 |Rewards|X||
-|Profile|partial|`restClient.DataApi`|
+|Positions|✓|`restClient.PredictionApi.Trading`|
 |Leaderboard|X||
 |Builders|X||
-|Search|✓|`restClient.GammaApi`|
-|Tags|✓|`restClient.GammaApi`|
-|Series|✓|`restClient.GammaApi`|
+|Search|✓|`restClient.PredictionApi.ExchangeData`|
+|Tags|✓|`restClient.PredictionApi.ExchangeData`|
+|Series|✓|`restClient.PredictionApi.ExchangeData`|
 |Comments|X||
-|Sports|✓|`restClient.GammaApi`|
+|Sports|✓|`restClient.PredictionApi.ExchangeData`|
 |Bridge|X||
 |Relayer|X||
 
-### WebSocketocket API
+### Prediction WebSocket API
 |API|Supported|Location|
 |--|--:|--|
-|Market Channel|✓|`socketClient.ClobApi`|
-|User Channel|✓|`socketClient.ClobApi`|
-|Sport Channel|✓|`socketClient.ClobApi`|
+|Market Channel|✓|`socketClient.PredictionApi`|
+|User Channel|✓|`socketClient.PredictionApi`|
+|Sport Channel|✓|`socketClient.PredictionApi`|
+|Crypto / Equity Prices and TWAP|✓|`socketClient.PredictionApi`|
+
+### Perps REST API
+
+|API|Supported|Location|
+|--|--:|--|
+|Instruments, Tickers, Order Books and Trades|✓|`restClient.PerpsApi.ExchangeData`|
+|Candles, Mark Prices and Funding History|✓|`restClient.PerpsApi.ExchangeData`|
+|Exchange Info, Fees and Limit Tiers|✓|`restClient.PerpsApi.ExchangeData`|
+|Proxy Registration and Credentials|✓|`restClient.PerpsApi.Account`|
+|Balances, Portfolio and Account History|✓|`restClient.PerpsApi.Account`|
+|Leverage and Isolated Margin|✓|`restClient.PerpsApi.Account`|
+|Withdrawals and Internal Transfers|✓|`restClient.PerpsApi.Account`|
+|Place, Edit and Cancel Orders|✓|`restClient.PerpsApi.Trading`|
+|Open Orders, Order History and User Trades|✓|`restClient.PerpsApi.Trading`|
+
+### Perps WebSocket API
+
+|API|Supported|Location|
+|--|--:|--|
+|Tickers, Trades, Books, Candles and Statistics|✓|`socketClient.PerpsApi.ExchangeData`|
+|Orders, Fills and TP/SL Updates|✓|`socketClient.PerpsApi.Trading`|
+|Place and Cancel Orders|✓|`socketClient.PerpsApi.Trading`|
+|Balances, Portfolio, Funding, Deposits and Withdrawals|✓|`socketClient.PerpsApi.Account`|
+|Leverage and Isolated Margin|✓|`socketClient.PerpsApi.Account`|
 
 ## Support the project
 Any support is greatly appreciated.

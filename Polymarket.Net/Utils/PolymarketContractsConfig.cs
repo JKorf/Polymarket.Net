@@ -9,6 +9,11 @@
             ConditionalTokens = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045"
         };
 
+        public static PolymarketContracts PolygonConfigV3 { get; } = new()
+        {
+            Exchange = "0xe3333700cA9d93003F00f0F71f8515005F6c00Aa",
+        };
+
         public static PolymarketContracts PolygonNegRiskConfig { get; } = new()
         {
             Exchange = "0xe2222d279d744050d28e00520010520000310F59",
@@ -21,6 +26,11 @@
             Exchange = "0xdFE02Eb6733538f8Ea35D585af8DE5958AD99E40",
             Collateral = "0x9c4e1703476e875070ee25b56a58b008cfb8fa78",
             ConditionalTokens = "0x69308FB512518e39F9b16112fA8d994F4e2Bf8bB"
+        };
+
+        public static PolymarketContracts AmoyConfigV3 { get; } = new()
+        {
+            Exchange = "0x9fE6e61422AdB6F610d8597F9684b16912D50C3D",
         };
 
         public static PolymarketContracts AmoyNegRiskConfig { get; } = new()

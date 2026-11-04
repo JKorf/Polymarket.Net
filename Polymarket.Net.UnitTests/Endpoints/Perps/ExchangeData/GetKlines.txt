@@ -1,0 +1,18 @@
+GET
+/v1/info/klines
+false
+UriParams: {"instrument_id": 123,"interval": "1m"}
+{
+  "data": [
+    [
+      1767225600000,
+      "100.00",
+      "105.00",
+      "99.00",
+      "102.00",
+      "500.00",
+      42
+    ]
+  ],
+  "more": true
+}

@@ -1,0 +1,19 @@
+GET
+/v1/info/trades
+false
+UriParams: {"instrument_id": 123}
+{
+  "data": [
+    {
+      "trade_id": 1,
+      "instrument_id": 1,
+      "side": "long",
+      "price": "100.00",
+      "quantity": "10.00",
+      "timestamp": 1767225600000,
+      "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      "settlement": true
+    }
+  ],
+  "more": true
+}

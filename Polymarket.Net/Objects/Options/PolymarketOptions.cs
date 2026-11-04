@@ -1,4 +1,5 @@
 using CryptoExchange.Net.Objects.Options;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Configuration;
 using System;
 
@@ -9,6 +10,11 @@ namespace Polymarket.Net.Objects.Options
     /// </summary>
     public class PolymarketOptions : LibraryOptions<PolymarketRestOptions, PolymarketSocketOptions, PolymarketCredentials, PolymarketEnvironment>
     {
+        /// <summary>
+        /// Options for Shared API usage
+        /// </summary>
+        public SharedApiOptions SharedApi { get; set; } = new();
+
         /// <summary>
         /// Create PolymarketOptions instance using the provided configuration action
         /// </summary>

@@ -19,6 +19,11 @@ namespace Polymarket.Net.Enums
         /// ["<c>CONDITIONAL</c>"] Conditional
         /// </summary>
         [Map("CONDITIONAL")]
-        Conditional
+        Conditional,
+        /// <summary>
+        /// ["<c>CONDITIONAL-V2</c>"] Conditional V2
+        /// </summary>
+        [Map("CONDITIONAL-V2")]
+        ConditionalV2,
     }
 }

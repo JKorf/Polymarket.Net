@@ -1,5 +1,4 @@
 using CryptoExchange.Net.Objects;
-using CryptoExchange.Net.Testing.Implementations;
 using Polymarket.Net.Objects;
 
 namespace Polymarket.Net
@@ -39,6 +38,21 @@ namespace Polymarket.Net
         /// </summary>
         public string SportSocketClientAddress { get; }
 
+        /// <summary>
+        /// Socket PolyBolt API address
+        /// </summary>
+        public string PolyBoltSocketClientAddress { get; }
+
+        /// <summary>
+        /// REST Perps API address
+        /// </summary>
+        public string PerpsRestClientAddress { get; }
+
+        /// <summary>
+        /// Socket Perps API address
+        /// </summary>
+        public string PerpsSocketClientAddress { get; }
+
         internal PolymarketEnvironment(
             string name,
             uint chainId,
@@ -46,7 +60,10 @@ namespace Polymarket.Net
             string gammaRestAddress,
             string dataRestAddress,
             string clobStreamAddress,
-            string sportStreamAddress) :
+            string sportStreamAddress,
+            string polyBoltStreamAddress,
+            string perpsRestAddress,
+            string perpsSocketAddress) :
             base(name)
         {
             ChainId = chainId;
@@ -55,6 +72,9 @@ namespace Polymarket.Net
             DataRestClientAddress = dataRestAddress;
             ClobSocketClientAddress = clobStreamAddress;
             SportSocketClientAddress = sportStreamAddress;
+            PolyBoltSocketClientAddress = polyBoltStreamAddress;
+            PerpsRestClientAddress = perpsRestAddress;
+            PerpsSocketClientAddress = perpsSocketAddress;
         }
 
         /// <summary>
@@ -94,7 +114,10 @@ namespace Polymarket.Net
                                      PolymarketApiAddresses.Default.GammaRestClientAddress,
                                      PolymarketApiAddresses.Default.DataRestClientAddress,
                                      PolymarketApiAddresses.Default.ClobSocketClientAddress,
-                                     PolymarketApiAddresses.Default.SportsSocketClientAddress);
+                                     PolymarketApiAddresses.Default.SportsSocketClientAddress,
+                                     PolymarketApiAddresses.Default.PolyBoltSocketClientAddress,
+                                     PolymarketApiAddresses.Default.PerpsRestClientAddress,
+                                     PolymarketApiAddresses.Default.PerpsSocketClientAddress);
 
         /// <summary>
         /// Test environment
@@ -106,7 +129,10 @@ namespace Polymarket.Net
                                      PolymarketApiAddresses.Default.GammaRestClientAddress,
                                      PolymarketApiAddresses.Default.DataRestClientAddress,
                                      PolymarketApiAddresses.Default.ClobSocketClientAddress,
-                                     PolymarketApiAddresses.Default.SportsSocketClientAddress);
+                                     PolymarketApiAddresses.Default.SportsSocketClientAddress,
+                                     PolymarketApiAddresses.Default.PolyBoltSocketClientAddress,
+                                     PolymarketApiAddresses.Default.PerpsRestClientAddress,
+                                     PolymarketApiAddresses.Default.PerpsSocketClientAddress);
 
         /// <summary>
         /// Create a custom environment
@@ -119,7 +145,21 @@ namespace Polymarket.Net
                         string gammaRestAddress,
                         string dataRestAddress,
                         string clobSocketStreamsAddress,
-                        string sportSocketStreamsAddress)
-            => new PolymarketEnvironment(name, chainId, clobRestAddress, gammaRestAddress, dataRestAddress, clobSocketStreamsAddress, sportSocketStreamsAddress);
+                        string sportSocketStreamsAddress,
+                        string polyBoltSocketStreamsAddress,
+                        string perpsRestAddress,
+                        string perpsSocketAddress)
+            => new PolymarketEnvironment(
+                name, 
+                chainId, 
+                clobRestAddress,
+                gammaRestAddress, 
+                dataRestAddress,
+                clobSocketStreamsAddress,
+                sportSocketStreamsAddress,
+                polyBoltSocketStreamsAddress,
+                perpsRestAddress,
+                perpsSocketAddress
+                );
     }
 }

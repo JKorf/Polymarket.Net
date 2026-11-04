@@ -1,16 +1,13 @@
 using CryptoExchange.Net.Clients;
-using CryptoExchange.Net.Objects.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
+using Polymarket.Net.Clients.PerpsApi;
+using Polymarket.Net.Clients.PredictionApi;
 using Polymarket.Net.Interfaces.Clients;
-using Polymarket.Net.Objects.Options;
-using Polymarket.Net.Interfaces.Clients.ClobApi;
-using Polymarket.Net.Clients.ClobApi;
-using Polymarket.Net.Clients.GammaApi;
-using Polymarket.Net.Interfaces.Clients.GammaApi;
+using Polymarket.Net.Interfaces.Clients.PredictionApi;
 using Polymarket.Net.Objects.Models;
-using CryptoExchange.Net.Authentication;
+using Polymarket.Net.Objects.Options;
+using System;
 
 namespace Polymarket.Net.Clients
 {
@@ -23,7 +20,9 @@ namespace Polymarket.Net.Clients
         #region Api clients
         
          /// <inheritdoc />
-        public IPolymarketSocketClientClobApi ClobApi { get; }
+        public IPolymarketSocketClientPredictionApi PredictionApi { get; }
+         /// <inheritdoc />
+        public IPolymarketSocketClientPerpsApi PerpsApi { get; }
 
         #endregion
 
@@ -46,8 +45,9 @@ namespace Polymarket.Net.Clients
         public PolymarketSocketClient(IOptions<PolymarketSocketOptions> options, ILoggerFactory? loggerFactory = null) : base(loggerFactory, "Polymarket")
         {
             Initialize(options.Value);
-                        
-            ClobApi = AddApiClient(new PolymarketSocketClientClobApi(loggerFactory, options.Value));
+
+            PredictionApi = AddApiClient(new PolymarketSocketClientPredictionApi(loggerFactory, options.Value));
+            PerpsApi = AddApiClient(new PolymarketSocketClientPerpsApi(loggerFactory, options.Value));
         }
         #endregion
 
@@ -66,13 +66,19 @@ namespace Polymarket.Net.Clients
             if (credentials == null)
                 throw new ArgumentNullException(nameof(credentials));
 
-            var existingCreds = ((PolymarketSocketClientClobApi)ClobApi).ApiCredentials
+            var existingCreds = ((PolymarketSocketClientPredictionApi)PredictionApi).ApiCredentials
                 ?? throw new InvalidOperationException("UpdateL2Credentials can not be called without having initial L1 credentials. Use `SetApiCredentials` to set full credentials");
 
-            SetApiCredentials(
-                new PolymarketCredentials()
-                    .WithL1(existingCreds.L1.SignType, existingCreds.L1.PrivateKey, existingCreds.L1.PolymarketFundingAddress)
-                    .WithL2(credentials.ApiKey, credentials.Secret, credentials.Passphrase));
+            var newCreds = new PolymarketCredentials()
+                    .WithL2(credentials.ApiKey, credentials.Secret, credentials.Passphrase);
+
+            if (existingCreds.PredictionL1 != null)
+                newCreds = newCreds.WithL1(existingCreds.PredictionL1.SignType, existingCreds.PredictionL1.WalletKey, existingCreds.PredictionL1.PolymarketFundingAddress);
+
+            if (existingCreds.Perps != null)
+                newCreds = newCreds.WithPerps(existingCreds.Perps.Secret, existingCreds.Perps.SignerKey, existingCreds.Perps.ProxyKey);
+
+            SetApiCredentials(newCreds);
         }
 
     }

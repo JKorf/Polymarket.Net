@@ -1,0 +1,21 @@
+GET
+/v1/account/deposits
+true
+UriParams: {}
+{
+  "data": [
+    {
+      "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+      "asset": "USDC",
+      "amount": "100",
+      "from": "0x1234567890abcdef1234567890abcdef12345678",
+      "to": "0x1234567890abcdef1234567890abcdef12345678",
+      "status": "pending",
+      "confirmations": 12,
+      "required_confirmations": 12,
+      "created_timestamp": 1767225600000,
+      "confirmed_timestamp": 1767225600000
+    }
+  ],
+  "more": true
+}

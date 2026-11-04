@@ -1,0 +1,14 @@
+GET
+/v1/info/bbo
+false
+UriParams: {"instrument_id": 123}
+[
+  {
+    "instrument_id": 1,
+    "bid_price": "99.50",
+    "bid_quantity": "10.00",
+    "ask_price": "100.50",
+    "ask_quantity": "10.00",
+    "timestamp": 1767225600000
+  }
+]
