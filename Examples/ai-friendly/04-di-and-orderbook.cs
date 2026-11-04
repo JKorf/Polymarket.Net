@@ -1,3 +1,4 @@
+using CryptoExchange.Net.Web3;
 using CryptoExchange.Net.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Polymarket.Net;
@@ -13,7 +14,7 @@ services.AddPolymarket(options =>
     options.ApiCredentials = new PolymarketCredentials(
         new PolymarketL1Credential(
             SignType.Poly1271,
-            "PRIVATE_KEY",
+            new EthKey(privateKey: "PRIVATE_KEY"),
             "POLYMARKET_FUNDING_OR_DEPOSIT_ADDRESS"),
         new HMACPassCredential(
             "L2_API_KEY",
@@ -28,7 +29,7 @@ var socketClient = provider.GetRequiredService<IPolymarketSocketClient>();
 var orderBookFactory = provider.GetRequiredService<IPolymarketOrderBookFactory>();
 var userClientProvider = provider.GetRequiredService<IPolymarketUserClientProvider>();
 
-var time = await restClient.ClobApi.ExchangeData.GetServerTimeAsync();
+var time = await restClient.PredictionApi.ExchangeData.GetServerTimeAsync();
 if (!time.Success)
 {
     Console.WriteLine(time.Error);
@@ -52,7 +53,7 @@ Console.WriteLine($"Created local order book for {tokenId}: {orderBook.Symbol}")
 userClientProvider.InitializeUserClient(
     "alice",
     new PolymarketCredentials()
-        .WithL1(SignType.Poly1271, "ALICE_PRIVATE_KEY", "ALICE_POLYMARKET_ADDRESS")
+        .WithL1(SignType.Poly1271, new EthKey(privateKey: "ALICE_PRIVATE_KEY"), "ALICE_POLYMARKET_ADDRESS")
         .WithL2("ALICE_L2_KEY", "ALICE_L2_SECRET", "ALICE_L2_PASS"));
 
 var aliceRestClient = userClientProvider.GetRestClient("alice");
@@ -63,4 +64,4 @@ Console.WriteLine(aliceRestClient != null && aliceSocketClient != null
     : "User clients not initialized.");
 
 // Keep the concrete socket client for unsubscribe calls when you create subscriptions.
-Console.WriteLine(socketClient.ClobApi != null ? "Socket client ready." : "Socket client unavailable.");
+Console.WriteLine(socketClient.PredictionApi != null ? "Socket client ready." : "Socket client unavailable.");

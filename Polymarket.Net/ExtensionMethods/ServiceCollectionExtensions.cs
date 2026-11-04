@@ -1,14 +1,17 @@
 using CryptoExchange.Net;
+using CryptoExchange.Net.Interfaces;
+using CryptoExchange.Net.SharedApis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Net.Http;
+using Polymarket.Net;
 using Polymarket.Net.Clients;
 using Polymarket.Net.Interfaces;
 using Polymarket.Net.Interfaces.Clients;
 using Polymarket.Net.Objects.Options;
 using Polymarket.Net.SymbolOrderBooks;
+using System;
+using System.Net.Http;
 using System.Threading;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -72,12 +75,20 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Add(new ServiceDescriptor(typeof(IPolymarketSocketClient), x => { return new PolymarketSocketClient(x.GetRequiredService<IOptions<PolymarketSocketOptions>>(), x.GetRequiredService<ILoggerFactory>()); }, socketClientLifeTime ?? ServiceLifetime.Singleton));
 
             services.AddTransient<IPolymarketOrderBookFactory, PolymarketOrderBookFactory>();
+            services.AddTransient<IPolymarketTrackerFactory, PolymarketTrackerFactory>();
+            services.AddTransient<ITrackerFactory, PolymarketTrackerFactory>();
             services.AddSingleton<IPolymarketUserClientProvider, PolymarketUserClientProvider>(x =>
                 new PolymarketUserClientProvider(
                     x.GetRequiredService<IHttpClientFactory>().CreateClient(typeof(IPolymarketRestClient).Name),
                     x.GetRequiredService<ILoggerFactory>(),
                     x.GetRequiredService<IOptions<PolymarketRestOptions>>(),
                     x.GetRequiredService<IOptions<PolymarketSocketOptions>>()));
+
+            services.RegisterSharedApiClient<
+                IPolymarketSharedApiClient,
+                PolymarketSharedApiClient>(sharedApis => sharedApis
+                    .Add(client => client.PerpsRest)
+                    .Add(client => client.PerpsSocket));
 
             return services;
         }

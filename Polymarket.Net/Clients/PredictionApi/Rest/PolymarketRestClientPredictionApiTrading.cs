@@ -66,6 +66,9 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
             if (marketVersion > 2 || marketVersion < 1)
                 throw new ArgumentException("Market version must be 1 or 2", nameof(marketVersion));
 
+            if (_client.AuthenticationProvider?.ApiCredentials?.PredictionL1 == null)
+                return HttpResult.Fail<PolymarketOrderResult>(_client.Exchange, new NoApiCredentialsError("Requires L1 API credentials"));
+
             PolymarketOrderBook? tokenInfo = null;
             if (orderType != OrderType.Limit || tickQuantity is null || (negativeRisk is null && marketVersion == 1))
             {
@@ -136,6 +139,9 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         public async Task<HttpResult<CallResult<PolymarketOrderResult>[]>> PlaceMultipleOrdersAsync(IEnumerable<PolymarketOrderRequest> requests, CancellationToken ct = default)
         {
+            if (_client.AuthenticationProvider?.ApiCredentials?.PredictionL1 == null)
+                return HttpResult.Fail<CallResult<PolymarketOrderResult>[]>(_client.Exchange, new NoApiCredentialsError("Requires L1 API credentials"));
+
             var tokensToRequest = requests
                 .Where(x => x.OrderType != OrderType.Limit || x.TickQuantity is null || x.NegativeRisk is null)
                 .Select(x => x.TokenId)

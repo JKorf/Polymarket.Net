@@ -6,7 +6,7 @@ using Polymarket.Net.Enums;
 var client = new PolymarketRestClient();
 
 // Gamma API is the easiest way to discover human-readable markets and metadata.
-var markets = await client.GammaApi.GetMarketsAsync(closed: false, limit: 5);
+var markets = await client.PredictionApi.ExchangeData.GetMarketsAsync(closed: false, limit: 5);
 if (!markets.Success)
 {
     Console.WriteLine($"Could not load Gamma markets: {markets.Error}");
@@ -18,8 +18,8 @@ foreach (var market in markets.Data)
     Console.WriteLine($"{market.Question} | condition id: {market.MarketId}");
 }
 
-// Search is also exposed through GammaApi.
-var search = await client.GammaApi.SearchAsync("election", limitPerType: 3);
+// Gamma market discovery and CLOB data share PredictionApi.ExchangeData.
+var search = await client.PredictionApi.ExchangeData.SearchAsync("election", limitPerType: 3);
 if (!search.Success)
 {
     Console.WriteLine($"Search failed: {search.Error}");
@@ -30,15 +30,8 @@ Console.WriteLine("Search completed.");
 
 // CLOB API exposes token-level trading data. Orders and order books use token ids,
 // not symbols such as BTCUSDT.
-var clobMarkets = await client.ClobApi.ExchangeData.GetMarketsAsync();
-if (!clobMarkets.Success)
-{
-    Console.WriteLine($"Could not load CLOB markets: {clobMarkets.Error}");
-    return;
-}
-
-var firstToken = clobMarkets.Data.Data
-    .SelectMany(x => x.Tokens)
+var firstToken = markets.Data
+    .SelectMany(x => x.ClobTokenIds ?? Array.Empty<string>())
     .FirstOrDefault();
 
 if (firstToken == null)
@@ -47,9 +40,9 @@ if (firstToken == null)
     return;
 }
 
-var tokenId = firstToken.TokenId;
+var tokenId = firstToken;
 
-var book = await client.ClobApi.ExchangeData.GetOrderBookAsync(tokenId);
+var book = await client.PredictionApi.ExchangeData.GetOrderBookAsync(tokenId);
 if (!book.Success)
 {
     Console.WriteLine($"Could not load order book: {book.Error}");
@@ -58,7 +51,7 @@ if (!book.Success)
 
 Console.WriteLine($"Order book for {tokenId}: {book.Data.Bids.Length} bids, {book.Data.Asks.Length} asks");
 
-var midpoint = await client.ClobApi.ExchangeData.GetMidpointPriceAsync(tokenId);
+var midpoint = await client.PredictionApi.ExchangeData.GetMidpointPriceAsync(tokenId);
 if (!midpoint.Success)
 {
     Console.WriteLine($"Could not load midpoint: {midpoint.Error}");
@@ -67,7 +60,7 @@ if (!midpoint.Success)
 
 Console.WriteLine($"Midpoint loaded for {tokenId}");
 
-var buyPrice = await client.ClobApi.ExchangeData.GetPriceAsync(tokenId, OrderSide.Buy);
+var buyPrice = await client.PredictionApi.ExchangeData.GetPriceAsync(tokenId, OrderSide.Buy);
 if (!buyPrice.Success)
 {
     Console.WriteLine($"Could not load buy price: {buyPrice.Error}");

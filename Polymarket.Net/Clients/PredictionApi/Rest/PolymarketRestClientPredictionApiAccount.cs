@@ -60,6 +60,9 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         public async Task<HttpResult<PolymarketRateLimit>> GetRateLimitTierAsync(CancellationToken ct = default)
         {
+            if (_client.AuthenticationProvider?.ApiCredentials.PredictionL2 == null)
+                return HttpResult.Fail<PolymarketRateLimit>(_client.Exchange, new NoApiCredentialsError("Requires L2 API credentials"));
+
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _client.ClobApiAddress, "v1/user/rate-limit-tier", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
             var result = await _client.SendAsync<PolymarketRateLimit>(request, parameters, ct).ConfigureAwait(false);
@@ -68,6 +71,9 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         public async Task<HttpResult<PolymarketClosedOnlyMode>> GetClosedOnlyModeAsync(CancellationToken ct = default)
         {
+            if (_client.AuthenticationProvider?.ApiCredentials.PredictionL2 == null)
+                return HttpResult.Fail<PolymarketClosedOnlyMode>(_client.Exchange, new NoApiCredentialsError("Requires L2 API credentials"));
+
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             var request = _definitions.GetOrCreate(HttpMethod.Get, _client.ClobApiAddress, "auth/ban-status/closed-only", PolymarketPlatform.RateLimiter.ClobApi, 1, true);
             var result = await _client.SendAsync<PolymarketClosedOnlyMode>(request, parameters, ct).ConfigureAwait(false);
@@ -86,8 +92,8 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         public async Task<HttpResult<PolymarketNotification[]>> GetNotificationsAsync(CancellationToken ct = default)
         {
-            if (_client.AuthenticationProvider == null)
-                return HttpResult.Fail<PolymarketNotification[]>(_client.Exchange, new NoApiCredentialsError());
+            if (_client.AuthenticationProvider?.ApiCredentials?.PredictionL1 == null)
+                return HttpResult.Fail<PolymarketNotification[]>(_client.Exchange, new NoApiCredentialsError("Requires L1 API credentials"));
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);
@@ -99,8 +105,8 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         public async Task<HttpResult<PolymarketNotification[]>> DropNotificationsAsync(IEnumerable<string> ids, CancellationToken ct = default)
         {
-            if (_client.AuthenticationProvider == null)
-                return HttpResult.Fail<PolymarketNotification[]>(_client.Exchange, new NoApiCredentialsError());
+            if (_client.AuthenticationProvider?.ApiCredentials?.PredictionL1 == null)
+                return HttpResult.Fail<PolymarketNotification[]>(_client.Exchange, new NoApiCredentialsError("Requires L1 API credentials"));
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);
@@ -113,8 +119,8 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         public async Task<HttpResult<PolymarketBalanceAllowance>> GetBalanceAllowanceAsync(AssetType assetType, string? tokenId = null, CancellationToken ct = default)
         {
-            if (_client.AuthenticationProvider == null)
-                return HttpResult.Fail<PolymarketBalanceAllowance>(_client.Exchange, new NoApiCredentialsError());
+            if (_client.AuthenticationProvider?.ApiCredentials?.PredictionL1 == null)
+                return HttpResult.Fail<PolymarketBalanceAllowance>(_client.Exchange, new NoApiCredentialsError("Requires L1 API credentials"));
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);
@@ -128,8 +134,8 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         public async Task<HttpResult> UpdateBalanceAllowanceAsync(AssetType assetType, string? tokenId = null, CancellationToken ct = default)
         {
-            if (_client.AuthenticationProvider == null)
-                return HttpResult.Fail(_client.Exchange, new NoApiCredentialsError());
+            if (_client.AuthenticationProvider?.ApiCredentials?.PredictionL1 == null)
+                return HttpResult.Fail(_client.Exchange, new NoApiCredentialsError("Requires L1 API credentials"));
 
             var parameters = new Parameters(PolymarketPlatform._parameterSerializationSettings);
             parameters.Add("signature_type", (int)_client.AuthenticationProvider.ApiCredentials.PredictionL1.SignType);

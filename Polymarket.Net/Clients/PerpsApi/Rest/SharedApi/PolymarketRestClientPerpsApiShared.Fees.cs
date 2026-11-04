@@ -33,6 +33,8 @@ namespace Polymarket.Net.Clients.PerpsApi
                 return HttpResult.Fail<SharedFee>(result);
 
             var data = result.Data.FirstOrDefault();
+            if (data == null)
+                return HttpResult.Fail<SharedFee>(result, new ServerError(ErrorType.Unknown, "No fee info"));
 
             // Return
             return HttpResult.Ok(result, new SharedFee(data.MakerFeeRate * 100, data.TakerFeeRate * 100));

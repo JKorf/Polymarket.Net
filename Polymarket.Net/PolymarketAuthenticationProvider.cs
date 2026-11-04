@@ -65,12 +65,17 @@ namespace Polymarket.Net
             if ((requestConfig.RequestDefinition.Path.Equals("/auth/api-key") && requestConfig.RequestDefinition.Method == HttpMethod.Post)
                 || (requestConfig.RequestDefinition.Path.Equals("/auth/derive-api-key") && requestConfig.RequestDefinition.Method == HttpMethod.Get))
             {
+                if (ApiCredentials.PredictionL1?.WalletKey.PrivateKey == null)
+                    throw new InvalidOperationException("Layer 1 credentials with private key required");
+
                 // L1 authentication
                 SignL1Custom(requestConfig, ((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
             }
             else
             {
-                if (ApiCredentials.PredictionL1 == null)
+                if (ApiCredentials.PredictionL1?.WalletKey.PublicAddress == null)
+                    throw new InvalidOperationException("Layer 1 public address required");
+                if (ApiCredentials.PredictionL2 == null)
                     throw new InvalidOperationException("Layer 2 credentials required");
 
                 // L2 authentication
@@ -97,7 +102,7 @@ namespace Polymarket.Net
 
             var signature = SignHash(keccakSigned);
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.PredictionL1.WalletKey.PublicAddress);
+            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.PredictionL1!.WalletKey.PublicAddress);
             requestConfig.Headers.Add("POLY_SIGNATURE", signature.ToLowerInvariant());
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
             requestConfig.Headers.Add("POLY_NONCE", nonce?.ToString() ?? "0");
@@ -108,7 +113,7 @@ namespace Polymarket.Net
             _hmacBytes ??= Convert.FromBase64String(ApiCredentials.PredictionL2!.Secret!.Replace('-', '+').Replace('_', '/'));
             var timestamp = DateTimeConverter.ConvertToSeconds(DateTime.UtcNow);
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.PredictionL1.WalletKey.PublicAddress!);
+            requestConfig.Headers.Add("POLY_ADDRESS", ApiCredentials.PredictionL1!.WalletKey.PublicAddress!);
             requestConfig.Headers.Add("POLY_API_KEY", ApiCredentials.PredictionL2!.Key!);
             requestConfig.Headers.Add("POLY_PASSPHRASE", ApiCredentials.PredictionL2.Pass!);
             requestConfig.Headers.Add("POLY_TIMESTAMP", timestamp.Value.ToString());
@@ -190,7 +195,7 @@ namespace Polymarket.Net
 
         private string SignHash(byte[] hash)
         {
-            (var signature, var recover) = Secp256k1.SignRecoverable(hash, HexToBytesString(ApiCredentials.PredictionL1.WalletKey.PrivateKey));
+            (var signature, var recover) = Secp256k1.SignRecoverable(hash, HexToBytesString(ApiCredentials.PredictionL1!.WalletKey.PrivateKey!));
             var hexCompactR = BytesToHexString(new ArraySegment<byte>(signature, 0, 32));
             var hexCompactS = BytesToHexString(new ArraySegment<byte>(signature, 32, 32));
             var hexCompactV = BytesToHexString([(byte)(recover + 27)]);
@@ -293,7 +298,7 @@ namespace Polymarket.Net
                 },
                 Message = new CeMemberValue[]
                 {
-                    new CeMemberValue { TypeName = "address", Value = ApiCredentials.PredictionL1.WalletKey.PublicAddress },
+                    new CeMemberValue { TypeName = "address", Value = ApiCredentials.PredictionL1!.WalletKey.PublicAddress },
                     new CeMemberValue { TypeName = "string", Value = timestamp },
                     new CeMemberValue { TypeName = "uint256", Value = nonce },
                     new CeMemberValue { TypeName = "string", Value = _l1SignMessage }

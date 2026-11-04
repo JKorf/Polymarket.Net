@@ -115,10 +115,32 @@ public record PolymarketSymbol
     [JsonPropertyName("display_symbol")]
     public string? DisplaySymbol { get; set; }
     /// <summary>
+    /// ["<c>logo</c>"] Logo
+    /// </summary>
+    [JsonPropertyName("logo")]
+    public PolymarketSymbolLogo? Logo { get; set; }
+    /// <summary>
     /// ["<c>settlement</c>"] Settlement
     /// </summary>
     [JsonPropertyName("settlement")]
     public PolymarketSymbolSettlement? Settlement { get; set; }
+}
+
+/// <summary>
+/// Logo
+/// </summary>
+public record PolymarketSymbolLogo
+{
+    /// <summary>
+    /// ["<c>light</c>"] Light
+    /// </summary>
+    [JsonPropertyName("light")]
+    public string Light { get; set; } = string.Empty;
+    /// <summary>
+    /// ["<c>dark</c>"] Dark
+    /// </summary>
+    [JsonPropertyName("dark")]
+    public string Dark { get; set; } = string.Empty;
 }
 
 /// <summary>

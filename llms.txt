@@ -1,8 +1,8 @@
-# Polymarket.Net
+# Polymarket.Net v5.0.0
 
-> Strongly typed .NET client library for the Polymarket REST and WebSocket APIs. Supports CLOB market data, Gamma events/markets/tags/search, Data API positions, CLOB trading/account endpoints, local order books, user client management, L1/L2 authentication, and WebSocket streams. Part of the CryptoExchange.Net ecosystem.
+> Strongly typed .NET client library for Polymarket prediction markets and perpetual futures. PredictionApi groups CLOB, Gamma and Data functionality; PerpsApi provides futures market data, trading, accounts, WebSocket streams and SharedApi contracts. Part of the CryptoExchange.Net ecosystem.
 
-Polymarket.Net provides typed C# access to Polymarket prediction market APIs with `HttpResult<T>` / `HttpResult` REST handling and `WebSocketResult<UpdateSubscription>` subscription handling, client-side rate limiting, automatic WebSocket reconnection, native AOT support, and dependency injection. Current repository package version: 4.6.0. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
+This documentation targets Polymarket.Net v5.0.0, with `HttpResult<T>` / `HttpResult` REST handling, `WebSocketResult<UpdateSubscription>` subscriptions and `QueryResult<T>` / `QueryResult` Perps socket operations. Features include client-side rate limiting, automatic WebSocket reconnection, native AOT and dependency injection. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
 
 ## Documentation
 
@@ -20,18 +20,24 @@ Polymarket.Net provides typed C# access to Polymarket prediction market APIs wit
 - [WebSocket Streams](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/03-websocket.cs): Token, platform, sports, and authenticated user subscriptions with teardown
 - [Dependency Injection And Order Book](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/04-di-and-orderbook.cs): `AddPolymarket`, client injection, local order book factory, per-user client provider
 - [Error Handling](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/05-error-handling.cs): `HttpResult` pattern, retry helper, order result checks, common Polymarket mistakes
+- [Perps Market Data](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/06-perps-market-data.cs): Instrument discovery, tickers, books, candles and funding
+- [Perps Authentication And Trading](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/07-perps-authentication-and-trading.cs): Proxy credentials, balances, portfolio, limit orders and cancellation
+- [Perps WebSocket](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/08-perps-websocket.cs): Public ticker/trade streams and optional private order updates
 - [Full Examples Repository](https://github.com/JKorf/Polymarket.Net/tree/main/Examples): Console, API, tracker, and local order book examples
 
 ## Critical Rules
 
 - Use `PolymarketRestClient` and `PolymarketSocketClient`; do not generate raw HTTP calls.
 - Check `.Success` before reading `.Data`.
-- Use `ClobApi`, `GammaApi`, and `DataApi`; do not invent `SpotApi`, `FuturesApi`, `GeneralApi`, or `.SharedApi`.
-- Polymarket order placement uses token ids and prices between 0 and 1, not exchange symbols.
+- Use `PredictionApi.ExchangeData`, `.Account`, `.Trading` for prediction REST; `socketClient.PredictionApi` for prediction streams. Former Gamma methods are in ExchangeData and Data positions in Trading.
+- Use `PerpsApi.ExchangeData`, `.Account`, `.Trading` for Perps REST and sockets. `PerpsApi.SharedApi` exposes shared contracts; Prediction has no SharedApi. Do not invent `SpotApi`, `FuturesApi` or `GeneralApi`.
+- Prediction V1 orders use `ClobTokenIds`; V2 orders use `PositionIds` and `marketVersion: 2`. Prediction prices are between 0 and 1. Concrete Perps methods take numeric instrument ids from `GetSymbolsAsync()` and use instrument precision and `PerpTimeInForce`.
 - Public data can be requested without credentials.
-- L1 credentials use `PolymarketCredentials.WithL1(...)` / `PolymarketL1Credential`; L2 credentials use `.WithL2(...)` / `HMACPassCredential`.
+- L1 credentials use `PolymarketCredentials.WithL1(signType, new EthKey(privateKey: privateKey), fundingAddress)` / `PolymarketL1Credential`; import `CryptoExchange.Net.Web3`. L2 uses `.WithL2(...)` / `HMACPassCredential`; credential properties are `PredictionL1`, `PredictionL2`, `Perps`.
 - Create or derive L2 credentials with `GetOrCreateApiCredentialsAsync()` before private trading when only L1 credentials are configured.
 - REST calls return `HttpResult<T>` or `HttpResult`; socket subscriptions return `WebSocketResult<UpdateSubscription>`.
+- Perps credentials use `.WithPerps(secret, signerKey, proxyKey)`. Register proxies with the owner's signer key; use the registered proxy key and secret for trading/private access. Prediction L2 credentials do not authenticate Perps.
+- Prediction orders need both `.Success` and `.Data.Success` checks. Perps single-order rejections are returned in the outer result; payloads have `Status` and numeric `OrderId`.
 
 ## Reference
 

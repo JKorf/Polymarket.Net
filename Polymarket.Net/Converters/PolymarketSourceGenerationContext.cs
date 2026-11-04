@@ -83,6 +83,7 @@ namespace Polymarket.Net.Converters
 
     [JsonSerializable(typeof(PolymarketPage<PolymarketBuilderTrade>))]
     [JsonSerializable(typeof(PolymarketMarketInfo))]
+    [JsonSerializable(typeof(PolymarketTokenMarket))]
     [JsonSerializable(typeof(PolymarketOrderHeartbeat))]
     [JsonSerializable(typeof(PolymarketMarketResolvedUpdate))]
     [JsonSerializable(typeof(PolymarketNewMarketUpdate))]

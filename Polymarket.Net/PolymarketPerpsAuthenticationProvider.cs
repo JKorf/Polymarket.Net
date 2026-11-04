@@ -24,7 +24,7 @@ namespace Polymarket.Net
 {
     internal class PolymarketPerpsAuthenticationProvider : AuthenticationProvider<PolymarketCredentials>
     {
-        public override string Key => ApiCredentials.Perps.Key;
+        public override string Key => ApiCredentials.Perps!.Key;
 
         public PolymarketPerpsAuthenticationProvider(PolymarketCredentials credentials) : base(credentials)
         {
@@ -41,8 +41,8 @@ namespace Polymarket.Net
 
             // Private reads
             requestConfig.Headers ??= new Dictionary<string, string>();
-            requestConfig.Headers.Add("polymarket-proxy", ApiCredentials.Perps.ProxyKey.PublicAddress);
-            requestConfig.Headers.Add("polymarket-secret", ApiCredentials.Perps.Secret);
+            requestConfig.Headers.Add("polymarket-proxy", ApiCredentials.Perps!.ProxyKey!.PublicAddress);
+            requestConfig.Headers.Add("polymarket-secret", ApiCredentials.Perps.Secret!);
             
         }
 
@@ -68,7 +68,7 @@ namespace Polymarket.Net
             var payload = GetOperationPayload(time, salt, hash, chainId);
             var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(payload);
             var keccakSigned = CeSha3Keccack.CalculateHash(msg);
-            var signature = signKey.Sign(keccakSigned);
+            var signature = signKey.SignHash(keccakSigned);
 
             parameters.Add("sig", signature);
             parameters.Add("salt", salt);
@@ -143,7 +143,7 @@ namespace Polymarket.Net
             var proxyPayload = GetCreateProxyPayload(time, expiry, salt, proxyAddress,((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
             var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(proxyPayload);
             var keccakSigned = CeSha3Keccack.CalculateHash(msg);
-            var signature = signKey.Sign(keccakSigned);
+            var signature = signKey.SignHash(keccakSigned);
 
             parameters.Add("sig", signature);
             parameters.Add("salt", salt);
@@ -168,7 +168,7 @@ namespace Polymarket.Net
             var proxyPayload = GetWithdrawPayload(depositContract, account, token, amount, fee, to, time, salt, ((PolymarketRestOptions)apiClient.ClientOptions).Environment.ChainId);
             var msg = CeEip712TypedDataEncoder.EncodeTypedDataRaw(proxyPayload);
             var keccakSigned = CeSha3Keccack.CalculateHash(msg);
-            var signature = signKey.Sign(keccakSigned);
+            var signature = signKey.SignHash(keccakSigned);
 
             parameters.Add("sig", signature);
             parameters.Add("salt", salt);

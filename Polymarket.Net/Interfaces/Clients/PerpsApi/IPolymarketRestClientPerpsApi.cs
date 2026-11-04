@@ -37,5 +37,17 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
         /// </summary>
         /// <see cref="IPolymarketRestClientPerpsApiTrading" />
         public IPolymarketRestClientPerpsApiTrading Trading { get; }
+
+        /// <summary>
+        /// Get a symbol ID by its name. Only returns data when ExchangeData.GetSymbolsAsync has been called
+        /// </summary>
+        /// <param name="name">Symbol name, for example ETH-USD</param>
+        long? GetSymbolIdByName(string name);
+
+        /// <summary>
+        /// Get a symbol name by its ID. Only returns data when ExchangeData.GetSymbolsAsync has been called
+        /// </summary>
+        /// <param name="id">The symbol id</param>
+        string? GetSymbolNameById(long id);
     }
 }

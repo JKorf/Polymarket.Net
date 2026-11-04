@@ -31,7 +31,7 @@ namespace Polymarket.Net.Objects.Models
         /// ["<c>id</c>"] Id
         /// </summary>
         [JsonPropertyName("id")]
-        public string Id { get; set; } = string.Empty;
+        public long Id { get; set; }
         /// <summary>
         /// ["<c>question</c>"] Question
         /// </summary>
@@ -741,9 +741,59 @@ namespace Polymarket.Net.Objects.Models
         [JsonPropertyName("feeSchedule")]
         public PolymarketFeeSchedule? FeeSchedule { get; set; }
         /// <summary>
-        /// ["<c>version</c>"] Version
+        /// ["<c>version</c>"] Market version. If version is v2 use PositionIds instead of ClobTokenIds for trading and specify v2 in order endpoints.
         /// </summary>
         [JsonPropertyName("version")]
         public string Version { get; set; } = string.Empty;
+        /// <summary>
+        /// ["<c>submitted_by</c>"] Submitted by
+        /// </summary>
+        [JsonPropertyName("submitted_by")]
+        public string? SubmittedBy { get; set; }
+        /// <summary>
+        /// ["<c>negRisk</c>"] Is negative risk market
+        /// </summary>
+        [JsonPropertyName("negRisk")]
+        public bool NegativeRisk { get; set; }
+        /// <summary>
+        /// ["<c>cyom</c>"] Cyom
+        /// </summary>
+        [JsonPropertyName("cyom")]
+        public bool Cyom { get; set; }
+        /// <summary>
+        /// ["<c>approved</c>"] Approved
+        /// </summary>
+        [JsonPropertyName("approved")]
+        public bool Approved { get; set; }
+        /// <summary>
+        /// ["<c>holdingRewardsEnabled</c>"] Holding rewards enabled
+        /// </summary>
+        [JsonPropertyName("holdingRewardsEnabled")]
+        public bool HoldingRewardsEnabled { get; set; }
+        /// <summary>
+        /// ["<c>fallbackResolutionType</c>"] Fallback resolution type
+        /// </summary>
+        [JsonPropertyName("fallbackResolutionType")]
+        public string? FallbackResolutionType { get; set; }
+        /// <summary>
+        /// ["<c>resolutionMechanism</c>"] Resolution mechanism
+        /// </summary>
+        [JsonPropertyName("resolutionMechanism")]
+        public string? ResolutionMechanism { get; set; }
+        /// <summary>
+        /// ["<c>comboStatus</c>"] Combo status
+        /// </summary>
+        [JsonPropertyName("comboStatus")]
+        public string? ComboStatus { get; set; }
+        /// <summary>
+        /// ["<c>tradingEligible</c>"] Trading eligible
+        /// </summary>
+        [JsonPropertyName("tradingEligible")]
+        public bool TradingEligible { get; set; }
+        /// <summary>
+        /// ["<c>negRiskMarketID</c>"] Negative risk market ID
+        /// </summary>
+        [JsonPropertyName("negRiskMarketID")]
+        public string? NegativeRiskMarketId { get; set; }
     }
 }

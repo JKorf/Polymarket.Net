@@ -135,7 +135,7 @@ namespace Polymarket.Net.Utils
 
         internal static async Task<ICallResult> CheckPerpBuilderAsync(PolymarketRestClientPerpsApi client, CancellationToken cancellationToken)
         {
-            if (client.ApiCredentials?.Perps == null)
+            if (client.ApiCredentials?.Perps?.ProxyKey == null)
                 // No credentials provided, no need to check builder fee
                 return CallResult.Ok();
 
@@ -149,7 +149,7 @@ namespace Polymarket.Net.Utils
                 // Already checked, no need to check again
                 return CallResult.Ok();
 
-            var options = (PolymarketRestOptions)client.ClientOptions;
+            var options = client.ClientOptions;
 
             if (options.PerpsOptions.BuilderFeePercentage == null
                 || options.PerpsOptions.BuilderFeePercentage == 0
@@ -169,9 +169,8 @@ namespace Polymarket.Net.Utils
                     // Failed to get approvals
                     return approvals;
 
-                //0.0001
                 var target = options.PerpsOptions.BuilderFeePercentage.Value / 100;
-                var approval = approvals.Data.SingleOrDefault();
+                var approval = approvals.Data.OrderByDescending(x => x.ApprovalVersion).FirstOrDefault();
                 if (approval != null && approval.MaxFeeRate >= target)
                 {
                     // Builder already approved
@@ -201,7 +200,7 @@ namespace Polymarket.Net.Utils
 
         internal static async Task<ICallResult> CheckPerpBuilderAsync(PolymarketSocketClientPerpsApi client, CancellationToken cancellationToken)
         {
-            if (client.ApiCredentials?.Perps == null)
+            if (client.ApiCredentials?.Perps?.ProxyKey == null)
                 // No credentials provided, no need to check builder fee
                 return CallResult.Ok();
 
@@ -215,7 +214,7 @@ namespace Polymarket.Net.Utils
                 // Already checked, no need to check again
                 return CallResult.Ok();
 
-            var options = (PolymarketSocketOptions)client.ClientOptions;
+            var options = client.ClientOptions;
 
             if (options.PerpsOptions.BuilderFeePercentage == null
                 || options.PerpsOptions.BuilderFeePercentage == 0
@@ -242,9 +241,8 @@ namespace Polymarket.Net.Utils
                     // Failed to get approvals
                     return approvals;
 
-                //0.0001
                 var target = options.PerpsOptions.BuilderFeePercentage.Value / 100;
-                var approval = approvals.Data.SingleOrDefault();
+                var approval = approvals.Data.OrderByDescending(x => x.ApprovalVersion).FirstOrDefault();
                 if (approval != null && approval.MaxFeeRate >= target)
                 {
                     // Builder already approved

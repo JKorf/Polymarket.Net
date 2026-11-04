@@ -24,9 +24,15 @@ namespace Polymarket.Net.SymbolOrderBooks
             _serviceProvider = serviceProvider;
         }
 
-         /// <inheritdoc />
-        public ISymbolOrderBook CreateClob(string tokenId, Action<PolymarketOrderBookOptions>? options = null)
-            => new PolymarketClobSymbolOrderBook(tokenId, options, 
+        /// <inheritdoc />
+        public ISymbolOrderBook CreatePrediction(string tokenId, Action<PolymarketOrderBookOptions>? options = null)
+            => new PolymarketPredictionSymbolOrderBook(tokenId, options, 
+                                                          _serviceProvider.GetRequiredService<ILoggerFactory>(),
+                                                          _serviceProvider.GetRequiredService<IPolymarketSocketClient>());
+
+        /// <inheritdoc />
+        public ISymbolOrderBook CreatePerps(long symbolId, Action<PolymarketOrderBookOptions>? options = null)
+            => new PolymarketPerpsSymbolOrderBook(symbolId, options,
                                                           _serviceProvider.GetRequiredService<ILoggerFactory>(),
                                                           _serviceProvider.GetRequiredService<IPolymarketSocketClient>());
 

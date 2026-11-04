@@ -25,6 +25,7 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
         /// </summary>
         /// <param name="builder">["<c>builder</c>"] Builder address</param>
         /// <param name="maxFeeRate">["<c>max_fee_rate</c>"] Max fee rate</param>
+        /// <param name="approvalVersion">["<c>approval_version</c>"] Approval version, 1 for initial approval</param>
         /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketBuilderResult>> ApproveBuilderAsync(
             string builder,
@@ -45,10 +46,62 @@ namespace Polymarket.Net.Interfaces.Clients.PerpsApi
         /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketBuilderResult[]>> GetBuilderApprovalsAsync(string builder, CancellationToken ct = default);
 
+        /// <summary>
+        /// Register a proxy address, uses the signing and proxy credentials provided in the client options
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/create-proxy" /><br />
+        /// Endpoint:<br />
+        /// POST /v1/account/proxy<br />
+        /// </para>
+        /// </summary>
+        /// <param name="expireTime">Expire time, after this the proxy can no longer be used</param>
+        /// <param name="label">Optional label</param>
+        /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(DateTime expireTime, string? label = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Register a proxy address, uses the signing credentials provided in the client options
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/create-proxy" /><br />
+        /// Endpoint:<br />
+        /// POST /v1/account/proxy<br />
+        /// </para>
+        /// </summary>
+        /// <param name="proxyAddress">The proxy address</param>
+        /// <param name="expireTime">Expire time, after this the proxy can no longer be used</param>
+        /// <param name="label">Optional label</param>
+        /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(string proxyAddress, DateTime expireTime, string? label = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Register a proxy address
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/create-proxy" /><br />
+        /// Endpoint:<br />
+        /// POST /v1/account/proxy<br />
+        /// </para>
+        /// </summary>
+        /// <param name="signingKey">The wallet owner key</param>
+        /// <param name="proxyAddress">The proxy address</param>
+        /// <param name="expireTime">Expire time, after this the proxy can no longer be used</param>
+        /// <param name="label">Optional label</param>
+        /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketProxyResult>> CreateProxyAsync(EthKey signingKey, string proxyAddress, DateTime expireTime, string? label = null, CancellationToken ct = default);
 
+        /// <summary>
+        /// Delete a registered proxy address
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/delete-proxy" /><br />
+        /// Endpoint:<br />
+        /// DELETE /v1/account/proxy<br />
+        /// </para>
+        /// </summary>
+        /// <param name="proxyAddress">The proxy address to remove</param>
+        /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketProxyResult>> DeleteProxyAsync(string proxyAddress, CancellationToken ct = default);
 
         /// <summary>

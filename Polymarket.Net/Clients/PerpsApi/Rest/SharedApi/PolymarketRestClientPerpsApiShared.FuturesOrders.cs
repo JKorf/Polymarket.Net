@@ -49,7 +49,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                 request.Side == SharedOrderSide.Buy ? Enums.OrderSide.Buy : Enums.OrderSide.Sell,
                 request.Quantity?.QuantityInBaseAsset ?? 0,
                 request.Price,
-                timeInForce: GetTimeInForce(request.TimeInForce),
+                timeInForce: GetTimeInForce(request),
                 postOnly: request.OrderType == SharedOrderType.LimitMaker ? true : null,
                 reduceOnly: request.ReduceOnly,
                 clientOrderId: request.ClientOrderId,
@@ -62,9 +62,13 @@ namespace Polymarket.Net.Clients.PerpsApi
             return HttpResult.Ok(result, new SharedId(result.Data.OrderId.ToString()));
         }
 
-        private PerpTimeInForce? GetTimeInForce(SharedTimeInForce? timeInForce)
+        private PerpTimeInForce? GetTimeInForce(PlaceFuturesOrderRequest request)
         {
-            return timeInForce switch
+            if (request.TimeInForce == null && request.OrderType == SharedOrderType.Market)
+                // Market orders require immediate or cancel
+                return PerpTimeInForce.ImmediateOrCancel;
+
+            return request.TimeInForce switch
             {
                 SharedTimeInForce.GoodTillCanceled => PerpTimeInForce.GoodTillCanceled,
                 SharedTimeInForce.ImmediateOrCancel => PerpTimeInForce.ImmediateOrCancel,
@@ -105,7 +109,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                     Quantity = order.Quantity?.QuantityInBaseAsset ?? 0,
                     Price = order.Price,
                     PostOnly = order.OrderType == SharedOrderType.LimitMaker ? true : null,
-                    TimeInForce = GetTimeInForce(order.TimeInForce),
+                    TimeInForce = GetTimeInForce(order),
                     ClientOrderId = order.ClientOrderId,
                     ReduceOnly = order.ReduceOnly
                 };
@@ -156,8 +160,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                 ExchangeSymbolCache.ParseSymbol(_topicId, _api.EnvironmentName, null, symbol),
                 symbol ?? string.Empty,
                 orderData.OrderId.ToString(),
-#warning check
-                orderData.Price == null ? SharedOrderType.Market : SharedOrderType.Limit,
+                orderData.Price == 0 ? SharedOrderType.Market : SharedOrderType.Limit,
                 orderData.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
                 ParseOrderStatus(orderData),
                 orderData.CreateTime)
@@ -218,8 +221,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                 ExchangeSymbolCache.ParseSymbol(_topicId, _api.EnvironmentName, null, symbol),
                 symbol ?? string.Empty,
                 orderData.OrderId.ToString(),
-#warning check
-                orderData.Price == null ? SharedOrderType.Market : SharedOrderType.Limit,
+                orderData.Price == 0 ? SharedOrderType.Market : SharedOrderType.Limit,
                 orderData.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
                 ParseOrderStatus(orderData),
                 orderData.CreateTime)
@@ -260,8 +262,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                     ExchangeSymbolCache.ParseSymbol(_topicId, _api.EnvironmentName, null, symbol),
                     symbol ?? string.Empty,
                     x.OrderId.ToString(),
-#warning check
-                    x.Price == null ? SharedOrderType.Market : SharedOrderType.Limit,
+                    x.Price == 0 ? SharedOrderType.Market : SharedOrderType.Limit,
                     x.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
                     ParseOrderStatus(x),
                     x.CreateTime)
@@ -325,8 +326,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                     ExchangeSymbolCache.ParseSymbol(_topicId, _api.EnvironmentName, null, symbol),
                     symbol ?? string.Empty,
                     x.OrderId.ToString(),
-#warning check
-                    x.Price == null ? SharedOrderType.Market : SharedOrderType.Limit,
+                    x.Price == 0 ? SharedOrderType.Market : SharedOrderType.Limit,
                     x.Buy ? SharedOrderSide.Buy : SharedOrderSide.Sell,
                     ParseOrderStatus(x),
                     x.CreateTime)

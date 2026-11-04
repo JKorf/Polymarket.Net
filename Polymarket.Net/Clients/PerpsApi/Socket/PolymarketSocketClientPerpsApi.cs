@@ -106,9 +106,12 @@ namespace Polymarket.Net.Clients.PerpsApi
 
         protected override Task<Query?> GetAuthenticationRequestAsync(SocketConnection connection, IMessageProcessor? processor)
         {
+            if (AuthenticationProvider?.ApiCredentials?.Perps?.ProxyKey == null || string.IsNullOrEmpty(AuthenticationProvider.ApiCredentials.Perps.Secret))
+                throw new InvalidOperationException($"Missing credentials, ProxyKey or Secret is not set");
+
             var parameters = (Parameters)PolymarketUtils.GetOperationParameters("auth", new Parameters(PolymarketPlatform._perpsParameterSerializationSettings)
             {
-                { "proxy", _authenticationProvider.ApiCredentials.Perps.ProxyKey.PublicAddress },
+                { "proxy", _authenticationProvider!.ApiCredentials.Perps!.ProxyKey!.PublicAddress },
                 { "secret", _authenticationProvider.ApiCredentials.Perps.Secret }
             })["op"];
 

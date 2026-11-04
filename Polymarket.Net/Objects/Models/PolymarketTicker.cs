@@ -59,5 +59,15 @@ public record PolymarketTicker
     /// </summary>
     [JsonPropertyName("timestamp")]
     public DateTime Timestamp { get; set; }
+    /// <summary>
+    /// ["<c>long_count</c>"] Number of longs
+    /// </summary>
+    [JsonPropertyName("long_count")]
+    public int? LongCount { get; set; }
+    /// <summary>
+    /// ["<c>short_count</c>"] Number of shorts
+    /// </summary>
+    [JsonPropertyName("short_count")]
+    public int? ShortCount { get; set; }
 }
 

@@ -33,8 +33,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                     ExchangeSymbolCache.ParseSymbol(_topicId, _api.EnvironmentName, null, PolymarketRestClientPerpsApi.GetSymbolNameById(_api.EnvironmentName, update.Data.SymbolId)),
                     PolymarketRestClientPerpsApi.GetSymbolNameById(_api.EnvironmentName, update.Data.SymbolId) ?? string.Empty,
                     update.Data.OrderId.ToString(),
-#warning check
-                    update.Data.Price == null ? SharedOrderType.Market : SharedOrderType.Limit,
+                    update.Data.Price == decimal.MaxValue ? SharedOrderType.Market : SharedOrderType.Limit,
                     update.Data.Buy ? SharedOrderSide.Buy: SharedOrderSide.Sell,
                     ParseOrderStatus(update.Data.Status),
                     update.Data.CreateTime
@@ -108,7 +107,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                 request.Side == SharedOrderSide.Buy ? Enums.OrderSide.Buy : Enums.OrderSide.Sell,
                 request.Quantity?.QuantityInBaseAsset ?? 0,
                 request.Price,
-                timeInForce: GetTimeInForce(request.TimeInForce),
+                timeInForce: GetTimeInForce(request),
                 postOnly: request.OrderType == SharedOrderType.LimitMaker ? true : null,
                 reduceOnly: request.ReduceOnly,
                 clientOrderId: request.ClientOrderId,
@@ -121,9 +120,13 @@ namespace Polymarket.Net.Clients.PerpsApi
             return QueryResult.Ok(result, new SharedId(result.Data.OrderId.ToString()));
         }
 
-        private PerpTimeInForce? GetTimeInForce(SharedTimeInForce? timeInForce)
+        private PerpTimeInForce? GetTimeInForce(PlaceFuturesOrderRequest request)
         {
-            return timeInForce switch
+            if (request.TimeInForce == null && request.OrderType == SharedOrderType.Market)
+                // Market orders require immediate or cancel
+                return PerpTimeInForce.ImmediateOrCancel;
+
+            return request.TimeInForce switch
             {
                 SharedTimeInForce.GoodTillCanceled => PerpTimeInForce.GoodTillCanceled,
                 SharedTimeInForce.ImmediateOrCancel => PerpTimeInForce.ImmediateOrCancel,
@@ -164,7 +167,7 @@ namespace Polymarket.Net.Clients.PerpsApi
                     Quantity = order.Quantity?.QuantityInBaseAsset ?? 0,
                     Price = order.Price,
                     PostOnly = order.OrderType == SharedOrderType.LimitMaker ? true : null,
-                    TimeInForce = GetTimeInForce(order.TimeInForce),
+                    TimeInForce = GetTimeInForce(order),
                     ClientOrderId = order.ClientOrderId,
                     ReduceOnly = order.ReduceOnly
                 };

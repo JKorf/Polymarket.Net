@@ -17,7 +17,6 @@ namespace Polymarket.Net.Enums
         TakeProfit,
         /// <summary>
         /// ["<c>sl</c>"] Stop loss
-
         /// </summary>
         [Map("sl")]
         StopLoss

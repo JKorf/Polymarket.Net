@@ -79,7 +79,7 @@ namespace Polymarket.Net
         /// <summary>
         /// Specify the Perps credentials
         /// </summary>
-        public PolymarketCredentials WithPerps(string secret, EthKey? signerKey, EthKey proxyKey)
+        public PolymarketCredentials WithPerps(string? secret, EthKey? signerKey, EthKey? proxyKey)
         {
             if (Perps != null) throw new InvalidOperationException("Perps credentials already set");
 

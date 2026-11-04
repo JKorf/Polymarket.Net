@@ -153,5 +153,11 @@ namespace Polymarket.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("tags")]
         public string[] Tags { get; set; } = [];
+
+        /// <summary>
+        /// ["<c>version</c>"] Market version. If version is v2 use PositionIds instead of ClobTokenIds for trading and specify v2 in order endpoints.
+        /// </summary>
+        [JsonPropertyName("version")]
+        public string Version { get; set; } = string.Empty;
     }
 }

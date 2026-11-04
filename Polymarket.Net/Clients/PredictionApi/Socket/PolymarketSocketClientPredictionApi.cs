@@ -213,6 +213,10 @@ namespace Polymarket.Net.Clients.PredictionApi
             if (processor is PolymarketUserSubscription)
                 return Task.FromResult<Query?>(AuthenticationProvider!.GetAuthenticationQuery(this, connection));
 
+
+            if (AuthenticationProvider?.ApiCredentials?.PredictionL2 == null)
+                throw new InvalidOperationException($"Missing credentials, PredictionL2 should be provided");
+
             var msg = new PolymarketBoltAuthRequest
             {
                 Operation = "auth",

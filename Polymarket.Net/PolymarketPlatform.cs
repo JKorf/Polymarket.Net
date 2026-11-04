@@ -53,6 +53,9 @@ namespace Polymarket.Net
                 PolymarketEnvironment.All
                 );
 
+        /// <summary>
+        /// Asset alias notations
+        /// </summary>
         public static AssetAliasConfiguration AssetAliases { get; } = new AssetAliasConfiguration
         {
             Aliases =

@@ -159,7 +159,7 @@ namespace Polymarket.Net.Clients.PerpsApi
             decimal fee = 0;
             if (_baseClient.ClientOptions.PerpsOptions.BuilderFeePercentage > 0
                 && _baseClient.ClientOptions.PerpsOptions.BuilderCode != null
-                && PolymarketUtils._builderFeeStatus.TryGetValue(_baseClient.ApiCredentials!.Perps!.ProxyKey.PublicAddress, out var status) && status.Success)
+                && PolymarketUtils._builderFeeStatus.TryGetValue(_baseClient.ApiCredentials!.Perps!.ProxyKey!.PublicAddress, out var status) && status.Success)
             {
                 builder = _baseClient.ClientOptions.PerpsOptions.BuilderCode;
                 fee = _baseClient.ClientOptions.PerpsOptions.BuilderFeePercentage.Value / 100m;

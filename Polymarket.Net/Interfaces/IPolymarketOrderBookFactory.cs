@@ -10,9 +10,14 @@ namespace Polymarket.Net.Interfaces
     public interface IPolymarketOrderBookFactory
     {
         /// <summary>
-        /// Create a new Clob local order book instance
+        /// Create a new Prediction local order book instance
         /// </summary>
-        ISymbolOrderBook CreateClob(string tokenId, Action<PolymarketOrderBookOptions>? options = null);
+        ISymbolOrderBook CreatePrediction(string tokenId, Action<PolymarketOrderBookOptions>? options = null);
+
+        /// <summary>
+        /// Create a new Perps local order book instance
+        /// </summary>
+        ISymbolOrderBook CreatePerps(long symbolId, Action<PolymarketOrderBookOptions>? options = null);
 
     }
 }

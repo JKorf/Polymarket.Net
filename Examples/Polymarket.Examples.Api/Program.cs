@@ -18,7 +18,7 @@ builder.Services.AddPolymarket(options =>
     options.ApiCredentials = new PolymarketCredentials()
         .WithL1(
             SignType.EOA, // Externally Owned Account wallet, when using an existing wallet to connect to Polymarket
-            "0x00..", // The private key for the wallet
+            EthKey.FromPrivateKey("0x00.."), // The private key for the wallet
             "POLYMARKET_FUNDING_OR_DEPOSIT_ADDRESS")
         .WithL2(
             "KEY", // The L2 API key as previously retrieved with `polymarketRestClient.ClobApi.Account.GetOrCreateApiCredentialsAsync()`
@@ -36,7 +36,7 @@ app.UseHttpsRedirection();
 // Map the endpoint and inject the rest client
 app.MapGet("/{TokenId}", async ([FromServices] IPolymarketRestClient client, string tokenId) =>
 {
-    var result = await client.ClobApi.ExchangeData.GetLastTradePriceAsync(tokenId);
+    var result = await client.PredictionApi.ExchangeData.GetLastTradePriceAsync(tokenId);
     return result.Success
         ? Results.Ok(result.Data.LastTradePrice)
         : Results.Problem(result.Error?.Message, statusCode: 502);
@@ -46,7 +46,7 @@ app.MapGet("/{TokenId}", async ([FromServices] IPolymarketRestClient client, str
 
 app.MapGet("/Balances", async ([FromServices] IPolymarketRestClient client) =>
 {
-    var result = await client.ClobApi.Account.GetBalanceAllowanceAsync(AssetType.Collateral);
+    var result = await client.PredictionApi.Account.GetBalanceAllowanceAsync(AssetType.Collateral);
     return result.Success
         ? Results.Ok(result.Data)
         : Results.Problem(result.Error?.Message, statusCode: 502);

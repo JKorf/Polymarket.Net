@@ -382,7 +382,7 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
         #region Get Market By Id
 
         /// <inheritdoc />
-        public async Task<HttpResult<PolymarketGammaMarket>> GetMarketByIdAsync(string id, bool? includeTag = null, CancellationToken ct = default)
+        public async Task<HttpResult<PolymarketGammaMarket>> GetMarketByIdAsync(long id, bool? includeTag = null, CancellationToken ct = default)
         {
             var parameters = new Parameters(PolymarketPlatform._gammaParameterSerializationSettings);
             parameters.Add("include_tag", includeTag);
@@ -417,7 +417,17 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         #endregion
 
-#warning Market by token
+        #region Get Market By Token
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketTokenMarket>> GetMarketByTokenAsync(string tokenId, CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._gammaParameterSerializationSettings);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _client.ClobApiAddress, $"markets-by-token/" + tokenId, PolymarketPlatform.RateLimiter.ClobApi, 1, false);
+            return await _client.SendAsync<PolymarketTokenMarket>(request, parameters, ct).ConfigureAwait(false);
+        }
+
+        #endregion
 
         #region Get Open Interest
 
@@ -447,7 +457,21 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         #endregion
 
-#warning Resolution state
+        #region Get Resolution State
+
+        /// <inheritdoc />
+        public async Task<HttpResult<PolymarketResolutionState[]>> GetResolutionStateAsync(string? questionId = null, string? condition = null, string? eventId = null, CancellationToken ct = default)
+        {
+            var parameters = new Parameters(PolymarketPlatform._gammaParameterSerializationSettings);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _client.DataApiAddress, $"v2/resolutions", PolymarketPlatform.RateLimiter.DataApi, 1, false);
+            var result = await _client.SendAsync<PolymarketResolutionStateWrapper>(request, parameters, ct).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail<PolymarketResolutionState[]>(result);
+
+            return HttpResult.Ok(result, result.Data.Data);
+        }
+
+        #endregion
 
         #region Lookup Tokens
 
@@ -1022,8 +1046,6 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
 
         #endregion
 
-
-
         #region Get Negative Risk
 
         /// <inheritdoc />
@@ -1036,9 +1058,5 @@ namespace Polymarket.Net.Clients.PredictionApi.Rest
         }
 
         #endregion
-
-#warning Data api V2?
-
-
     }
 }

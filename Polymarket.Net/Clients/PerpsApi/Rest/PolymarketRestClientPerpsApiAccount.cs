@@ -39,8 +39,8 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             if (!_baseClient.ValidateProxyCredentialsAvailable(false, false, out error))
                 return HttpResult.Fail<PolymarketProxyResult>(_baseClient.Exchange, error!);
 
-            var signKey = _baseClient.ApiCredentials!.Perps!.SignerKey;
-            var proxyAddress = _baseClient.ApiCredentials!.Perps!.ProxyKey.PublicAddress;
+            var signKey = _baseClient.ApiCredentials!.Perps!.SignerKey!;
+            var proxyAddress = _baseClient.ApiCredentials!.Perps!.ProxyKey!.PublicAddress;
             return await CreateProxyAsync(signKey, proxyAddress, expireTime, label, ct).ConfigureAwait(false);
 
         }
@@ -51,7 +51,7 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             if (!_baseClient.ValidateSignerCredentialsAvailable(out var error))
                 return HttpResult.Fail<PolymarketProxyResult>(_baseClient.Exchange, error!);
 
-            var signKey = _baseClient.ApiCredentials!.Perps!.SignerKey;
+            var signKey = _baseClient.ApiCredentials!.Perps!.SignerKey!;
             return await CreateProxyAsync(signKey, proxyAddress, expireTime, label, ct).ConfigureAwait(false);
         }
 
@@ -67,8 +67,8 @@ namespace Polymarket.Net.Clients.PerpsApi.Rest
             opParameters.Add("label", label);
             _baseClient.AuthenticationProvider?.AuthenticateCreateProxyRequest(_baseClient, opParameters, signingKey, proxyAddress, expireMs);
             var request = _definitions.GetOrCreate(HttpMethod.Post, _baseClient.BaseAddress, "/v1/account/proxy", PolymarketPlatform.RateLimiter.PerpsApi, 1, true);
-            var result = await _baseClient.SendAsync<PolymarketProxyResult>(request, opParameters, ct).ConfigureAwait(false);
-            if (result.Success && proxyAddress == _baseClient.ApiCredentials?.Perps?.ProxyKey.PublicAddress)
+            var result = await _baseClient.SendAsync<PolymarketProxyResult>(request, opParameters, ct, skipBuilderCheck: true).ConfigureAwait(false);
+            if (result.Success && proxyAddress == _baseClient.ApiCredentials?.Perps?.ProxyKey?.PublicAddress)
                 _baseClient.ApiCredentials.Perps.Secret = result.Data.Secret;
 
             return result;

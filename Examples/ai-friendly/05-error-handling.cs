@@ -7,7 +7,7 @@ var client = new PolymarketRestClient();
 var tokenId = "TOKEN_ID";
 
 // REST methods return HttpResult<T> or HttpResult.
-var book = await WithRetry(() => client.ClobApi.ExchangeData.GetOrderBookAsync(tokenId));
+var book = await WithRetry(() => client.PredictionApi.ExchangeData.GetOrderBookAsync(tokenId));
 if (!book.Success)
 {
     Console.WriteLine($"Order book failed: {book.Error}");
@@ -18,7 +18,7 @@ Console.WriteLine($"Loaded order book with {book.Data.Bids.Length} bids.");
 
 // Normal API failures are returned in HttpResult.Error, not thrown.
 // Socket subscriptions use WebSocketResult<UpdateSubscription> with the same Success/Error pattern.
-var price = await client.ClobApi.ExchangeData.GetPriceAsync(tokenId, OrderSide.Buy);
+var price = await client.PredictionApi.ExchangeData.GetPriceAsync(tokenId, OrderSide.Buy);
 if (!price.Success)
 {
     Console.WriteLine($"Price request failed: {price.Error}");

@@ -854,7 +854,20 @@ namespace Polymarket.Net.Interfaces.Clients.PredictionApi
         /// <param name="id">Id</param>
         /// <param name="includeTag">["<c>include_tag</c>"] Include tag</param>
         /// <param name="ct">Cancellation token</param>
-        Task<HttpResult<PolymarketGammaMarket>> GetMarketByIdAsync(string id, bool? includeTag = null, CancellationToken ct = default);
+        Task<HttpResult<PolymarketGammaMarket>> GetMarketByIdAsync(long id, bool? includeTag = null, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get market reference by token id
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/get-market-by-token" /><br />
+        /// Endpoint:<br />
+        /// GET /markets-by-token/{token_id}
+        /// </para>
+        /// </summary>
+        /// <param name="tokenId">Token id</param>
+        /// <param name="ct">Cancellation token</param>
+        Task<HttpResult<PolymarketTokenMarket>> GetMarketByTokenAsync(string tokenId, CancellationToken ct = default);
 
         /// <summary>
         /// Get market by slug
@@ -882,6 +895,25 @@ namespace Polymarket.Net.Interfaces.Clients.PredictionApi
         /// <param name="id">Id</param>
         /// <param name="ct">Cancellation token</param>
         Task<HttpResult<PolymarketTag[]>> GetMarketTagsAsync(string id, CancellationToken ct = default);
+
+        /// <summary>
+        /// Get resolution state
+        /// <para>
+        /// Docs:<br />
+        /// <a href="https://docs.polymarket.com/api-reference/markets/get-resolution-state" /><br />
+        /// Endpoint:<br />
+        /// GET /v2/resolutions
+        /// </para>
+        /// </summary>
+        /// <param name="questionId">Get by question id</param>
+        /// <param name="condition">Get by condition</param>
+        /// <param name="eventId">Get by event id</param>
+        /// <param name="ct">Cancellation token </param>
+        Task<HttpResult<PolymarketResolutionState[]>> GetResolutionStateAsync(
+            string? questionId = null,
+            string? condition = null,            
+            string? eventId = null, 
+            CancellationToken ct = default);
 
         /// <summary>
         /// Get series

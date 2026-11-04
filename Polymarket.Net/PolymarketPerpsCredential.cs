@@ -21,17 +21,18 @@ namespace Polymarket.Net
         /// <summary>
         /// Proxy key
         /// </summary>
-        public EthKey ProxyKey { get; set; }
+        public EthKey? ProxyKey { get; set; }
 
         /// <summary>
         /// The API secret from the CreateProxy call
         /// </summary>
-        public string Secret { get; set; }
+        public string? Secret { get; set; }
 
         /// <summary>
         /// Create new Polymarket Perps credentials
         /// </summary>
-        public PolymarketPerpsCredential(string secret, EthKey? signerKey, EthKey proxyKey) : base(proxyKey.PublicAddress)
+        public PolymarketPerpsCredential(string? secret = null, EthKey? signerKey = null, EthKey? proxyKey = null) 
+            : base(signerKey?.PublicAddress ?? proxyKey?.PublicAddress ?? "-") // Not actively used for anything
         {
             SignerKey = signerKey;
             ProxyKey = proxyKey;
@@ -46,8 +47,8 @@ namespace Polymarket.Net
         {
             base.Validate();
 
-            if (ProxyKey == null)
-                throw new ArgumentException("Proxy not set", nameof(ProxyKey));
+            if (ProxyKey == null && SignerKey == null)
+                throw new ArgumentException("Neither Signer or Proxy set", nameof(ProxyKey));
         }
     }
 }
