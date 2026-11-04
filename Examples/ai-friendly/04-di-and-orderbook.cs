@@ -40,7 +40,7 @@ Console.WriteLine($"Server time: {time.Data}");
 
 // Local order books use CLOB token ids.
 var tokenId = "TOKEN_ID";
-var orderBook = orderBookFactory.CreateClob(tokenId);
+var orderBook = orderBookFactory.CreatePrediction(tokenId);
 
 // StartAsync connects the socket and builds the local book. This is commented so
 // the example is safe to copy without a real token id.
