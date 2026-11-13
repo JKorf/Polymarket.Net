@@ -11,7 +11,7 @@ var provider = collection.BuildServiceProvider();
 var bookFactory = provider.GetRequiredService<IPolymarketOrderBookFactory>();
 
 // Create and start the order book
-var book = bookFactory.CreateClob("4153292802911610701832309484716814274802943278345248636922528170020319407796");
+var book = bookFactory.CreatePrediction("4153292802911610701832309484716814274802943278345248636922528170020319407796");
 var result = await book.StartAsync();
 if (!result.Success)
 {
