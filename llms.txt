@@ -1,47 +1,13 @@
-# Polymarket.Net v5.0.0
+# Polymarket.Net
 
-> Strongly typed .NET client library for Polymarket prediction markets and perpetual futures. PredictionApi groups CLOB, Gamma and Data functionality; PerpsApi provides futures market data, trading, accounts, WebSocket streams and SharedApi contracts. Part of the CryptoExchange.Net ecosystem.
+A .NET client for Polymarket Prediction and Perps REST/WebSocket APIs, market discovery, accounts and trading.
 
-This documentation targets Polymarket.Net v5.0.0, with `HttpResult<T>` / `HttpResult` REST handling, `WebSocketResult<UpdateSubscription>` subscriptions and `QueryResult<T>` / `QueryResult` Perps socket operations. Features include client-side rate limiting, automatic WebSocket reconnection, native AOT and dependency injection. Targets netstandard2.0, netstandard2.1, net8.0, net9.0, net10.0.
-
-## Documentation
-
-- [README](https://github.com/JKorf/Polymarket.Net/blob/main/README.md): Overview, installation, supported features, authentication examples, supported endpoint table, release notes
-- [Documentation Site](https://cryptoexchange.jkorf.dev/Polymarket.Net/): Full documentation hub
-- [AI API Quick Map](https://github.com/JKorf/Polymarket.Net/blob/main/docs/ai-api-map.md): Table-style intent-to-method map for CLOB, Gamma, Data, WebSocket, authentication, DI, and local order book workflows
-- [Full LLM Context](https://github.com/JKorf/Polymarket.Net/blob/main/llms-full.txt): Detailed AI/LLM guide with code patterns, endpoint routing, authentication levels, and anti-hallucination rules
-- [Claude Guide](https://github.com/JKorf/Polymarket.Net/blob/main/CLAUDE.md): Claude-facing usage rules and source-of-truth pointers
-
-## Examples
-
-- [AI-friendly examples directory](https://github.com/JKorf/Polymarket.Net/tree/main/Examples/ai-friendly): Compact, compilable examples optimized for AI assistants and quick onboarding
-- [Market Data Quickstart](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/01-market-data-quickstart.cs): Client setup, Gamma search, CLOB markets, order books, price data
-- [Authentication And Trading](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/02-authentication-and-trading.cs): L1/L2 credentials, deriving L2 credentials, allowance check, limit order, open orders, cancellation
-- [WebSocket Streams](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/03-websocket.cs): Token, platform, sports, and authenticated user subscriptions with teardown
-- [Dependency Injection And Order Book](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/04-di-and-orderbook.cs): `AddPolymarket`, client injection, local order book factory, per-user client provider
-- [Error Handling](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/05-error-handling.cs): `HttpResult` pattern, retry helper, order result checks, common Polymarket mistakes
-- [Perps Market Data](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/06-perps-market-data.cs): Instrument discovery, tickers, books, candles and funding
-- [Perps Authentication And Trading](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/07-perps-authentication-and-trading.cs): Proxy credentials, balances, portfolio, limit orders and cancellation
-- [Perps WebSocket](https://github.com/JKorf/Polymarket.Net/blob/main/Examples/ai-friendly/08-perps-websocket.cs): Public ticker/trade streams and optional private order updates
-- [Full Examples Repository](https://github.com/JKorf/Polymarket.Net/tree/main/Examples): Console, API, tracker, and local order book examples
-
-## Critical Rules
-
-- Use `PolymarketRestClient` and `PolymarketSocketClient`; do not generate raw HTTP calls.
-- Check `.Success` before reading `.Data`.
-- Use `PredictionApi.ExchangeData`, `.Account`, `.Trading` for prediction REST; `socketClient.PredictionApi` for prediction streams. Former Gamma methods are in ExchangeData and Data positions in Trading.
-- Use `PerpsApi.ExchangeData`, `.Account`, `.Trading` for Perps REST and sockets. `PerpsApi.SharedApi` exposes shared contracts; Prediction has no SharedApi. Do not invent `SpotApi`, `FuturesApi` or `GeneralApi`.
-- Prediction V1 orders use `ClobTokenIds`; V2 orders use `PositionIds` and `marketVersion: 2`. Prediction prices are between 0 and 1. Concrete Perps methods take numeric instrument ids from `GetSymbolsAsync()` and use instrument precision and `PerpTimeInForce`.
-- Public data can be requested without credentials.
-- L1 credentials use `PolymarketCredentials.WithL1(signType, new EthKey(privateKey: privateKey), fundingAddress)` / `PolymarketL1Credential`; import `CryptoExchange.Net.Web3`. L2 uses `.WithL2(...)` / `HMACPassCredential`; credential properties are `PredictionL1`, `PredictionL2`, `Perps`.
-- Create or derive L2 credentials with `GetOrCreateApiCredentialsAsync()` before private trading when only L1 credentials are configured.
-- REST calls return `HttpResult<T>` or `HttpResult`; socket subscriptions return `WebSocketResult<UpdateSubscription>`.
-- Perps credentials use `.WithPerps(secret, signerKey, proxyKey)`. Register proxies with the owner's signer key; use the registered proxy key and secret for trading/private access. Prediction L2 credentials do not authenticate Perps.
-- Prediction orders need both `.Success` and `.Data.Success` checks. Perps single-order rejections are returned in the outer result; payloads have `Status` and numeric `OrderId`.
-
-## Reference
-
-- [CryptoExchange.Net base library](https://github.com/JKorf/CryptoExchange.Net): Base abstractions used by Polymarket.Net and other JKorf API libraries
-- [CryptoClients.Net](https://github.com/JKorf/CryptoClients.Net): Bundle package providing unified access to exchange libraries
-- [NuGet Package](https://www.nuget.org/packages/Polymarket.Net): Latest stable release on NuGet
-- [Discord Community](https://discord.gg/MSpeEtSY8t): Maintainer-supported Discord for questions and discussion
+- [Consumer skill](.claude/skills/polymarket-net/SKILL.md)
+- [API routing](.claude/skills/polymarket-net/references/api-surfaces.md)
+- [Usage snippets](.claude/skills/polymarket-net/references/usage.md)
+- [Operational considerations](.claude/skills/polymarket-net/references/safety.md)
+- [README](README.md)
+- [Repository development](AGENTS.md)
+- [Public client interfaces](Polymarket.Net/Interfaces/Clients/)
+- [Library project](Polymarket.Net/Polymarket.Net.csproj)
+- [Complete examples](Examples/ai-friendly/)

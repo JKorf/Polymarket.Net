@@ -1,0 +1,4 @@
+interface:
+  display_name: "Polymarket.Net"
+  short_description: "Build C# Polymarket prediction and Perps integrations."
+  default_prompt: "Use $polymarket-net to implement a Polymarket.Net prediction market or Perps workflow with the correct API branch and credentials."

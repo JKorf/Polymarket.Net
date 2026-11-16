@@ -47,6 +47,7 @@ static bool IsAcceptedOrder(HttpResult<PolymarketOrderResult> order)
     return true;
 }
 
+// Public reads only: reconcile uncertain account changes before resubmitting.
 static async Task<HttpResult<T>> WithRetry<T>(Func<Task<HttpResult<T>>> call, int maxAttempts = 3)
 {
     HttpResult<T> last = default!;

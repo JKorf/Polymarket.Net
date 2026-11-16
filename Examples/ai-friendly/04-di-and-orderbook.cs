@@ -1,3 +1,4 @@
+using CryptoExchange.Net.SharedApis;
 using CryptoExchange.Net.Web3;
 using CryptoExchange.Net.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,3 +66,26 @@ Console.WriteLine(aliceRestClient != null && aliceSocketClient != null
 
 // Keep the concrete socket client for unsubscribe calls when you create subscriptions.
 Console.WriteLine(socketClient.PredictionApi != null ? "Socket client ready." : "Socket client unavailable.");
+
+// Shared API V2 applies to Perps only; Prediction token trading uses native APIs.
+var sharedClient = provider.GetRequiredService<IPolymarketSharedApiClient>();
+IGetFuturesSymbolsRest symbolsClient = sharedClient.PerpsRest;
+var sharedSymbols = await symbolsClient.GetFuturesSymbolsAsync(new GetSymbolsRequest());
+if (!sharedSymbols.Success)
+{
+    Console.WriteLine(sharedSymbols.Error);
+    return;
+}
+var instrument = sharedSymbols.Data.FirstOrDefault();
+if (instrument == null)
+    return;
+var catalog = symbolsClient.FuturesSymbolCatalog;
+IGetTickerRest tickerClient = sharedClient.PerpsRest;
+var ticker = await tickerClient.GetTickerAsync(new GetTickerRequest(
+    new SharedSymbol(TradingMode.PerpetualLinear, instrument.BaseAsset, instrument.QuoteAsset)));
+if (!ticker.Success)
+{
+    Console.WriteLine(ticker.Error);
+    return;
+}
+Console.WriteLine(ticker.Data.LastPrice);

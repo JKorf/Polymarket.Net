@@ -265,18 +265,10 @@ For client setup, dependency injection and response processing, see the
 
 ## AI / LLM documentation
 
-Polymarket.Net includes AI-oriented documentation and examples for code generation tools:
-
-|File|Purpose|
-|--|--|
-|[`AGENTS.md`](AGENTS.md)|Assistant skill with core Polymarket.Net patterns, pitfalls, and examples|
-|[`CLAUDE.md`](CLAUDE.md)|Claude-oriented guide with authentication rules and source-of-truth files|
-|[`llms.txt`](llms.txt)|Short LLM index with links to docs, examples, and critical usage rules|
-|[`llms-full.txt`](llms-full.txt)|Detailed LLM context with endpoint routing, authentication levels, code patterns, and anti-hallucination checks|
-|[`docs/ai-api-map.md`](docs/ai-api-map.md)|Table-style intent-to-method map for CLOB, Gamma, Data, WebSocket, authentication, DI, and local order book workflows|
-|[`Examples/ai-friendly`](Examples/ai-friendly)|Compilable single-file Prediction and Perps examples for market data, authentication/trading, WebSocket, DI/order book, and error handling workflows|
-
-See [cryptoexchange-skills-hub](https://github.com/JKorf/cryptoexchange-skills-hub) for installable skills.
+- [Consumer skill](.claude/skills/polymarket-net/SKILL.md): library usage and API references.
+- [Repository development](AGENTS.md): implementation and validation instructions.
+- [Documentation index](llms.txt): local discovery links.
+- [Compilable examples](Examples/ai-friendly/): complete consumer programs.
 
 **NOTE**  
 Polymarket.Net uses the Builder Code mechanism for Polymarket, which means that an additional 1bps / 0.01% fee is charged on top of orders placed with the library to fund development. This is entirely optional: set `PredictionOptions.BuilderCode` or `PerpsOptions.BuilderCode` to `null` in the client options to disable it for that API.
