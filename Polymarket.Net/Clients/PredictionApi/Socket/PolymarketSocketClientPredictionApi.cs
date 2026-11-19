@@ -73,6 +73,21 @@ namespace Polymarket.Net.Clients.PredictionApi
         public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new PolymarketSocketSpotMessageHandler();
 
         /// <inheritdoc />
+        protected override bool HandleUnhandledMessage(SocketConnection connection, string typeIdentifier, ReadOnlySpan<byte> data)
+        {
+            // price_change messages are not routed when no subscription on the connection requested them; drop silently
+            // without deserializing or logging (they arrive at very high rates).
+            // pong may arrive after the ping query already timed out; nothing to do with it either.
+            if (string.Equals(typeIdentifier, "price_change", StringComparison.Ordinal)
+                || string.Equals(typeIdentifier, "pong", StringComparison.Ordinal))
+            {
+                return true;
+            }
+
+            return base.HandleUnhandledMessage(connection, typeIdentifier, data);
+        }
+
+        /// <inheritdoc />
         protected override PolymarketAuthenticationProvider CreateAuthenticationProvider(PolymarketCredentials credentials)
             => new PolymarketAuthenticationProvider(credentials);
 
