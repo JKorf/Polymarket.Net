@@ -50,7 +50,12 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
 
             var routes = new List<MessageRoute>();
 
-            routes.Add(MessageRoute.CreateForEvent<PolymarketPriceChangeUpdate>("price_change", DoHandleMessage));
+            // price_change is by far the highest volume message on the market channel (hundreds to thousands per second
+            // per market). Only register the route (and thus pay for deserialization) when the caller actually wants it.
+            // Unrouted price_change messages are dropped cheaply in PolymarketSocketClientPredictionApi.HandleUnhandledMessage.
+            if (priceChangeHandler != null)
+                routes.Add(MessageRoute.CreateForEvent<PolymarketPriceChangeUpdate>("price_change", DoHandleMessage));
+
             foreach(var item in tokenIds)
             {
                 routes.Add(MessageRoute.CreateForEvent<PolymarketBookUpdate>("book", item, DoHandleMessage));
