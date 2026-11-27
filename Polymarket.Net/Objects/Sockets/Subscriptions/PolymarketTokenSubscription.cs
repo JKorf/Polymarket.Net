@@ -24,6 +24,8 @@ namespace Polymarket.Net.Objects.Sockets.Subscriptions
 
         private PolymarketSocketClientPredictionApi _client;
 
+        public override string[] SubscriptionIdentifiers => [];
+
         /// <summary>
         /// ctor
         /// </summary>
